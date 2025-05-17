@@ -30,23 +30,54 @@ const Education: React.FC = () => {
                 />
               </div>
 
-              <div className="card p-6 ml-8 border-2 border-transparent group hover:border-primary-500 transition-all duration-200">
-                <div className="relative mb-4">
-                  {/* Duration badge fixed top right */}
-                  <span className="absolute top-0 right-0 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full text-sm font-medium">
+              <div className="card p-6 ml-8 border-2 border-transparent group hover:border-primary-500 transition-all duration-200 relative">
+                {/* Container for degree + duration */}
+                <div
+                  className="
+                    flex flex-col
+                    lg:flex-row lg:items-start
+                    lg:relative
+                  "
+                >
+                  {/* Degree */}
+                  <h3
+                    className="
+                      text-xl font-bold text-primary-600 dark:text-primary-400
+                      group-hover:text-primary-700 dark:group-hover:text-primary-300
+                      break-words
+                      lg:pr-32
+                      max-w-full
+                    "
+                    style={{ wordBreak: "break-word" }} // Extra safety to break long words
+                  >
+                    {education.degree}
+                  </h3>
+
+                  {/* Duration */}
+                  <span
+                    className="
+                      inline-flex
+                      self-start  /* prevents stretching in column layout */
+                      mt-1
+                      lg:mt-0 lg:absolute lg:top-0 lg:right-0
+                      px-3 py-1
+                      bg-primary-100 dark:bg-primary-900/30
+                      text-primary-600 dark:text-primary-400
+                      rounded-full
+                      text-sm font-medium
+                      whitespace-nowrap
+                      max-w-full
+                      max-w-max  /* prevent expanding beyond content */
+                    "
+                  >
                     {education.duration}
                   </span>
-
-                  {/* Text container with padding and max width to avoid overlap */}
-                  <div className="pr-30 max-w-[calc(100%-7rem)]">
-                    <h3 className="text-xl font-bold text-primary-600 dark:text-primary-400 group-hover:text-primary-700 dark:group-hover:text-primary-300 break-words">
-                      {education.degree}
-                    </h3>
-                    <p className="text-lg font-medium break-words">
-                      {education.institution}
-                    </p>
-                  </div>
                 </div>
+
+                {/* Institution below degree */}
+                <p className="text-lg font-medium break-words mt-2">
+                  {education.institution}
+                </p>
 
                 <div className="mt-4">
                   <div className="flex items-center space-x-2 text-lg text-primary-600 dark:text-primary-400">

@@ -92,11 +92,10 @@ export const skills: Skill[] = [
 
   // Soft Skills
   { id: "8", name: "Communication", level: 95, category: "soft" },
-  { id: "9", name: "Team Leadership", level: 90, category: "soft" },
-  { id: "10", name: "Problem Solving", level: 95, category: "soft" },
-  { id: "11", name: "Attention to Detail", level: 100, category: "soft" },
-  { id: "12", name: "Project Management", level: 85, category: "soft" },
-  { id: "13", name: "Adaptability", level: 90, category: "soft" },
+  { id: "9", name: "Problem Solving", level: 85, category: "soft" },
+  { id: "10", name: "Attention to Detail", level: 90, category: "soft" },
+  { id: "11", name: "Project Management", level: 85, category: "soft" },
+  { id: "12", name: "Adaptability", level: 90, category: "soft" },
 ];
 
 export const personalInfo = {
