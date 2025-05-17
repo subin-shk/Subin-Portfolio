@@ -67,7 +67,7 @@ const Education: React.FC = () => {
                       text-sm font-medium
                       whitespace-nowrap
                       max-w-full
-                      max-w-max  /* prevent expanding beyond content */
+        
                     "
                   >
                     {education.duration}
