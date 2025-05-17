@@ -30,7 +30,7 @@ const Education: React.FC = () => {
                 />
               </div>
 
-              <div className="card p-6 ml-8 hover:border-primary-500 hover:border-2 group">
+              <div className="card p-6 ml-8 border-2 border-transparent group hover:border-primary-500 transition-all duration-200">
                 <div className="relative mb-4">
                   {/* Duration badge fixed top right */}
                   <span className="absolute top-0 right-0 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full text-sm font-medium">

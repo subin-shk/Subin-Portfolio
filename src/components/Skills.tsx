@@ -40,7 +40,7 @@ const Skills: React.FC = () => {
 
         <div
           ref={ref}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 max-w-4xl mx-auto"
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
         >
           {filteredSkills.map((skill, index) => (
             <motion.div
@@ -48,21 +48,23 @@ const Skills: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={hasAnimated ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm"
+              className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex justify-between items-center mb-3">
-                <h3 className="font-medium">{skill.name}</h3>
+                <h3 className="font-medium text-sm text-slate-800 dark:text-white">
+                  {skill.name}
+                </h3>
                 <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
                   {skill.level}%
                 </span>
               </div>
 
-              <div className="skill-bar">
+              <div className="skill-bar h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: "0%" }}
                   animate={hasAnimated ? { width: `${skill.level}%` } : {}}
                   transition={{ duration: 1, delay: index * 0.05 }}
-                  className="skill-progress"
+                  className="skill-progress h-full bg-primary-600 dark:bg-primary-400 rounded-full"
                 ></motion.div>
               </div>
             </motion.div>

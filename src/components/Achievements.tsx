@@ -34,7 +34,7 @@ const Achievements: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={hasAnimated ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card p-6 group hover:border-primary-500 hover:border-2"
+              className="card p-6 border-2 border-transparent group hover:border-primary-500 transition-all duration-200"
             >
               <div className="mb-4 p-4 rounded-full bg-primary-100 dark:bg-primary-900/30 w-max group-hover:bg-primary-200 dark:group-hover:bg-primary-800/30 transition-colors">
                 {iconMap[achievement.icon]}

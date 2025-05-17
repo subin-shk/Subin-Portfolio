@@ -64,7 +64,7 @@ export const educationHistory: Education[] = [
     degree: " High School | +2 Science",
     institution: "Trinity International SS & College - Dillibazar, Kathmandu",
     duration: "2018 - 2021",
-    grade: "3.61 GPA",
+    grade: "3.61 CGPA",
     honors: "Grade: A+",
   },
   {
