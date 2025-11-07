@@ -9,6 +9,7 @@ export interface Experience {
   company: string;
   duration: string;
   description: string[];
+  skills: string;
 }
 
 export interface Achievement {

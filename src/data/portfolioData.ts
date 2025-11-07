@@ -16,7 +16,13 @@ export const experiences: Experience[] = [
     role: "Junior QA Engineer",
     company: "ThemeGrill Pvt. Ltd.",
     duration: "May 2025 - Present",
-    description: [],
+    description: [
+      "Build automation framework reducing manual testing efforts.",
+      "Test and automate wordpress plugins and themes.",
+      "Refactor automation scripts to improve performance and maintainability, reducing manual effort.",
+      "Work closely with developers to maintain quality, report bugs, and meet tight deadlines."
+    ],
+    skills: "Selenium, Robot Framework, Manual Testing, Google Lighthouse"
   },
   {
     id: "2",
@@ -29,6 +35,7 @@ export const experiences: Experience[] = [
       "Developed and maintained automated test scripts using Python and JavaScript.",
       "Identified and tracked software defects using JIRA.",
     ],
+    skills:"Selenium, Appium, MochaJS, Pytest, Postman, Jira",
   },
 ];
 
@@ -56,8 +63,8 @@ export const educationHistory: Education[] = [
       "Bachelors of Science in Computer Science and Information Technology",
     institution: "National College of Computer Studies - Paknajol, Kathmandu",
     duration: "2021 - 2025",
-    grade: "",
-    honors: "",
+    grade: "Percentage: 82%",
+    honors: "Distinction",
   },
   {
     id: "2",
