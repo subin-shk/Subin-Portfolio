@@ -63,7 +63,7 @@ export const educationHistory: Education[] = [
       "Bachelors of Science in Computer Science and Information Technology",
     institution: "National College of Computer Studies - Paknajol, Kathmandu",
     duration: "2021 - 2025",
-    grade: "Percentage: 82%",
+    grade: "Percentage: 80.71%",
     honors: "Distinction",
   },
   {
@@ -86,24 +86,15 @@ export const educationHistory: Education[] = [
 ];
 
 export const skills: Skill[] = [
-  // Technical Skills
-  { id: "1", name: "Automated Testing", level: 85, category: "technical" },
-  { id: "2", name: "Manual Testing", level: 90, category: "technical" },
-  { id: "3", name: "Mobile Testing", level: 85, category: "technical" },
-
-  // Tools
-  { id: "4", name: "Selenium", level: 90, category: "tools" },
-  { id: "5", name: "Appium", level: 90, category: "tools" },
-  { id: "6", name: "Postman", level: 90, category: "tools" },
-  { id: "7", name: "JIRA", level: 95, category: "tools" },
-
-  // Soft Skills
-  { id: "8", name: "Communication", level: 95, category: "soft" },
-  { id: "9", name: "Problem Solving", level: 85, category: "soft" },
-  { id: "10", name: "Attention to Detail", level: 90, category: "soft" },
-  { id: "11", name: "Project Management", level: 85, category: "soft" },
-  { id: "12", name: "Adaptability", level: 90, category: "soft" },
+  { id: "1", name: "Selenium", icon: "FaChrome" },
+  { id: "2", name: "Appium", icon: "FaMobileAlt" },
+  { id: "3", name: "Postman", icon: "FaRocket" },
+  { id: "4", name: "Robot Process Automation", icon: "FaRobot" },
+  { id: "5", name: "Cucumber BDD", icon: "FaLeaf" },
+  { id: "6", name: "JMeter", icon: "FaBolt" },
+  { id: "7", name: "Locust", icon: "FaBug" },
 ];
+
 
 export const personalInfo = {
   name: "Subin Shakya",

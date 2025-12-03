@@ -1,6 +1,7 @@
 import { ArrowDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { personalInfo } from "../data/portfolioData";
+import subinShakya from "../images/subin.jpg";
 
 const Hero: React.FC = () => {
   return (
@@ -48,14 +49,15 @@ const Hero: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="relative hidden md:block"
           >
-            <div className="relative w-full h-[500px] rounded-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-secondary-500/20 backdrop-blur-sm"></div>
+            <div className="relative w-full h-[500px] rounded-2xl overflow-hidden group">
               <img
-                src="https://images.pexels.com/photos/3861964/pexels-photo-3861964.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                src={subinShakya}
                 alt="Professional workspace"
                 className="w-full h-full object-cover"
               />
+              <div className="absolute inset-0 backdrop-blur-sm transition-all duration-300 group-hover:backdrop-blur-0"></div>
             </div>
+
 
             <div className="absolute -bottom-6 -right-6 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-xl">
               <div className="flex items-center space-x-3">

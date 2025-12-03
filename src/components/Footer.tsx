@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
               Subin<span className="text-secondary-400">Shakya.</span>
             </a>
             <p className="mt-2 text-slate-400 max-w-md">
-              Software Quality Assurance Engineer passionate about delivering
+              Software QA Engineer passionate about delivering
               high-quality software products.
             </p>
           </div>
@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
             &copy; {currentYear} {personalInfo.name}. All rights reserved.
             <span className="inline-flex items-center ml-1">
               Made with <Heart size={16} className="text-red-500 mx-1" /> by
-              Subin, QA Engineer
+              Subin, Software QA Engineer
             </span>
           </p>
 

@@ -31,8 +31,7 @@ export interface Education {
 export interface Skill {
   id: string;
   name: string;
-  level: number;
-  category: 'technical' | 'soft' | 'tools';
+  icon: string;
 }
 
 export interface ContactFormData {

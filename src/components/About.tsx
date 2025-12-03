@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { MapPin, Mail, Linkedin, Github } from "lucide-react";
 import { personalInfo } from "../data/portfolioData";
 import { useAnimatedElement } from "../hooks/useAnimatedElement";
-import myPhoto from "../images/subin.jpg";
+import myPhoto from "../images/subin_shk.png";
 
 const About: React.FC = () => {
   const { ref, hasAnimated } = useAnimatedElement();
