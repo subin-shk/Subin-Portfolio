@@ -46,7 +46,7 @@ const Experience: React.FC = () => {
                   ))}
                 </ul>
                 <h2 className="text-lg font-bold text-primary-600 dark:text-primary-400 pt-4">
-                      Skills: <span className="font-light text-white dark:text-white"> {experience.skills} </span>
+                      Skills: <span className="font-light text-black dark:text-white"> {experience.skills} </span>
                 </h2>
               </div>
             </motion.div>
