@@ -55,7 +55,7 @@ const Hero: React.FC = () => {
                 alt="Professional workspace"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 backdrop-blur-sm transition-all duration-300 group-hover:backdrop-blur-0"></div>
+              {/* <div className="absolute inset-0 backdrop-blur-sm transition-all duration-300 group-hover:backdrop-blur-0"></div> */}
             </div>
 
 
