@@ -39,3 +39,15 @@ export interface ContactFormData {
   email: string;
   message: string;
 }
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  github: string;
+  liveDemo?: string;
+  category: 'automation' | 'web' | 'other';
+  visit?: string;
+  video?: string;
+}

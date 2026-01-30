@@ -1,4 +1,5 @@
 import { Experience, Achievement, Education, Skill, NavItem } from "../types";
+import cloverEmporium from "../images/projects/clover_emporium.png";
 
 export const navigationItems: NavItem[] = [
   { name: "Home", href: "#home" },
@@ -108,4 +109,76 @@ export const personalInfo = {
     github: "https://github.com/subin-shk",
     // twitter: "https://twitter.com/subinshakya",
   },
+};
+
+export const projects = {
+  automation: [
+    {
+      id: '1',
+      name: 'CodeNotes Automation',
+      description: 'This project uses Pytest and Selenium to automate and test the flow of a web application.',
+      github: 'https://github.com/subin-shk/CodeNotes-Automation',
+      tags: ['Python', 'Pytest', 'Selenium', 'Automation'],
+    },
+    {
+      id: '2',
+      name: 'MyDemoApp Automation',
+      description: 'Mobile application automation using Appium',
+      github: 'https://github.com/subin-shk/MyDemoApp-Automation',
+      tags: ['Mocha JS', 'Appium', 'Mobile Testing'],
+    },
+    {
+      id: '3',
+      name: 'MyDemoApp BDD Automation',
+      description: 'Mobile application automation using Appium with BDD approach',
+      github: 'https://github.com/subin-shk/MyDemoApp-BDD/tree/main/features',
+      tags: ['Cucumber', 'Appium', 'BDD', 'Mobile Testing'],
+    },
+    {
+      id: '4',
+      name: 'Trello Postman Collection',
+      description: 'Trello Postman Collection for API testing of Trello functionalities.',
+      github: 'https://github.com/subin-shk/Trello_Postman_Collection',
+      tags: ['Postman', 'API Testing'],
+    },
+    {
+      id: '5',
+      name: 'Masteriyo Automation',
+      description: 'Automation of the Masteriyo LMS plugin using Robot Framework and Selenium, and integrate API testing within the Robot Framework test suite.',
+      tags: ['Robot Framework', 'Selenium', 'API Testing'],
+    },
+  ],
+  web: [
+    {
+      id: '6',
+      name: 'Clover Emporium',
+      description: 'An e-commerce clothing store website dedicated to providing a seamless and intuitive online shopping experience, offering a diverse range of clothing products to its users.',
+      github: 'https://github.com/subin-shk/CloverEmporium',
+      image: cloverEmporium,
+      tags: ['HTML', 'CSS', 'JavaScript', 'Bootstrap', 'PHP', 'SQL'],
+    },
+    {
+      id: '7',
+      name: 'Face Tune',
+      description: 'The purpose of this project is to use real-time facial recognition to acquaint the machine with abilities to recognize and examine human emotions. With this, the machine will be trained to provide the user with suitable songs for that particular mood.',
+      github: 'https://github.com/subin-shk/FaceTune',
+      tags: ['HTML', 'CSS', 'JavaScript', 'Flask', 'Machine Learning', 'SQLite'],
+    },
+  ],
+  others: [
+    {
+      id: '8',
+      name: 'Student Management System',
+      description: 'Student Management System in Java Swing that fulfills basic CRUD operations related to addition, deletion, etc. of students.',
+      github: 'https://github.com/subin-shk/Student-Management-System-in-Java-Swing',
+      tags: ['Java', 'Swing', 'SQL', 'CRUD Operations'],
+    },
+    {
+      id: '9',
+      name: 'Pharmacy Management System',
+      description: 'Pharmacy Management System in Java Swing that fulfills basic CRUD operations related to addition, deletion, etc. of medicines and customers.',
+      github: 'https://github.com/subin-shk/Pharmacy-Management-System',
+      tags: ['Java', 'Swing', 'SQL', 'CRUD Operations'],
+    },
+  ],
 };

@@ -18,7 +18,7 @@ const Skills: React.FC = () => {
   const { ref, hasAnimated } = useAnimatedElement();
 
   return (
-    <section id="skills" className="section bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800/50 dark:to-slate-900/50">
+    <section id="skills" className="section">
       <div className="container">
         <div className="section-heading">
           <h2>

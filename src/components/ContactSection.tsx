@@ -8,7 +8,7 @@ const ContactSection: React.FC = () => {
   const { ref, hasAnimated } = useAnimatedElement();
 
   return (
-    <section id="contact" className="section">
+    <section id="contact" className="section bg-slate-100 dark:bg-slate-800/50">
       <div className="container">
         <div className="section-heading">
           <h2>Contact Me</h2>
