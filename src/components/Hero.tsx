@@ -1,7 +1,7 @@
 import { ArrowDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { personalInfo } from "../data/portfolioData";
-import subinShakya from "../images/subin.jpg";
+import subinShakya from "../images/subin_media.jpg";
 
 const Hero: React.FC = () => {
   return (

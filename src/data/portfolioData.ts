@@ -7,6 +7,7 @@ export const navigationItems: NavItem[] = [
   { name: "Experience", href: "#experience" },
   { name: "Achievements", href: "#achievements" },
   { name: "Education", href: "#education" },
+  { name: "Projects", href: "#projects" },
   { name: "Skills", href: "#skills" },
   { name: "Contact", href: "#contact" },
 ];
@@ -14,16 +15,16 @@ export const navigationItems: NavItem[] = [
 export const experiences: Experience[] = [
   {
     id: "1",
-    role: "Junior QA Engineer",
+    role: "Software QA Automation Engineer",
     company: "ThemeGrill Pvt. Ltd.",
     duration: "May 2025 - Present",
     description: [
-      "Build automation framework reducing manual testing efforts.",
-      "Test and automate wordpress plugins and themes.",
-      "Refactor automation scripts to improve performance and maintainability, reducing manual effort.",
+      "Own and maintain hybrid test automation using Robot Framework (UI + API), improving test coverage and reliability",
+      "Conduct integration testing for email marketing, CRM, and payment gateways, ensuring correct configuration and functionality",
+      "Collaborate with cross-functional teams to validate features and propose improvements of Wordpress themes and plugins.",
       "Work closely with developers to maintain quality, report bugs, and meet tight deadlines."
     ],
-    skills: "Selenium, Robot Framework, Manual Testing, Google Lighthouse"
+    skills: "Selenium, Robot Framework, RequestLibrary, PyAutoGUI, Postman, Jira, Manual Testing",
   },
   {
     id: "2",
@@ -36,7 +37,7 @@ export const experiences: Experience[] = [
       "Developed and maintained automated test scripts using Python and JavaScript.",
       "Identified and tracked software defects using JIRA.",
     ],
-    skills:"Selenium, Appium, MochaJS, Pytest, Postman, Jira",
+    skills:"Selenium, Appium, MochaJS, Pytest, Cucumber BDD, Postman, Jira",
   },
 ];
 
