@@ -2,12 +2,10 @@ import { motion } from "framer-motion";
 import { MapPin, Mail, Linkedin, Github } from "lucide-react";
 import { personalInfo } from "../data/portfolioData";
 import { useAnimatedElement } from "../hooks/useAnimatedElement";
-import { useState } from "react"; 
 import myPhoto from "../images/subin_shk.png";
-import backgroundImage from "../images/subin_shk_icon.png"; 
+
 const About: React.FC = () => {
   const { ref, hasAnimated } = useAnimatedElement();
-  const [isBlurred, setIsBlurred] = useState(true); // State for mobile blur toggle
 
   return (
     <section id="about" className="section bg-slate-100 dark:bg-slate-800/50">
@@ -31,44 +29,15 @@ const About: React.FC = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div
-              className="
-                absolute
-                -bottom-4 
-                right-0
-                md:-bottom-6 md:-right-6
-                lg:-bottom-8 lg:-right-8
-
-                h-32 w-32
-                md:h-40 md:w-40
-                lg:h-48 lg:w-48
-
-                border-8 border-white dark:border-slate-700
-                rounded-2xl overflow-hidden cursor-pointer
-              "
-              onClick={() => {
-                // Only toggle blur on small screens
-                if (window.innerWidth < 1024) {
-                  setIsBlurred(!isBlurred);
-                }
-              }}
-            >
-              <img
-                src={backgroundImage}
-                alt="Background Image"
-                className={`
-                  w-full h-full object-cover transition-all duration-300 ease-in-out
-
-                  ${
-                    isBlurred
-                      ? 'filter blur-sm'       // blurred state (mobile before click)
-                      : 'filter blur-none'      // unblurred state (mobile after click)
-                  }
-
-                  lg:blur-sm                   /* always blurred at first on desktop */
-                  lg:hover:blur-none           /* remove blur on hover ONLY on desktop */
-                `}
-              />
+            <div className="absolute bottom-4 right-4">
+              <div
+                className="inline-flex items-center justify-center space-x-3 rounded-full border border-slate-200 bg-white/95 px-5 py-3 min-w-[260px] shadow-lg shadow-slate-200/50 backdrop-blur transition-transform duration-200 hover:-translate-y-0.5 dark:border-slate-700 dark:bg-slate-900/95 dark:shadow-slate-900/40"
+              >
+                <span className="inline-flex h-3.5 w-3.5 rounded-full bg-primary-500 animate-pulse" />
+                <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                  Available for new opportunities
+                </span>
+              </div>
             </div>
           </motion.div>
 
