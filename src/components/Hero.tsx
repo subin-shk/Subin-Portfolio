@@ -1,6 +1,7 @@
 import { ArrowDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { personalInfo } from "../data/portfolioData";
+import PixelCursorTrail from "./PixelCursorTrail";
 
 const Hero: React.FC = () => {
   return (
@@ -8,6 +9,7 @@ const Hero: React.FC = () => {
       id="home"
       className="relative min-h-screen flex items-center pt-20 bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-slate-900 dark:via-slate-800 dark:to-primary-950"
     >
+      <PixelCursorTrail />
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
