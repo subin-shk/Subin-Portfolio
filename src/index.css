@@ -3,98 +3,438 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
+  :root {
+    --ink: #050505;
+
+    --glass: rgba(255, 255, 255, 0.08);
+    --glass-faint: rgba(255, 255, 255, 0.04);
+
+    --blue: 77 124 255;
+    --cyan: 95 212 232;
+    --violet: 155 123 255;
+
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.56);
+    --faint: rgba(255, 255, 255, 0.34);
+
+    --ease-glass: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-liquid: cubic-bezier(0.65, 0, 0.35, 1);
+
+    --gutter: clamp(1.25rem, 5vw, 6rem);
   }
-  
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    background: var(--ink);
+    /* Lenis drives scrolling; native smooth would fight it. */
+    scroll-behavior: auto;
+  }
+
   body {
     @apply font-sans antialiased;
+    background: var(--ink);
+    color: var(--text);
+    overflow-x: hidden;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
-  }
-
-  h1 {
-    @apply text-4xl sm:text-5xl md:text-6xl;
-  }
-
-  h2 {
-    @apply text-3xl sm:text-4xl;
-  }
-
-  h3 {
-    @apply text-2xl sm:text-3xl;
-  }
-
+  h1,
+  h2,
+  h3,
   h4 {
-    @apply text-xl sm:text-2xl;
+    @apply font-display;
+    letter-spacing: -0.04em;
+    font-weight: 500;
+    line-height: 0.95;
+  }
+
+  ::selection {
+    background: rgba(var(--blue), 0.32);
+    color: #fff;
+  }
+
+  /* Slim, unobtrusive scrollbar — the dock is the real wayfinding. */
+  ::-webkit-scrollbar {
+    width: 7px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.09);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgba(var(--cyan), 0.75);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
   }
 }
 
 @layer components {
-  .container {
-    @apply px-4 mx-auto max-w-7xl;
-  }
-  
-  .section {
-    @apply py-24 md:py-32;
-  }
-  
-  .section-heading {
-    @apply mb-20 text-center;
-  }
-  
-  .section-heading h2 {
-    @apply relative inline-block font-bold text-3xl md:text-4xl mb-6;
-  }
-  
-  .section-heading h2::after {
-    content: '';
-    @apply absolute left-1/2 -translate-x-1/2 -bottom-3 w-24 h-1 bg-secondary-500 rounded-full;
-  }
-  
-  .section-heading p {
-    @apply text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto;
-  }
-  
-  .btn {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
-  }
-  
-  .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500;
-  }
-  
-  .btn-secondary {
-    @apply bg-secondary-600 hover:bg-secondary-700 text-white focus:ring-secondary-500;
-  }
-  
-  .btn-outline {
-    @apply border-2 border-primary-600 hover:bg-primary-600 hover:text-white text-primary-600 focus:ring-primary-500;
-  }
-  
-  .input-field {
-    @apply w-full px-4 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200;
-  }
-  
-  .card {
-    @apply bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden;
+  .shell {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
   }
 
-  .timeline-item {
-    @apply relative pl-8 pb-8 border-l-2 border-primary-300 dark:border-primary-700 last:border-0 last:pb-0;
+  /* Saturation lift stops blurred darks reading as flat grey. Blur radius
+     and outer shadow spread are the two most expensive numbers on the page:
+     both re-rasterise every frame a glass panel moves. Raise with care. */
+  .glass {
+    position: relative;
+    background: var(--glass);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.14),
+      inset 0 -1px 0 0 rgba(255, 255, 255, 0.04),
+      0 16px 34px -18px rgba(0, 0, 0, 0.75);
   }
-  
-  .timeline-dot {
-    @apply absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary-500;
+
+  .glass-faint {
+    background: var(--glass-faint);
+    backdrop-filter: blur(11px) saturate(130%);
+    -webkit-backdrop-filter: blur(11px) saturate(130%);
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
   }
-  
-  .skill-bar {
-    @apply h-4 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden;
+
+  /* Hairline that catches light on one edge, like a real bevel. */
+  .edge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.4),
+      rgba(255, 255, 255, 0.08) 32%,
+      rgba(255, 255, 255, 0.02) 55%,
+      rgba(255, 255, 255, 0.18)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
   }
-  
-  .skill-progress {
-    @apply h-full bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-1000 ease-out;
+
+  /* Specular sheen that sweeps on hover. */
+  .sheen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      110deg,
+      transparent 32%,
+      rgba(255, 255, 255, 0.14) 48%,
+      rgba(255, 255, 255, 0.03) 56%,
+      transparent 68%
+    );
+    background-size: 260% 100%;
+    background-position: 190% 0;
+    opacity: 0;
+    transition:
+      background-position 1.15s var(--ease-glass),
+      opacity 0.5s var(--ease-glass);
+    pointer-events: none;
+  }
+  .sheen:hover::after,
+  .group:hover .sheen::after {
+    background-position: -60% 0;
+    opacity: 1;
+  }
+
+  /* Cursor-tracked highlight. Parent sets --lx/--ly on mousemove. */
+  .lit {
+    --lx: 50%;
+    --ly: 50%;
+  }
+  .lit::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      22rem circle at var(--lx) var(--ly),
+      rgba(255, 255, 255, 0.11),
+      transparent 62%
+    );
+    opacity: 0;
+    transition: opacity 0.45s var(--ease-glass);
+    pointer-events: none;
+  }
+  .lit:hover::after,
+  .group:hover .lit::after {
+    opacity: 1;
+  }
+
+  .grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.32;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+  }
+
+  .rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.14) 22%,
+      rgba(255, 255, 255, 0.14) 78%,
+      transparent
+    );
+  }
+
+  .eyebrow {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: clamp(0.6rem, 0.72vw, 0.7rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  .lede {
+    font-size: clamp(1.0625rem, 1.55vw, 1.375rem);
+    line-height: 1.62;
+    color: var(--muted);
+    letter-spacing: -0.011em;
+  }
+
+  .whisper {
+    font-size: clamp(0.875rem, 1.05vw, 0.95rem);
+    line-height: 1.72;
+    color: var(--faint);
+  }
+
+  /* Narrative beat that opens a movement — replaces section headings. */
+  .beat {
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 300;
+    font-size: clamp(1.9rem, 5.2vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -0.045em;
+    color: var(--text);
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+
+  .beat em {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+      100deg,
+      rgb(var(--cyan)),
+      rgb(var(--blue)) 48%,
+      rgb(var(--violet))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .tint {
+    background: linear-gradient(
+      100deg,
+      rgb(var(--cyan)),
+      rgb(var(--blue)) 50%,
+      rgb(var(--violet))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+@layer utilities {
+  /* Promotes to its own layer. Deliberately no `will-change` — it was on
+     dozens of elements at once, and permanently-hinted layers cost more
+     memory than they save in paint. */
+  .gpu {
+    transform: translateZ(0);
+  }
+
+  .stack {
+    display: grid;
+  }
+  .stack > * {
+    grid-area: 1 / 1;
+  }
+
+  /* Fade a scrolling strip out at both ends. */
+  .fade-x {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+  }
+
+  .fade-b {
+    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
+    mask-image: linear-gradient(180deg, #000 55%, transparent);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+@keyframes drift-a {
+  0%,
+  100% {
+    transform: translate3d(-6%, -3%, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(9%, 6%, 0) scale(1.14);
+  }
+  66% {
+    transform: translate3d(4%, -9%, 0) scale(0.94);
+  }
+}
+
+@keyframes drift-b {
+  0%,
+  100% {
+    transform: translate3d(7%, 5%, 0) scale(1.06);
+  }
+  40% {
+    transform: translate3d(-8%, -6%, 0) scale(0.92);
+  }
+  70% {
+    transform: translate3d(-3%, 8%, 0) scale(1.16);
+  }
+}
+
+@keyframes drift-c {
+  0%,
+  100% {
+    transform: translate3d(0, 4%, 0) scale(0.98);
+  }
+  50% {
+    transform: translate3d(-7%, -7%, 0) scale(1.2);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ripple-out {
+  from {
+    transform: scale(0.35);
+    opacity: 0.55;
+  }
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* Same ripple for elements positioned by 50%/50% — the centring offset has
+   to live inside the keyframe, or `transform` here overrides the class. */
+@keyframes ripple-center {
+  from {
+    transform: translate(-50%, -50%) scale(0.35);
+    opacity: 0.55;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes caret {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes dash-in {
+  from {
+    stroke-dashoffset: var(--len);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .sheen::after,
+  .lit::after {
+    display: none;
   }
 }

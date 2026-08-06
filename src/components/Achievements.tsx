@@ -1,58 +1,133 @@
 import { motion } from "framer-motion";
-import { Award, Trophy, Mic, FileText } from "lucide-react";
-import { achievements } from "../data/portfolioData";
-import { useAnimatedElement } from "../hooks/useAnimatedElement";
+import { Award, Medal, Trophy } from "lucide-react";
+import { achievements, narrative } from "../data/portfolioData";
+import type { Achievement } from "../types";
+import { EASE, inView, useReducedMotion } from "../lib/motion";
+import { Rise } from "./ui/Reveal";
+import GlassCard from "./ui/GlassCard";
 
-const iconMap: Record<string, React.ReactNode> = {
-  award: <Award size={36} className="text-primary-500" />,
-  trophy: <Trophy size={36} className="text-primary-500" />,
-  mic: <Mic size={36} className="text-primary-500" />,
-  "file-text": <FileText size={36} className="text-primary-500" />,
+const ICONS: Record<string, typeof Award> = {
+  trophy: Trophy,
+  award: Award,
+  medal: Medal,
 };
 
-const Achievements: React.FC = () => {
-  const { ref, hasAnimated } = useAnimatedElement();
+/** Accent per position, so the three cards read as a set rather than a row. */
+const TONES = ["95,212,232", "77,124,255", "155,123,255"];
+
+function AwardCard({ item, index }: { item: Achievement; index: number }) {
+  const reduced = useReducedMotion();
+  const Icon = ICONS[item.icon] ?? Award;
+  const rgb = TONES[index % TONES.length];
 
   return (
-    <section
-      id="achievements"
-      className="section bg-slate-100 dark:bg-slate-800/50"
+    <motion.div
+      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 40, filter: "blur(8px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={inView}
+      transition={{ duration: 1, ease: EASE, delay: index * 0.12 }}
+      className="h-full"
     >
-      <div className="container">
-        <div className="section-heading">
-          <h2>Achievements</h2>
-          <p>Recognition and notable accomplishments</p>
+      <GlassCard tilt={reduced ? 0 : 9}>
+        <div className="relative h-full">
+          <div
+            className="glass edge sheen relative flex h-full flex-col overflow-hidden rounded-[1.6rem] px-7 py-8"
+            style={{
+              boxShadow: `0 18px 42px -22px rgba(${rgb},0.55), inset 0 1px 0 rgba(255,255,255,0.16)`,
+            }}
+          >
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background: `radial-gradient(90% 60% at 50% 0%, rgba(${rgb},0.18), transparent 62%)`,
+              }}
+            />
+
+            {/* Medallion */}
+            <div className="relative">
+              <span
+                className="grid h-12 w-12 place-items-center rounded-2xl"
+                style={{
+                  background: `linear-gradient(145deg, rgba(${rgb},0.34), rgba(${rgb},0.08))`,
+                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.3), 0 8px 26px -8px rgba(${rgb},0.7)`,
+                }}
+              >
+                <Icon size={19} strokeWidth={1.6} style={{ color: `rgb(${rgb})` }} />
+              </span>
+            </div>
+
+            {/* Figure */}
+            <div className="relative mt-7 flex items-baseline gap-2.5">
+              <span
+                className="font-display text-[clamp(2.4rem,5vw,3.4rem)] font-light leading-none tracking-tightest text-white"
+                style={{ fontVariantNumeric: "tabular-nums" }}
+              >
+                {item.metric}
+              </span>
+              <span className="text-[0.72rem] tracking-[0.12em] text-white/40">
+                {item.metricLabel}
+              </span>
+            </div>
+
+            <div className="rule my-6" />
+
+            <h3 className="relative font-display text-[1.2rem] font-normal tracking-supertight text-white/92">
+              {item.title}
+            </h3>
+            <p
+              className="relative mt-1.5 text-[0.72rem] uppercase tracking-[0.16em]"
+              style={{ color: `rgba(${rgb},0.75)` }}
+            >
+              {item.context}
+            </p>
+            <p className="relative mt-4 text-[0.85rem] leading-[1.7] text-white/52">
+              {item.description}
+            </p>
+          </div>
+
+          {/* Reflection on the surface below the card */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-4 top-full h-16 origin-top scale-y-[-1] rounded-b-[1.6rem] opacity-25 blur-[2px]"
+            style={{
+              background: `linear-gradient(180deg, rgba(${rgb},0.22), transparent 70%)`,
+              WebkitMaskImage: "linear-gradient(180deg, #000, transparent)",
+              maskImage: "linear-gradient(180deg, #000, transparent)",
+            }}
+          />
+        </div>
+      </GlassCard>
+    </motion.div>
+  );
+}
+
+export default function Achievements() {
+  return (
+    <section id="achievements" className="relative py-[clamp(6rem,14vh,10rem)]">
+      <div className="shell">
+        <div className="grid gap-x-16 gap-y-6 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <Rise>
+              <h2
+                className="beat"
+                dangerouslySetInnerHTML={{ __html: narrative.achievements.beat }}
+              />
+            </Rise>
+          </div>
+          <div className="flex items-end lg:col-span-5">
+            <Rise delay={0.14}>
+              <p className="lede max-w-[30ch]">{narrative.achievements.body}</p>
+            </Rise>
+          </div>
         </div>
 
-        <div
-          ref={ref}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6"
-        >
-          {achievements.map((achievement, index) => (
-            <motion.div
-              key={achievement.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={hasAnimated ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card p-6 border-2 border-transparent group hover:border-primary-500 transition-all duration-200"
-            >
-              <div className="mb-4 p-4 rounded-full bg-primary-100 dark:bg-primary-900/30 w-max group-hover:bg-primary-200 dark:group-hover:bg-primary-800/30 transition-colors">
-                {iconMap[achievement.icon]}
-              </div>
-
-              <h3 className="text-xl font-bold mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                {achievement.title}
-              </h3>
-
-              <p className="text-slate-600 dark:text-slate-300">
-                {achievement.description}
-              </p>
-            </motion.div>
+        <div className="mt-[clamp(3.5rem,8vh,5.5rem)] grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {achievements.map((a, i) => (
+            <AwardCard key={a.id} item={a} index={i} />
           ))}
         </div>
       </div>
     </section>
   );
-};
-
-export default Achievements;
+}

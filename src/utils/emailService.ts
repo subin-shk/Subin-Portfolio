@@ -1,49 +1,45 @@
-// Note: In a real application, you'd use a backend API or service like EmailJS, SendGrid, etc.
-// For this example, we're using a dummy implementation that logs to the console.
+import emailjs from "@emailjs/browser";
 
-export const sendEmail = async (name: string, email: string, message: string): Promise<boolean> => {
-  try {
-    // In a real implementation, you would make an API call to your backend service
-    console.log('Sending email to: test@gmail.com');
-    console.log('From:', name, email);
-    console.log('Message:', message);
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    return true;
-  } catch (error) {
-    console.error('Error sending email:', error);
-    return false;
+/**
+ * EmailJS credentials. Public by design — the service id/template id and
+ * public key are safe in client code; delivery is restricted by the
+ * allowed-origins list configured in the EmailJS dashboard.
+ *
+ * Set these in `.env.local` (see `.env.example`). Without them the form
+ * reports that direct email is the working route rather than showing a
+ * success state for a message that went nowhere.
+ */
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+export class EmailNotConfiguredError extends Error {
+  constructor() {
+    super("Email delivery is not configured.");
+    this.name = "EmailNotConfiguredError";
   }
-};
+}
 
-// Implementation using EmailJS (requires EmailJS account)
-export const sendEmailWithEmailJS = async (
-  name: string, 
-  email: string, 
-  message: string, 
-  serviceId: string, 
-  templateId: string, 
-  userId: string
-): Promise<boolean> => {
-  try {
-    const templateParams = {
+/** Resolves only when EmailJS confirms the send. Throws otherwise. */
+export async function sendEmail(
+  name: string,
+  email: string,
+  message: string
+): Promise<void> {
+  // Checked individually rather than via the boolean so TS narrows them.
+  if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+    throw new EmailNotConfiguredError();
+  }
+
+  await emailjs.send(
+    SERVICE_ID,
+    TEMPLATE_ID,
+    {
       from_name: name,
       from_email: email,
-      message: message,
-      to_email: 'test@gmail.com',
-    };
-    
-    // This would normally use emailjs.send
-    console.log('EmailJS would send with:', { serviceId, templateId, userId, templateParams });
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    return true;
-  } catch (error) {
-    console.error('Error sending email with EmailJS:', error);
-    return false;
-  }
-};
+      reply_to: email,
+      message,
+    },
+    { publicKey: PUBLIC_KEY }
+  );
+}
