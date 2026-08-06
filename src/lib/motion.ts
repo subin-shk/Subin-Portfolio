@@ -42,17 +42,27 @@ export function useMediaQuery(query: string): boolean {
 }
 
 /**
- * Whether animated `filter: blur()` should run at all.
+ * Below `md`, nothing on this page blurs.
  *
- * Blur is the most expensive thing on this page: it re-rasterises the element
- * every frame it changes. Phones pay that on a far weaker GPU, and the effect
- * is least visible on a small screen — so below `md` the reveals resolve on
- * opacity and travel alone. Reduced motion drops it for the same reason it
- * drops everything else.
+ * Blur is the most expensive thing here: an animated one re-rasterises every
+ * frame it changes, and a `backdrop-filter` re-reads everything painted behind
+ * it. Phones pay both on a far weaker GPU for the effect that reads least on a
+ * small screen. So the phone build drops all three kinds — backdrop-filter on
+ * the glass (index.css), the static glows, and the animated reveals.
+ */
+const PHONE = "(max-width: 767px)";
+
+export function usePhone(): boolean {
+  return useMediaQuery(PHONE);
+}
+
+/**
+ * Whether animated `filter: blur()` should run at all. Reduced motion drops it
+ * for the same reason it drops everything else.
  */
 export function useAnimatedBlur(): boolean {
   const reduced = useReducedMotion();
-  const phone = useMediaQuery("(max-width: 767px)");
+  const phone = usePhone();
   return !reduced && !phone;
 }
 

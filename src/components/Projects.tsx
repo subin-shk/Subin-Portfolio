@@ -312,8 +312,11 @@ function ArchiveRow({ item, index }: { item: ArchiveProject; index: number }) {
             "radial-gradient(60% 100% at 50% 50%, rgba(255,255,255,0.05), transparent 70%)",
         }}
       />
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:gap-8">
-        <h4 className="min-w-[15rem] font-display text-[1.15rem] font-normal tracking-supertight text-white/85 transition-transform duration-500 ease-glass group-hover:translate-x-1.5">
+      {/* Name column, blurb and tech meta only fit on one line from `md`.
+          Turning the row at `sm` pushed the tech list past the viewport
+          between 640px and ~680px — landscape phone territory. */}
+      <div className="flex flex-col gap-3 md:flex-row md:items-baseline md:gap-8">
+        <h4 className="font-display text-[1.15rem] font-normal tracking-supertight text-white/85 transition-transform duration-500 ease-glass group-hover:translate-x-1.5 md:min-w-[15rem]">
           {item.name}
         </h4>
         <p className="max-w-[42ch] flex-1 text-[0.85rem] leading-relaxed text-white/45">

@@ -100,20 +100,28 @@ export default function Dock() {
         <motion.div
           animate={{ scale: condensed && !reduced ? 0.92 : 1 }}
           transition={{ duration: 0.6, ease: EASE }}
-          /* Seven icons plus the longest label come to ~326px. That clears a
-             360px phone, but not a 320px one — the max-width keeps the dock
-             on screen and clips the label's tail instead of bleeding off it. */
-          className="glass edge pointer-events-auto relative max-w-[calc(100vw-1.25rem)] overflow-hidden rounded-full px-1.5 py-1.5"
+          /* Seven icons plus the longest label have to clear a 320px phone,
+             where the max-width leaves 288px inside. Compact spacing below
+             brings them to ~279px; the max-width is the backstop that keeps
+             the dock on screen rather than bleeding off the edge. */
+          /* The dock is the one panel that floats over live content, so it's
+             the one that misses the phone build's absent backdrop blur: a
+             translucent film let the text underneath read straight through
+             it. Below `md` it gets an opaque backing instead. */
+          className="glass edge pointer-events-auto relative max-w-[calc(100vw-1.25rem)] overflow-hidden rounded-full px-1.5 py-1.5 max-md:bg-[#0f1218]/95"
           style={{ boxShadow: "0 12px 30px -14px rgba(0,0,0,0.9)" }}
         >
-          <ul className="relative flex items-center gap-0.5">
+          <ul className="relative flex items-center gap-0 sm:gap-0.5">
             {navigationItems.map((item) => {
               const id = item.href.slice(1);
               const isActive = active === id;
               const Icon = ICONS[id];
 
+              /* Only the named item may give up width. Every icon stays put,
+                 so a label too long for the screen loses its tail rather than
+                 pushing a whole destination out of the dock. */
               return (
-                <li key={item.href}>
+                <li key={item.href} className={isActive ? "min-w-0" : "shrink-0"}>
                   <button
                     type="button"
                     onClick={() => scrollTo(item.href)}
@@ -121,7 +129,7 @@ export default function Dock() {
                     /* The visible label is absent or truncated at some widths,
                        so the accessible name comes from here at every size. */
                     aria-label={item.name}
-                    className="relative flex items-center rounded-full px-2 py-2.5 sm:px-4 sm:py-2"
+                    className="relative flex min-w-0 max-w-full items-center rounded-full px-1.5 py-2.5 sm:px-4 sm:py-2"
                   >
                     {isActive &&
                       /* The sliding pill measures its target box once, so it
@@ -176,7 +184,7 @@ export default function Dock() {
                           }
                           exit={reduced ? { opacity: 0 } : { width: 0, opacity: 0 }}
                           transition={{ duration: reduced ? 0.2 : 0.44, ease: EASE }}
-                          className="relative z-[1] block overflow-hidden whitespace-nowrap text-[0.7rem] font-medium tracking-[-0.005em] text-white"
+                          className="relative z-[1] block min-w-0 overflow-hidden whitespace-nowrap text-[0.7rem] font-medium tracking-[-0.005em] text-white"
                         >
                           <span className="block pl-1.5 pr-0.5">{item.name}</span>
                         </motion.span>

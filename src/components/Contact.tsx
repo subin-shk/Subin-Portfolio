@@ -274,7 +274,7 @@ export default function Contact() {
                       aria-label="Send message"
                       animate={{ width: status === "sending" ? 56 : 172 }}
                       transition={{ duration: 0.55, ease: EASE }}
-                      className="edge relative grid h-14 place-items-center overflow-hidden rounded-full text-[0.9rem] font-medium text-white/95 backdrop-blur-xl disabled:cursor-wait"
+                      className="edge relative grid h-14 place-items-center overflow-hidden rounded-full text-[0.9rem] font-medium text-white/95 disabled:cursor-wait md:backdrop-blur-xl"
                       style={{
                         background: "rgba(255,255,255,0.13)",
                         boxShadow:

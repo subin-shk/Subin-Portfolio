@@ -117,6 +117,25 @@
     box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
   }
 
+  /* Phones get no backdrop-filter at all — see usePhone() in lib/motion.
+     The blur was also part of what separated a panel from the page, so the
+     film picks up the slack with a couple of points more white. It stays a
+     film: a dark backing would read as a hole punched in the backdrop
+     rather than as glass sitting on top of it. */
+  @media (max-width: 767px) {
+    .glass,
+    .glass-faint {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.105);
+    }
+    .glass-faint {
+      background: rgba(255, 255, 255, 0.055);
+    }
+  }
+
   /* Hairline that catches light on one edge, like a real bevel. */
   .edge::before {
     content: "";

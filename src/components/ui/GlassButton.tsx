@@ -49,7 +49,7 @@ export default function GlassButton({
 }: Props) {
   const cls = `${base} ${variants[variant]} ${
     variant !== "quiet"
-      ? "backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)]"
+      ? "md:backdrop-blur-xl md:[-webkit-backdrop-filter:blur(24px)]"
       : ""
   } ${className}`;
 

@@ -90,7 +90,7 @@ function AwardCard({ item, index }: { item: Achievement; index: number }) {
           {/* Reflection on the surface below the card */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-4 top-full h-16 origin-top scale-y-[-1] rounded-b-[1.6rem] opacity-25 blur-[2px]"
+            className="pointer-events-none absolute inset-x-4 top-full h-16 origin-top scale-y-[-1] rounded-b-[1.6rem] opacity-25 md:blur-[2px]"
             style={{
               background: `linear-gradient(180deg, rgba(${rgb},0.22), transparent 70%)`,
               WebkitMaskImage: "linear-gradient(180deg, #000, transparent)",

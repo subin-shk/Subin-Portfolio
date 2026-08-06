@@ -9,7 +9,7 @@ import {
 } from "framer-motion";
 import { narrative, personalInfo, stats } from "../data/portfolioData";
 import type { Stat } from "../types";
-import { EASE, inView, useReducedMotion, useRise } from "../lib/motion";
+import { EASE, inView, usePhone, useReducedMotion, useRise } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
 import portrait from "../images/subin_shk.webp";
 
@@ -91,6 +91,7 @@ function StatTile({ stat, index }: { stat: Stat; index: number }) {
 export default function About() {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+  const phone = usePhone();
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -108,7 +109,11 @@ export default function About() {
     <section
       id="about"
       ref={ref}
-      className="relative py-[clamp(7rem,16vh,12rem)]"
+      /* The photo's glow is inset -10 on every side, which on a phone reaches
+         past the gutter and made the whole page pannable sideways. `clip`
+         cuts it at the section edge without becoming a scroll container, so
+         the vertical parallax bleed is untouched. */
+      className="relative overflow-x-clip py-[clamp(7rem,16vh,12rem)]"
     >
       <div className="shell">
         <div className="grid items-center gap-x-16 gap-y-16 lg:grid-cols-12">
@@ -123,12 +128,22 @@ export default function About() {
                 style={reduced ? undefined : { y: backY, scale: glowScale }}
                 className="absolute -inset-10 rounded-full opacity-80 gpu"
               >
+                {/* A conic gradient is already smooth all the way round; the
+                    blur was only softening its hard outer edge. On a phone a
+                    radial mask does that job for nothing. */}
                 <div
                   className="h-full w-full rounded-[50%]"
                   style={{
                     background:
                       "conic-gradient(from 210deg at 50% 50%, rgba(95,212,232,0.30), rgba(77,124,255,0.34), rgba(155,123,255,0.30), rgba(95,212,232,0.30))",
-                    filter: "blur(58px)",
+                    ...(phone
+                      ? {
+                          WebkitMaskImage:
+                            "radial-gradient(closest-side, #000 30%, rgba(0,0,0,0.45) 62%, transparent 88%)",
+                          maskImage:
+                            "radial-gradient(closest-side, #000 30%, rgba(0,0,0,0.45) 62%, transparent 88%)",
+                        }
+                      : { filter: "blur(58px)" }),
                   }}
                 />
               </motion.div>

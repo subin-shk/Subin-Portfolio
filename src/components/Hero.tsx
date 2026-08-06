@@ -2,7 +2,13 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Download } from "lucide-react";
 import { personalInfo } from "../data/portfolioData";
-import { EASE, useAnimatedBlur, useReducedMotion, useRise } from "../lib/motion";
+import {
+  EASE,
+  useAnimatedBlur,
+  usePhone,
+  useReducedMotion,
+  useRise,
+} from "../lib/motion";
 import { scrollTo } from "../lib/useSmoothScroll";
 import GlassButton from "./ui/GlassButton";
 import { useKeyedImage } from "../lib/keyBackground";
@@ -23,6 +29,7 @@ export default function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const blurs = useAnimatedBlur();
+  const phone = usePhone();
   const { src: keyed, ready: keyReady } = useKeyedImage(heroPortrait);
 
   const { scrollYProgress } = useScroll({
@@ -102,14 +109,21 @@ export default function Hero() {
         >
           <div className="relative mx-auto h-[clamp(20rem,50vh,34rem)] w-full max-w-[38rem]">
             {/* Rim light behind the figure. Static — a pulsing halo behind a
-                portrait reads as a gimmick, not as lighting. */}
+                portrait reads as a gimmick, not as lighting.
+
+                The phone build drops the blur, which means the gradient has
+                to reach transparent before the box clips it — `farthest-corner`
+                (the default) leaves alpha at the edges and the box outline
+                becomes visible. `ellipse closest-side` lands the last stop on
+                all four sides instead. */}
             <div
               aria-hidden
               className="absolute left-1/2 top-[16%] h-[62%] w-[62%] -translate-x-1/2 rounded-full"
               style={{
-                background:
-                  "radial-gradient(circle, rgba(120,170,255,0.30), rgba(155,123,255,0.10) 48%, transparent 72%)",
-                filter: "blur(46px)",
+                background: phone
+                  ? "radial-gradient(ellipse closest-side, rgba(120,170,255,0.26), rgba(137,152,255,0.15) 32%, rgba(155,123,255,0.06) 58%, transparent 88%)"
+                  : "radial-gradient(circle, rgba(120,170,255,0.30), rgba(155,123,255,0.10) 48%, transparent 72%)",
+                ...(phone ? null : { filter: "blur(46px)" }),
               }}
             />
 
