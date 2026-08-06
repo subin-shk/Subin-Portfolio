@@ -9,7 +9,7 @@ import {
 } from "framer-motion";
 import { narrative, personalInfo, stats } from "../data/portfolioData";
 import type { Stat } from "../types";
-import { EASE, inView, useReducedMotion } from "../lib/motion";
+import { EASE, inView, useReducedMotion, useRise } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
 import portrait from "../images/subin_shk.webp";
 
@@ -17,6 +17,7 @@ function StatTile({ stat, index }: { stat: Stat; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const seen = useInView(ref, { once: true, amount: 0.6 });
   const reduced = useReducedMotion();
+  const rise = useRise(24, 7);
 
   const count = useMotionValue(0);
   const [shown, setShown] = useState("0");
@@ -54,8 +55,8 @@ function StatTile({ stat, index }: { stat: Stat; index: number }) {
     <motion.div
       ref={ref}
       onPointerEnter={ripple}
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 24, filter: "blur(7px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={rise.initial}
+      whileInView={rise.animate}
       viewport={inView}
       transition={{ duration: 0.9, ease: EASE, delay: index * 0.09 }}
       className="glass edge group relative flex flex-col items-center overflow-hidden rounded-[1.5rem] px-4 py-7 text-center"

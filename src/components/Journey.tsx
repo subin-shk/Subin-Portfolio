@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { GraduationCap, Briefcase } from "lucide-react";
 import { educationHistory, experiences, narrative } from "../data/portfolioData";
-import { EASE, inView, useReducedMotion } from "../lib/motion";
+import { EASE, inView, useReducedMotion, useRise } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
 
 type Milestone = {
@@ -41,13 +41,14 @@ const milestones: Milestone[] = [
 
 function Node({ item, index }: { item: Milestone; index: number }) {
   const reduced = useReducedMotion();
+  const rise = useRise(34, 7);
   const Icon = item.kind === "role" ? Briefcase : GraduationCap;
   const lit = Boolean(item.current);
 
   return (
     <motion.li
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 34, filter: "blur(7px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={rise.initial}
+      whileInView={rise.animate}
       viewport={inView}
       transition={{ duration: 0.95, ease: EASE, delay: index * 0.05 }}
       className="relative pl-14 sm:pl-20"

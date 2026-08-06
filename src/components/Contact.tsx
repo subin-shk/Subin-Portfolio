@@ -4,10 +4,7 @@ import { ArrowUpRight, Check, Github, Linkedin, Mail, Send } from "lucide-react"
 import { narrative, personalInfo } from "../data/portfolioData";
 import { EASE, useReducedMotion } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
-import {
-  EmailNotConfiguredError,
-  sendEmail,
-} from "../utils/emailService";
+import { sendEmail } from "../utils/emailService";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -92,10 +89,19 @@ export default function Contact() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [trap, setTrap] = useState("");
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (status === "sending" || status === "sent") return;
+
+    /* Honeypot. A real visitor never sees that field, so anything in it came
+       from a bot — answer with the same success state rather than an error,
+       because a bot that learns it was blocked just comes back different. */
+    if (trap) {
+      setStatus("sent");
+      return;
+    }
 
     setStatus("sending");
     setError(null);
@@ -106,12 +112,10 @@ export default function Contact() {
       setName("");
       setEmail("");
       setMessage("");
-    } catch (err) {
+    } catch {
       setStatus("error");
       setError(
-        err instanceof EmailNotConfiguredError
-          ? `The form isn't hooked up to a mailbox yet — reach me directly at ${personalInfo.email}.`
-          : "That didn't go through. Please try again, or email me directly."
+        `That didn't go through. Please try again, or email me directly at ${personalInfo.email}.`
       );
     }
   };
@@ -237,6 +241,19 @@ export default function Contact() {
                     onChange={setMessage}
                     textarea
                     required
+                  />
+
+                  {/* Honeypot. Positioned off-screen rather than `hidden`, so
+                      a form-filling bot still finds it and takes the bait. */}
+                  <input
+                    type="text"
+                    name="botcheck"
+                    value={trap}
+                    onChange={(e) => setTrap(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="absolute left-[-9999px] h-0 w-0 opacity-0"
                   />
 
                   {error && (

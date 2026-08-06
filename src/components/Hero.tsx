@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Download } from "lucide-react";
 import { personalInfo } from "../data/portfolioData";
-import { EASE, useReducedMotion } from "../lib/motion";
+import { EASE, useAnimatedBlur, useReducedMotion, useRise } from "../lib/motion";
 import { scrollTo } from "../lib/useSmoothScroll";
 import GlassButton from "./ui/GlassButton";
 import { useKeyedImage } from "../lib/keyBackground";
@@ -22,6 +22,7 @@ const NAME = personalInfo.name.toUpperCase();
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+  const blurs = useAnimatedBlur();
   const { src: keyed, ready: keyReady } = useKeyedImage(heroPortrait);
 
   const { scrollYProgress } = useScroll({
@@ -38,6 +39,7 @@ export default function Hero() {
     clamp: true,
   });
   const blurCss = useTransform(filter, (b) => `blur(${b}px)`);
+  const rise = useRise(14, 7);
 
   const chars = NAME.split("");
   const step = 0.045;
@@ -54,7 +56,13 @@ export default function Hero() {
         style={
           reduced
             ? undefined
-            : { scale, y, opacity, filter: blurCss, transformOrigin: "center 35%" }
+            : {
+                scale,
+                y,
+                opacity,
+                ...(blurs ? { filter: blurCss } : null),
+                transformOrigin: "center 35%",
+              }
         }
         className="shell relative z-[2] flex w-full flex-col items-center text-center gpu"
       >
@@ -77,8 +85,18 @@ export default function Hero() {
         </motion.div>
 
         <motion.div
-          initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 1.06, filter: "blur(24px)" }}
-          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          initial={
+            reduced
+              ? { opacity: 0 }
+              : blurs
+                ? { opacity: 0, scale: 1.06, filter: "blur(24px)" }
+                : { opacity: 0, scale: 1.06 }
+          }
+          animate={
+            blurs
+              ? { opacity: 1, scale: 1, filter: "blur(0px)" }
+              : { opacity: 1, scale: 1 }
+          }
           transition={{ duration: 1.8, ease: EASE, delay: 0.25 }}
           className="pointer-events-none relative -mb-[6vh] w-full sm:-mb-[7vh]"
         >
@@ -147,9 +165,15 @@ export default function Hero() {
                     initial={
                       reduced
                         ? { opacity: 0 }
-                        : { y: "110%", opacity: 0, filter: "blur(16px)" }
+                        : blurs
+                          ? { y: "110%", opacity: 0, filter: "blur(16px)" }
+                          : { y: "110%", opacity: 0 }
                     }
-                    animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                    animate={
+                      blurs
+                        ? { y: 0, opacity: 1, filter: "blur(0px)" }
+                        : { y: 0, opacity: 1 }
+                    }
                     transition={{
                       duration: reduced ? 0.3 : 1.25,
                       ease: EASE,
@@ -172,8 +196,8 @@ export default function Hero() {
         />
 
         <motion.p
-          initial={{ opacity: 0, y: 14, filter: "blur(7px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          initial={rise.initial}
+          animate={rise.animate}
           transition={{ duration: 1, ease: EASE, delay: nameDone + 0.08 }}
           className="font-display text-[clamp(1.05rem,2.4vw,1.7rem)] font-light tracking-supertight text-white/80"
         >
@@ -181,8 +205,8 @@ export default function Hero() {
         </motion.p>
 
         <motion.p
-          initial={{ opacity: 0, y: 14, filter: "blur(7px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          initial={rise.initial}
+          animate={rise.animate}
           transition={{ duration: 1, ease: EASE, delay: nameDone + 0.2 }}
           className="lede mt-4 max-w-[33rem] text-balance !text-[clamp(0.95rem,1.4vw,1.2rem)]"
         >

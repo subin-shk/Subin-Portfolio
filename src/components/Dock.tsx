@@ -1,8 +1,27 @@
 import { useEffect, useState } from "react";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
+import { Code2, Home, LayoutGrid, Mail, Route, Trophy, User } from "lucide-react";
 import { navigationItems } from "../data/portfolioData";
-import { EASE, useReducedMotion } from "../lib/motion";
+import { EASE, useMediaQuery, useReducedMotion } from "../lib/motion";
 import { scrollTo } from "../lib/useSmoothScroll";
+
+/** Seven labels don't fit a phone, so narrow screens navigate by icon. */
+const ICONS: Record<string, typeof Home> = {
+  home: Home,
+  about: User,
+  skills: Code2,
+  projects: LayoutGrid,
+  journey: Route,
+  achievements: Trophy,
+  contact: Mail,
+};
+
+/** The lit surface behind the active item, shared by both dock modes. */
+const PILL = {
+  background: "rgba(255,255,255,0.12)",
+  boxShadow:
+    "inset 0 1px 0 rgba(255,255,255,0.22), 0 0 26px -4px rgba(120,170,255,0.75)",
+} as const;
 
 /**
  * visionOS-style floating dock — the only place the page's structure is
@@ -13,6 +32,8 @@ export default function Dock() {
   const [active, setActive] = useState(navigationItems[0].href.slice(1));
   const [condensed, setCondensed] = useState(false);
   const reduced = useReducedMotion();
+  /* Below `sm` the dock is an icon rail and only the active item is named. */
+  const compact = useMediaQuery("(max-width: 639px)");
 
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, {
@@ -79,13 +100,17 @@ export default function Dock() {
         <motion.div
           animate={{ scale: condensed && !reduced ? 0.92 : 1 }}
           transition={{ duration: 0.6, ease: EASE }}
-          className="glass edge pointer-events-auto relative overflow-hidden rounded-full px-1.5 py-1.5"
+          /* Seven icons plus the longest label come to ~326px. That clears a
+             360px phone, but not a 320px one — the max-width keeps the dock
+             on screen and clips the label's tail instead of bleeding off it. */
+          className="glass edge pointer-events-auto relative max-w-[calc(100vw-1.25rem)] overflow-hidden rounded-full px-1.5 py-1.5"
           style={{ boxShadow: "0 12px 30px -14px rgba(0,0,0,0.9)" }}
         >
           <ul className="relative flex items-center gap-0.5">
             {navigationItems.map((item) => {
               const id = item.href.slice(1);
               const isActive = active === id;
+              const Icon = ICONS[id];
 
               return (
                 <li key={item.href}>
@@ -93,45 +118,79 @@ export default function Dock() {
                     type="button"
                     onClick={() => scrollTo(item.href)}
                     aria-current={isActive ? "true" : undefined}
-                    className="relative block rounded-full px-3 py-2 sm:px-4"
+                    /* The visible label is absent or truncated at some widths,
+                       so the accessible name comes from here at every size. */
+                    aria-label={item.name}
+                    className="relative flex items-center rounded-full px-2 py-2.5 sm:px-4 sm:py-2"
                   >
-                    {isActive && (
-                      <motion.span
-                        layoutId="dock-pill"
+                    {isActive &&
+                      /* The sliding pill measures its target box once, so it
+                         can't track a button that is still widening. Compact
+                         mode lets the label expansion carry the motion and
+                         just fades the pill in place. */
+                      (compact ? (
+                        <motion.span
+                          key="pill-compact"
+                          aria-hidden
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.3, ease: EASE }}
+                          className="absolute inset-0 rounded-full"
+                          style={PILL}
+                        />
+                      ) : (
+                        <motion.span
+                          key="pill-wide"
+                          layoutId="dock-pill"
+                          aria-hidden
+                          className="absolute inset-0 rounded-full"
+                          style={PILL}
+                          transition={{
+                            type: "spring",
+                            stiffness: 320,
+                            damping: 32,
+                          }}
+                        />
+                      ))}
+
+                    {/* Icon on narrow screens, label on wide */}
+                    {Icon && (
+                      <Icon
                         aria-hidden
-                        className="absolute inset-0 rounded-full"
-                        style={{
-                          background: "rgba(255,255,255,0.12)",
-                          boxShadow:
-                            "inset 0 1px 0 rgba(255,255,255,0.22), 0 0 26px -4px rgba(120,170,255,0.75)",
-                        }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 320,
-                          damping: 32,
-                        }}
+                        strokeWidth={1.75}
+                        className={`relative z-[1] h-4 w-4 shrink-0 transition-colors duration-400 sm:hidden ${
+                          isActive ? "text-white" : "text-white/45"
+                        }`}
                       />
                     )}
 
-                    {/* Label on wide screens, dot on narrow */}
+                    {/* Narrow screens name only the section you're reading. */}
+                    <AnimatePresence initial={false}>
+                      {compact && isActive && (
+                        <motion.span
+                          key="label"
+                          aria-hidden
+                          initial={reduced ? { opacity: 0 } : { width: 0, opacity: 0 }}
+                          animate={
+                            reduced ? { opacity: 1 } : { width: "auto", opacity: 1 }
+                          }
+                          exit={reduced ? { opacity: 0 } : { width: 0, opacity: 0 }}
+                          transition={{ duration: reduced ? 0.2 : 0.44, ease: EASE }}
+                          className="relative z-[1] block overflow-hidden whitespace-nowrap text-[0.7rem] font-medium tracking-[-0.005em] text-white"
+                        >
+                          <span className="block pl-1.5 pr-0.5">{item.name}</span>
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+
                     <span
+                      aria-hidden
                       className={`relative z-[1] hidden text-[0.74rem] font-medium tracking-[-0.005em] transition-colors duration-400 sm:block ${
                         isActive ? "text-white" : "text-white/45 hover:text-white/80"
                       }`}
                     >
                       {item.name}
                     </span>
-                    <span
-                      className={`relative z-[1] block h-1.5 w-1.5 rounded-full transition-all duration-400 sm:hidden ${
-                        isActive ? "bg-white" : "bg-white/30"
-                      }`}
-                      style={
-                        isActive
-                          ? { boxShadow: "0 0 10px rgba(160,200,255,0.9)" }
-                          : undefined
-                      }
-                    />
-                    <span className="sr-only sm:hidden">{item.name}</span>
                   </button>
                 </li>
               );

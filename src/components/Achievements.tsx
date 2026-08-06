@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Award, Medal, Trophy } from "lucide-react";
 import { achievements, narrative } from "../data/portfolioData";
 import type { Achievement } from "../types";
-import { EASE, inView, useReducedMotion } from "../lib/motion";
+import { EASE, inView, useReducedMotion, useRise } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
 import GlassCard from "./ui/GlassCard";
 
@@ -17,13 +17,14 @@ const TONES = ["95,212,232", "77,124,255", "155,123,255"];
 
 function AwardCard({ item, index }: { item: Achievement; index: number }) {
   const reduced = useReducedMotion();
+  const rise = useRise(40, 8);
   const Icon = ICONS[item.icon] ?? Award;
   const rgb = TONES[index % TONES.length];
 
   return (
     <motion.div
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 40, filter: "blur(8px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={rise.initial}
+      whileInView={rise.animate}
       viewport={inView}
       transition={{ duration: 1, ease: EASE, delay: index * 0.12 }}
       className="h-full"

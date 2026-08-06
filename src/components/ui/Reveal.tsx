@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
-import { EASE, inView, useReducedMotion } from "../../lib/motion";
+import { EASE, inView, useReducedMotion, useRise } from "../../lib/motion";
 
 type RiseProps = {
   children: ReactNode;
@@ -26,14 +26,13 @@ export function Rise({
   duration = 0.85,
 }: RiseProps) {
   const reduced = useReducedMotion();
+  const rise = useRise(y, blur);
 
   return (
     <motion.div
       className={className}
-      initial={
-        reduced ? { opacity: 0 } : { opacity: 0, y, filter: `blur(${blur}px)` }
-      }
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={rise.initial}
+      whileInView={rise.animate}
       viewport={inView}
       transition={{ duration: reduced ? 0.25 : duration, ease: EASE, delay }}
     >
