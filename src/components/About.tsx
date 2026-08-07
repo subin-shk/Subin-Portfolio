@@ -126,7 +126,7 @@ export default function About() {
               <motion.div
                 aria-hidden
                 style={reduced ? undefined : { y: backY, scale: glowScale }}
-                className="absolute -inset-10 rounded-full opacity-80 gpu"
+                className="absolute -inset-10 rounded-full opacity-55 gpu"
               >
                 {/* A conic gradient is already smooth all the way round; the
                     blur was only softening its hard outer edge. On a phone a
@@ -135,7 +135,7 @@ export default function About() {
                   className="h-full w-full rounded-[50%]"
                   style={{
                     background:
-                      "conic-gradient(from 210deg at 50% 50%, rgba(95,212,232,0.30), rgba(77,124,255,0.34), rgba(155,123,255,0.30), rgba(95,212,232,0.30))",
+                      "conic-gradient(from 210deg at 50% 50%, rgba(95,212,232,0.14), rgba(77,124,255,0.16), rgba(155,123,255,0.14), rgba(95,212,232,0.14))",
                     ...(phone
                       ? {
                           WebkitMaskImage:
@@ -143,7 +143,7 @@ export default function About() {
                           maskImage:
                             "radial-gradient(closest-side, #000 30%, rgba(0,0,0,0.45) 62%, transparent 88%)",
                         }
-                      : { filter: "blur(58px)" }),
+                      : { filter: "blur(36px)" }),
                   }}
                 />
               </motion.div>
@@ -168,8 +168,8 @@ export default function About() {
                   decoding="async"
                   width={800}
                   height={800}
-                  className="h-full w-full scale-[1.04] object-cover object-top transition-transform duration-[1.4s] ease-glass group-hover:scale-[1.1]"
-                  style={{ filter: "saturate(0.68) contrast(1.06) brightness(0.72)" }}
+                  className="h-full w-full scale-[1.04] object-cover object-top transition-transform duration-[1.4s] ease-glass group-hover:scale-[1.08]"
+                  style={{ filter: "saturate(0.74) contrast(1.02) brightness(0.8)" }}
                 />
 
                 {/* Cools the warm photo into the surrounding palette */}
@@ -189,7 +189,7 @@ export default function About() {
                   className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
                   style={{
                     background:
-                      "linear-gradient(112deg, transparent 38%, rgba(255,255,255,0.10) 50%, transparent 62%)",
+                      "linear-gradient(112deg, transparent 38%, rgba(255,255,255,0.06) 50%, transparent 62%)",
                   }}
                 />
               </motion.div>

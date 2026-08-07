@@ -99,7 +99,7 @@ export default function Orb() {
         className="absolute left-0 top-0 h-16 w-16 rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgba(120,170,255,0.28), transparent 68%)",
+            "radial-gradient(circle, rgba(120,170,255,0.16), transparent 68%)",
           opacity: mode === "idle" ? 0.7 : 1,
           transition: "opacity .4s ease",
         }}
@@ -112,12 +112,12 @@ export default function Orb() {
         style={{
           width: haloSize,
           height: haloSize,
-          border: "1px solid rgba(255,255,255,0.22)",
+          border: "1px solid rgba(255,255,255,0.14)",
           background:
             mode === "media"
-              ? "radial-gradient(circle, rgba(255,255,255,0.07), transparent 70%)"
-              : "radial-gradient(circle, rgba(255,255,255,0.04), transparent 70%)",
-          boxShadow: "0 0 22px rgba(120,170,255,0.18)",
+              ? "radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%)"
+              : "radial-gradient(circle, rgba(255,255,255,0.03), transparent 70%)",
+          boxShadow: "0 0 14px rgba(120,170,255,0.10)",
           transition:
             "width .42s var(--ease-glass), height .42s var(--ease-glass), background .42s ease",
         }}

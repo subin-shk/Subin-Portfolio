@@ -102,7 +102,7 @@ function Capsule({
       className="glass edge relative flex items-center gap-2.5 overflow-visible rounded-full py-2.5 pl-3.5 pr-5 gpu"
       style={{
         boxShadow: isActive
-          ? `0 0 0 1px rgba(${accent.rgb},0.35), 0 12px 44px -10px rgba(${accent.rgb},0.55), inset 0 1px 0 rgba(255,255,255,0.2)`
+          ? `0 0 0 1px rgba(${accent.rgb},0.18), 0 10px 24px -12px rgba(${accent.rgb},0.28), inset 0 1px 0 rgba(255,255,255,0.12)`
           : undefined,
         transition: "box-shadow .55s var(--ease-glass)",
       }}
@@ -123,7 +123,7 @@ function Capsule({
         className="grid h-7 w-7 shrink-0 place-items-center rounded-full"
         style={{
           background: `radial-gradient(circle at 30% 25%, rgba(${accent.rgb},0.34), rgba(${accent.rgb},0.10))`,
-          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.22)`,
+          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12)`,
         }}
       >
         <Icon

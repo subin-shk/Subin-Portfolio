@@ -68,7 +68,7 @@ function Panel({
             <div
               className="glass edge sheen relative overflow-hidden rounded-[1.75rem] sm:rounded-[2.25rem]"
               style={{
-                boxShadow: `0 22px 52px -28px rgba(${rgb},0.55), inset 0 1px 0 rgba(255,255,255,0.14)`,
+                boxShadow: `0 16px 32px -24px rgba(${rgb},0.32), inset 0 1px 0 rgba(255,255,255,0.08)`,
               }}
             >
               {/* Accent wash keyed to the project */}
@@ -142,7 +142,7 @@ function Panel({
                           aria-hidden
                           className="absolute inset-0"
                           style={{
-                            background: `linear-gradient(150deg, rgba(${rgb},0.34), transparent 58%), linear-gradient(0deg, rgba(5,5,5,0.55), transparent 65%)`,
+                            background: `linear-gradient(150deg, rgba(${rgb},0.22), transparent 58%), linear-gradient(0deg, rgba(5,5,5,0.5), transparent 65%)`,
                           }}
                         />
                       </div>
@@ -182,7 +182,7 @@ function Panel({
                       className="h-1.5 w-1.5 rounded-full"
                       style={{
                         background: `rgb(${rgb})`,
-                        boxShadow: `0 0 12px rgba(${rgb},0.9)`,
+                        boxShadow: `0 0 8px rgba(${rgb},0.42)`,
                       }}
                     />
                     <span className="eyebrow">{project.kicker}</span>

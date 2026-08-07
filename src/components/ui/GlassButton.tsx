@@ -20,13 +20,13 @@ const base =
 
 const variants: Record<string, string> = {
   solid:
-    "text-white/95 bg-white/[0.14] hover:bg-white/[0.2] " +
-    "shadow-[0_8px_26px_-12px_rgba(77,124,255,0.65),inset_0_1px_0_rgba(255,255,255,0.28)]",
+    "text-white/95 bg-white/[0.11] hover:bg-white/[0.16] " +
+    "shadow-[0_8px_20px_-12px_rgba(7,12,20,0.9),inset_0_1px_0_rgba(255,255,255,0.16)]",
   glass:
-    "text-white/80 hover:text-white bg-white/[0.055] hover:bg-white/[0.11] " +
-    "shadow-[inset_0_1px_0_rgba(255,255,255,0.13)]",
+    "text-white/80 hover:text-white bg-white/[0.045] hover:bg-white/[0.08] " +
+    "shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]",
   quiet:
-    "text-white/55 hover:text-white/90 bg-transparent hover:bg-white/[0.06]",
+    "text-white/55 hover:text-white/90 bg-transparent hover:bg-white/[0.05]",
 };
 
 /**
@@ -48,9 +48,7 @@ export default function GlassButton({
   type = "button",
 }: Props) {
   const cls = `${base} ${variants[variant]} ${
-    variant !== "quiet"
-      ? "md:backdrop-blur-xl md:[-webkit-backdrop-filter:blur(24px)]"
-      : ""
+    variant !== "quiet" ? "md:backdrop-blur-[8px] md:[-webkit-backdrop-filter:blur(8px)]" : ""
   } ${className}`;
 
   const inner = (
@@ -61,7 +59,7 @@ export default function GlassButton({
           className="absolute inset-0 opacity-70"
           style={{
             background:
-              "linear-gradient(120deg, rgba(95,212,232,0.30), rgba(77,124,255,0.34) 48%, rgba(155,123,255,0.30))",
+              "linear-gradient(120deg, rgba(95,212,232,0.22), rgba(77,124,255,0.26) 48%, rgba(155,123,255,0.2))",
           }}
         />
       )}

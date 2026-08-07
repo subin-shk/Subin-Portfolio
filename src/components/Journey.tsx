@@ -70,8 +70,7 @@ function Node({ item, index }: { item: Milestone; index: number }) {
           style={
             lit
               ? {
-                  boxShadow:
-                    "0 0 0 1px rgba(95,212,232,0.35), 0 0 30px -4px rgba(95,212,232,0.75)",
+                  boxShadow: "0 0 0 1px rgba(95,212,232,0.22)",
                 }
               : undefined
           }
@@ -191,7 +190,7 @@ export default function Journey() {
               scaleY: reduced ? 1 : drawn,
               background:
                 "linear-gradient(180deg, rgba(95,212,232,0.9), rgba(77,124,255,0.7) 45%, rgba(155,123,255,0.35))",
-              boxShadow: "0 0 14px rgba(95,212,232,0.55)",
+              boxShadow: "0 0 8px rgba(95,212,232,0.3)",
             }}
           />
 

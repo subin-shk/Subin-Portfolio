@@ -48,8 +48,8 @@ function Field({
         className="glass-faint relative overflow-hidden rounded-2xl transition-all duration-500 ease-glass"
         style={{
           boxShadow: focused
-            ? "inset 0 0 0 1px rgba(95,212,232,0.45), 0 0 34px -8px rgba(95,212,232,0.5)"
-            : "inset 0 0 0 1px rgba(255,255,255,0.09)",
+            ? "inset 0 0 0 1px rgba(95,212,232,0.26)"
+            : "inset 0 0 0 1px rgba(255,255,255,0.07)",
         }}
       >
         <label
@@ -274,11 +274,11 @@ export default function Contact() {
                       aria-label="Send message"
                       animate={{ width: status === "sending" ? 56 : 172 }}
                       transition={{ duration: 0.55, ease: EASE }}
-                      className="edge relative grid h-14 place-items-center overflow-hidden rounded-full text-[0.9rem] font-medium text-white/95 disabled:cursor-wait md:backdrop-blur-xl"
+                      className="edge relative grid h-14 place-items-center overflow-hidden rounded-full text-[0.9rem] font-medium text-white/95 disabled:cursor-wait md:backdrop-blur-[8px]"
                       style={{
-                        background: "rgba(255,255,255,0.13)",
+                        background: "rgba(255,255,255,0.09)",
                         boxShadow:
-                          "0 10px 28px -12px rgba(77,124,255,0.7), inset 0 1px 0 rgba(255,255,255,0.28)",
+                          "0 10px 24px -14px rgba(7,12,20,0.9), inset 0 1px 0 rgba(255,255,255,0.16)",
                       }}
                     >
                       <span

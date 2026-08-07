@@ -18,9 +18,9 @@ const ICONS: Record<string, typeof Home> = {
 
 /** The lit surface behind the active item, shared by both dock modes. */
 const PILL = {
-  background: "rgba(255,255,255,0.12)",
+  background: "rgba(255,255,255,0.09)",
   boxShadow:
-    "inset 0 1px 0 rgba(255,255,255,0.22), 0 0 26px -4px rgba(120,170,255,0.75)",
+    "inset 0 1px 0 rgba(255,255,255,0.14), 0 0 16px -4px rgba(120,170,255,0.4)",
 } as const;
 
 /**
@@ -109,7 +109,7 @@ export default function Dock() {
              translucent film let the text underneath read straight through
              it. Below `md` it gets an opaque backing instead. */
           className="glass edge pointer-events-auto relative max-w-[calc(100vw-1.25rem)] overflow-hidden rounded-full px-1.5 py-1.5 max-md:bg-[#0f1218]/95"
-          style={{ boxShadow: "0 12px 30px -14px rgba(0,0,0,0.9)" }}
+          style={{ boxShadow: "0 10px 22px -14px rgba(0,0,0,0.8)" }}
         >
           <ul className="relative flex items-center gap-0 sm:gap-0.5">
             {navigationItems.map((item) => {
