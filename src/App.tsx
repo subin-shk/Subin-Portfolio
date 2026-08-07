@@ -9,6 +9,7 @@ import Journey from "./components/Journey";
 import Achievements from "./components/Achievements";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import Seo from "./components/Seo";
 import { useSmoothScroll } from "./lib/useSmoothScroll";
 
 /**
@@ -21,6 +22,7 @@ export default function App() {
 
   return (
     <>
+      <Seo />
       <Atmosphere />
       <Orb />
 

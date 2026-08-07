@@ -51,6 +51,25 @@ export const personalInfo = {
 
 // Each beat opens a movement in place of a heading, picking up the sentence
 // the previous movement left hanging.
+export const seo = {
+  title: "Subin Shakya | Software QA Engineer | Automation & Quality Engineering",
+  description:
+    "Subin Shakya is a Software QA Engineer in Kathmandu, Nepal, specializing in test automation, quality engineering, and software reliability.",
+  keywords: [
+    "Subin Shakya",
+    "Software QA Engineer",
+    "QA Engineer Nepal",
+    "Test Automation Engineer",
+    "Automation Engineer",
+    "Robot Framework",
+    "Selenium",
+    "Appium",
+    "Software Quality Assurance",
+    "Kathmandu Nepal",
+  ],
+  url: "https://www.subinshakya.com.np",
+};
+
 export const narrative = {
   about: {
     beat: "Every release carries a <em>promise</em>.",
