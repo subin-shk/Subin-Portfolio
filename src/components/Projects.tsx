@@ -68,20 +68,9 @@ function Panel({
               data-cursor="project"
               className="glass edge relative overflow-hidden rounded-[1.75rem] sm:rounded-[2.25rem]"
               style={{
-                boxShadow: `0 22px 52px -28px rgba(${rgb},0.55), inset 0 1px 0 rgba(255,255,255,0.14)`,
+                boxShadow: "0 22px 52px -28px rgba(0,0,0,0.6)",
               }}
             >
-              {/* Accent wash keyed to the project */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 opacity-70"
-                style={{
-                  background: `radial-gradient(90% 70% at ${
-                    flip ? "82%" : "18%"
-                  } 8%, rgba(${rgb},0.16), transparent 62%)`,
-                }}
-              />
-
               <div
                 /* Text gets the larger share — Challenge/Solution/Impact sit
                    in three columns and go unreadable at an even split. */
