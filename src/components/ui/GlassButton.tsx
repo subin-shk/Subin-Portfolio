@@ -20,11 +20,11 @@ const base =
 
 const variants: Record<string, string> = {
   solid:
-    "text-white/95 bg-white/[0.14] hover:bg-white/[0.2] " +
-    "shadow-[0_8px_26px_-12px_rgba(77,124,255,0.65),inset_0_1px_0_rgba(255,255,255,0.28)]",
+    "text-white/95 bg-white/[0.11] hover:bg-white/[0.16] " +
+    "shadow-[0_8px_26px_-12px_rgba(77,124,255,0.65),inset_0_1px_0_rgba(255,255,255,0.22)]",
   glass:
-    "text-white/80 hover:text-white bg-white/[0.055] hover:bg-white/[0.11] " +
-    "shadow-[inset_0_1px_0_rgba(255,255,255,0.13)]",
+    "text-white/80 hover:text-white bg-white/[0.045] hover:bg-white/[0.09] " +
+    "shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]",
   quiet:
     "text-white/55 hover:text-white/90 bg-transparent hover:bg-white/[0.06]",
 };

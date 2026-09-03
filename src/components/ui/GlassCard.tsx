@@ -21,7 +21,7 @@ export default function GlassCard({
   children,
   className = "",
   tilt = 7,
-  spotlight = true,
+  spotlight = false,
   onClick,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
