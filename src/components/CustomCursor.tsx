@@ -13,6 +13,17 @@ const IDLE_DELAY = 2600; // ms of stillness before the star falls asleep
 const SIZE = 24; // px, the star's on-screen footprint
 const STATIC_TILT = -18; // deg — leans left, like a classic arrow pointer
 
+// Where the star's tip sits inside its own 0-100 viewBox (matches the "M"
+// that opens STAR_PATH below). A real cursor's hotspot — the exact pixel
+// a click lands on — never moves, so we anchor + pivot every transform on
+// this point instead of the shape's center: the tip stays glued to the
+// actual mouse position while the tail is the only part that swings, zooms
+// or tilts, which is what makes it read as a pointer rather than a charm
+// floating near the mouse.
+const TIP_X = 50;
+const TIP_Y = 3;
+const TIP_ORIGIN = `${TIP_X}% ${TIP_Y}%`;
+
 /** Trailing companions: each one lags a bit more than the last. */
 const TRAIL = [
   { stiffness: 210, damping: 24, scale: 0.46, opacity: 0.42 },
@@ -213,12 +224,13 @@ export default function CustomCursor() {
                 left: 0,
                 x: tx,
                 y: ty,
-                marginLeft: -trailSize / 2,
-                marginTop: -trailSize / 2,
+                marginLeft: -(TIP_X / 100) * trailSize,
+                marginTop: -(TIP_Y / 100) * trailSize,
                 pointerEvents: "none",
                 zIndex: 2147483646,
                 filter: "drop-shadow(0 0 3px rgba(95,212,232,0.6))",
                 rotate: STATIC_TILT,
+                transformOrigin: TIP_ORIGIN,
               }}
               animate={{
                 scale: [1, 0.82, 1],
@@ -280,8 +292,8 @@ export default function CustomCursor() {
           y,
           width: SIZE,
           height: SIZE,
-          marginLeft: -SIZE / 2,
-          marginTop: -SIZE / 2,
+          marginLeft: -(TIP_X / 100) * SIZE,
+          marginTop: -(TIP_Y / 100) * SIZE,
           pointerEvents: "none",
           zIndex: 2147483647,
         opacity: hidden ? 0 : 1,
@@ -307,7 +319,7 @@ export default function CustomCursor() {
           viewBox="0 0 100 100"
           width={SIZE}
           height={SIZE}
-          style={{ filter: glow, rotate: STATIC_TILT }}
+          style={{ filter: glow, rotate: STATIC_TILT, transformOrigin: TIP_ORIGIN }}
           animate={{ scale: bodyScale }}
           transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
         >

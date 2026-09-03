@@ -32,7 +32,7 @@ function AwardCard({ item, index }: { item: Achievement; index: number }) {
       <GlassCard tilt={reduced ? 0 : 9}>
         <div className="relative h-full">
           <div
-            className="glass edge sheen relative flex h-full flex-col overflow-hidden rounded-[1.6rem] px-7 py-8"
+            className="glass edge relative flex h-full flex-col overflow-hidden rounded-[1.6rem] px-7 py-8"
             style={{
               boxShadow: `0 18px 42px -22px rgba(${rgb},0.55), inset 0 1px 0 rgba(255,255,255,0.16)`,
             }}

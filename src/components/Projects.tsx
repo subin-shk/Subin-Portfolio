@@ -66,7 +66,7 @@ function Panel({
           <GlassCard tilt={reduced ? 0 : 3}>
             <div
               data-cursor="project"
-              className="glass edge sheen relative overflow-hidden rounded-[1.75rem] sm:rounded-[2.25rem]"
+              className="glass edge relative overflow-hidden rounded-[1.75rem] sm:rounded-[2.25rem]"
               style={{
                 boxShadow: `0 22px 52px -28px rgba(${rgb},0.55), inset 0 1px 0 rgba(255,255,255,0.14)`,
               }}
@@ -304,14 +304,6 @@ function ArchiveRow({ item, index }: { item: ArchiveProject; index: number }) {
       transition={{ duration: 0.8, ease: EASE, delay: index * 0.08 }}
       className="group relative block border-t border-white/8 py-7 transition-colors duration-500 last:border-b hover:border-white/20"
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 inset-y-1 -z-10 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{
-          background:
-            "radial-gradient(60% 100% at 50% 50%, rgba(255,255,255,0.05), transparent 70%)",
-        }}
-      />
       {/* Name column, blurb and tech meta only fit on one line from `md`.
           Turning the row at `sm` pushed the tech list past the viewport
           between 640px and ~680px — landscape phone territory. */}
