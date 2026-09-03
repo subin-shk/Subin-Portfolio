@@ -66,6 +66,7 @@ function Panel({
         >
           <GlassCard tilt={reduced ? 0 : 3}>
             <div
+              data-cursor="project"
               className="glass edge sheen relative overflow-hidden rounded-[1.75rem] sm:rounded-[2.25rem]"
               style={{
                 boxShadow: `0 22px 52px -28px rgba(${rgb},0.55), inset 0 1px 0 rgba(255,255,255,0.14)`,

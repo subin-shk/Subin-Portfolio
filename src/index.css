@@ -442,6 +442,19 @@
   }
 }
 
+/* Custom cursor: only engaged on fine-pointer desktops (see
+   CustomCursor.tsx, which toggles this class). Text fields keep the
+   native caret/selection cursor so typing and selecting still feel right. */
+html.custom-cursor-active,
+html.custom-cursor-active * {
+  cursor: none !important;
+}
+html.custom-cursor-active input,
+html.custom-cursor-active textarea,
+html.custom-cursor-active [contenteditable="true"] {
+  cursor: text !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
