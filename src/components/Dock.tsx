@@ -104,11 +104,10 @@ export default function Dock() {
              where the max-width leaves 288px inside. Compact spacing below
              brings them to ~279px; the max-width is the backstop that keeps
              the dock on screen rather than bleeding off the edge. */
-          /* The dock is the one panel that floats over live content, so it's
-             the one that misses the phone build's absent backdrop blur: a
-             translucent film let the text underneath read straight through
-             it. Below `md` it gets an opaque backing instead. */
-          className="glass edge pointer-events-auto relative max-w-[calc(100vw-1.25rem)] overflow-hidden rounded-full px-1.5 py-1.5 max-md:bg-[#0f1218]/95"
+          /* The dock floats over live content the whole time you scroll, so
+             it stays opaque rather than translucent — it should always read
+             clearly, not let whatever's behind it show through. */
+          className="edge pointer-events-auto relative max-w-[calc(100vw-1.25rem)] overflow-hidden rounded-full bg-[#0f1218]/95 px-1.5 py-1.5"
           style={{ boxShadow: "0 12px 30px -14px rgba(0,0,0,0.9)" }}
         >
           <ul className="relative flex items-center gap-0 sm:gap-0.5">

@@ -39,12 +39,11 @@ function Panel({
   });
 
   // Hold at full size through the read, then sink away in the last third.
+  // No scroll-scrubbed blur here — animating `filter: blur()` re-rasterises
+  // the whole (large) panel every scroll frame, which is exactly the kind
+  // of main-thread cost that made scrolling stutter past this section.
   const scale = useTransform(scrollYProgress, [0, 0.62, 1], [1, 1, 0.9]);
   const opacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 1, 0]);
-  // Blur starts only once the card is under 35% opaque. Any earlier and it
-  // softens text you are still actively reading.
-  const blur = useTransform(scrollYProgress, [0, 0.87, 1], [0, 0, 10]);
-  const blurCss = useTransform(blur, (b) => `blur(${b}px)`);
   const lift = useTransform(scrollYProgress, [0, 1], [0, -60]);
 
   const steps = [
@@ -59,7 +58,7 @@ function Panel({
         <motion.div
           style={
             stacked
-              ? { scale, opacity, filter: blurCss, transformOrigin: "center 40%" }
+              ? { scale, opacity, transformOrigin: "center 40%" }
               : undefined
           }
           className="shell w-full gpu"
