@@ -21,7 +21,7 @@ const STATIC_TILT = -18; // deg — leans left, like a classic arrow pointer
 // or tilts, which is what makes it read as a pointer rather than a charm
 // floating near the mouse.
 const TIP_X = 50;
-const TIP_Y = 3;
+const TIP_Y = 4;
 const TIP_ORIGIN = `${TIP_X}% ${TIP_Y}%`;
 
 /** Trailing companions: each one lags a bit more than the last. */
@@ -37,9 +37,10 @@ const INTERACTIVE_SELECTOR =
 const PROJECT_SELECTOR = '[data-cursor="project"]';
 const TEXT_SELECTOR = 'input, textarea, [contenteditable="true"]';
 
-/** Organic four-point sparkle, top spike drawn long, the rest kept short. */
+/** A slim, needle-like point with a small flared base and two subtle
+ * shoulder flicks — reads as an arrow/pointer first, sparkle second. */
 const STAR_PATH =
-  "M50 3 C56 26 64 38 83 54 C64 46 58 66 50 95 C43 66 36 74 17 54 C36 38 44 26 50 3 Z";
+  "M50 4 C54 22 60 34 70 50 C60 44 55 60 50 72 C45 60 40 44 30 50 C40 34 46 22 50 4 Z";
 
 function classifyTarget(el: EventTarget | null): {
   hover: HoverKind;

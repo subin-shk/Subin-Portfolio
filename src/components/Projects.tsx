@@ -53,7 +53,7 @@ function Panel({
   ];
 
   return (
-    <div ref={ref} className="relative py-6 lg:h-[178vh] lg:py-0">
+    <div ref={ref} className="relative py-6 lg:h-[108vh] lg:py-0">
       <div className="lg:sticky lg:top-0 lg:flex lg:h-[100svh] lg:items-center lg:overflow-hidden">
         <motion.div
           style={
