@@ -18,9 +18,9 @@ const ICONS: Record<string, typeof Home> = {
 
 /** The lit surface behind the active item, shared by both dock modes. */
 const PILL = {
-  background: "rgba(255,255,255,0.12)",
+  background: "rgba(255,255,255,0.09)",
   boxShadow:
-    "inset 0 1px 0 rgba(255,255,255,0.22), 0 0 26px -4px rgba(120,170,255,0.75)",
+    "inset 0 1px 0 rgba(255,255,255,0.17), 0 0 26px -4px rgba(120,170,255,0.6)",
 } as const;
 
 /**
