@@ -268,7 +268,7 @@ export default function IDCard() {
             onPointerLeave={handleCardLeave}
             className="relative -mt-3 overflow-hidden rounded-[18px]"
             style={{
-              aspectRatio: "0.68",
+              aspectRatio: "0.62",
               background: "linear-gradient(165deg, #adaba4 0%, #918f89 100%)",
               boxShadow:
                 "0 30px 60px -20px rgba(0,0,0,0.55), 0 2px 0 rgba(255,255,255,0.35) inset",
@@ -317,6 +317,10 @@ export default function IDCard() {
                   fill="#c4c1ba"
                 />
               </svg>
+
+              <span className="absolute bottom-2 right-3 text-[0.55rem] font-medium tracking-[0.02em] text-[#4a4844]/70">
+                ID: SS-0209
+              </span>
 
               <div className="relative flex h-full flex-col items-center justify-center gap-1.5 px-4 text-center">
                 <span className="font-display text-[1.15rem] font-semibold leading-tight tracking-supertight text-[#1c1c1c]">
