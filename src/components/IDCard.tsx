@@ -357,13 +357,21 @@ export default function IDCard() {
                 ID: SS-0209
               </span>
 
-              <div className="relative flex h-full items-start justify-between gap-3 px-4 pt-1 lg:pt-6">
+              {/* Content-height row (not h-full) so `items-center` aligns
+                  the QR against the *text block's* middle. With h-full the
+                  row was the whole panel's height, so centering the QR
+                  within it parked it far below the top-aligned text. */}
+              {/* Top padding stays small until the card is actually wide
+                  enough to earn it: the width clamp bottoms out at 200px
+                  from ~1024-1470px, so a fixed lg:pt-6 there left a big
+                  dead gap above the name. */}
+              <div className="relative flex items-center justify-between gap-3 px-4 pt-1 lg:pt-2.5 2xl:pt-5">
                 <div className="flex flex-col items-start gap-1.5 text-left">
                   <span className="font-display text-[1.15rem] font-semibold leading-tight tracking-supertight text-[#1c1c1c]">
                     {personalInfo.name}
                   </span>
                   <span className="h-px w-10 bg-[#4a4844]/30" />
-                  <span className="flex flex-col items-start gap-0.5 text-[0.68rem] font-semibold italic leading-tight tracking-[0.02em] text-[#4a4844] lg:gap-1 lg:leading-snug">
+                  <span className="flex flex-col items-start text-[0.68rem] font-semibold italic leading-tight tracking-[0.02em] text-[#4a4844]">
                     <span>Software</span>
                     <span>Quality Assurance</span>
                   </span>
@@ -398,7 +406,7 @@ export default function IDCard() {
                       );
                     }
                   }}
-                  className="shrink-0 cursor-pointer self-center rounded-md bg-[#ece9e2] p-1 shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
+                  className="shrink-0 cursor-pointer rounded-md bg-[#ece9e2] p-1 shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
                 >
                   <img
                     src={linkedinQr}
