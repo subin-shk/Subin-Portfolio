@@ -226,16 +226,43 @@ export default function IDCard() {
                  top meant every repetition landed somewhere in the
                  offscreen upper 70vh and none ever reached the visible
                  bit near the clip. */
-              className="absolute inset-0 flex flex-col items-center justify-end gap-4 pb-3 text-[9px] font-semibold uppercase tracking-[0.3em] text-white/70"
-              style={{ writingMode: "vertical-rl" }}
+              className="absolute inset-0 flex flex-col items-center justify-end gap-4 pb-10 text-[9px] font-semibold uppercase tracking-[0.3em] text-white/70"
             >
               {/* Dense enough (and packed with a small enough gap) that the
                  repeat tiles continuously along the whole strip — with only
                  14 sparser copies, whatever fraction of the 72vh strap
                  happens to be visible on a given screen could easily land
-                 in a gap between two repetitions instead of on one. */}
+                 in a gap between two repetitions instead of on one.
+
+                 writing-mode lives on each item, not the flex container:
+                 vertical-rl on the *container* swaps its own block/inline
+                 axes, so flex-col ends up stacking items sideways along
+                 the (now-horizontal) block axis instead of down the
+                 strap — inside a 14px-wide strip that clips everything
+                 but one item. Keeping the container in normal writing
+                 mode (so flex-col stacks vertically, as intended) and
+                 rotating only each span's own text avoids that.
+
+                 shrink-0 matters too: with 60 items' natural height far
+                 exceeding the container's, flexbox's default
+                 flex-shrink:1 squeezed every item's box down to a
+                 fraction of what its own text needs — the text still
+                 rendered at full size and spilled out of that shrunken
+                 box into its neighbors, so overlapping fragments from
+                 different items painted over each other and only
+                 "SHAKYA" ever consistently won. shrink-0 keeps each
+                 item's box at its actual content size; whatever then
+                 doesn't fit the strip is cleanly cropped by the
+                 lanyard's own overflow-hidden instead of being squashed
+                 into every other item. */}
               {Array.from({ length: 60 }).map((_, i) => (
-                <span key={i}>Subin Shakya &bull;</span>
+                <span
+                  key={i}
+                  className="shrink-0"
+                  style={{ writingMode: "vertical-rl" }}
+                >
+                  Subin Shakya.
+                </span>
               ))}
             </div>
           </motion.div>

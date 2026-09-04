@@ -182,16 +182,6 @@ export default function About() {
                   }}
                 />
                 <div className="grain !opacity-20" />
-
-                {/* Reflection sliding across the pane */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
-                  style={{
-                    background:
-                      "linear-gradient(112deg, transparent 38%, rgba(255,255,255,0.10) 50%, transparent 62%)",
-                  }}
-                />
               </motion.div>
 
               {/* Front chip — the topmost layer, moving furthest */}
