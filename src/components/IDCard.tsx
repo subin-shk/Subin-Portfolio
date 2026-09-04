@@ -226,10 +226,15 @@ export default function IDCard() {
                  top meant every repetition landed somewhere in the
                  offscreen upper 70vh and none ever reached the visible
                  bit near the clip. */
-              className="absolute inset-0 flex flex-col items-center justify-end gap-6 pb-3 text-[9px] font-semibold uppercase tracking-[0.3em] text-white/70"
+              className="absolute inset-0 flex flex-col items-center justify-end gap-4 pb-3 text-[9px] font-semibold uppercase tracking-[0.3em] text-white/70"
               style={{ writingMode: "vertical-rl" }}
             >
-              {Array.from({ length: 14 }).map((_, i) => (
+              {/* Dense enough (and packed with a small enough gap) that the
+                 repeat tiles continuously along the whole strip — with only
+                 14 sparser copies, whatever fraction of the 72vh strap
+                 happens to be visible on a given screen could easily land
+                 in a gap between two repetitions instead of on one. */}
+              {Array.from({ length: 60 }).map((_, i) => (
                 <span key={i}>Subin Shakya &bull;</span>
               ))}
             </div>
