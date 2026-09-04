@@ -11,8 +11,6 @@ import { personalInfo } from "../data/portfolioData";
 import { useReducedMotion } from "../lib/motion";
 import badgePortrait from "../images/subin-shk-hero2.jpg";
 
-const ROLE = "Software QA Automation Engineer";
-
 /** Degrees/pixels of give per normalized (-1..1) pointer offset. */
 const MAX_TILT = 7; // matches GlassCard's default `tilt` prop
 const MAX_SWING_DEG = 6;
@@ -155,7 +153,7 @@ export default function IDCard() {
     <motion.div
       className="relative mx-auto"
       style={{
-        width: "clamp(220px, 22vw, 300px)",
+        width: "clamp(200px, 17vw, 250px)",
         perspective: 1400,
         y: dropY,
       }}
@@ -221,7 +219,14 @@ export default function IDCard() {
           >
             <div
               aria-hidden
-              className="absolute inset-0 flex flex-col items-center gap-6 pt-4 text-[9px] font-semibold uppercase tracking-[0.3em] text-white/70"
+              /* justify-end (not the default top-start) so the text
+                 stack is anchored to the *bottom* of this box — the only
+                 part of a 72vh-tall strip that's ever actually on screen
+                 is the sliver right above the clip. Anchoring from the
+                 top meant every repetition landed somewhere in the
+                 offscreen upper 70vh and none ever reached the visible
+                 bit near the clip. */
+              className="absolute inset-0 flex flex-col items-center justify-end gap-6 pb-3 text-[9px] font-semibold uppercase tracking-[0.3em] text-white/70"
               style={{ writingMode: "vertical-rl" }}
             >
               {Array.from({ length: 14 }).map((_, i) => (
@@ -258,16 +263,15 @@ export default function IDCard() {
             onPointerLeave={handleCardLeave}
             className="relative -mt-3 overflow-hidden rounded-[18px]"
             style={{
-              aspectRatio: "0.64",
-              background:
-                "linear-gradient(165deg, #12151c 0%, #0a0c11 55%, #08090d 100%)",
+              aspectRatio: "0.68",
+              background: "linear-gradient(165deg, #adaba4 0%, #918f89 100%)",
               boxShadow:
-                "0 30px 60px -20px rgba(0,0,0,0.75), 0 2px 0 rgba(255,255,255,0.04) inset",
-              border: "1px solid rgba(255,255,255,0.18)",
+                "0 30px 60px -20px rgba(0,0,0,0.55), 0 2px 0 rgba(255,255,255,0.35) inset",
+              border: "1px solid rgba(255,255,255,0.5)",
             }}
           >
             {/* Portrait */}
-            <div className="relative h-[58%] w-full overflow-hidden">
+            <div className="relative h-[62%] w-full overflow-hidden">
               <img
                 src={badgePortrait}
                 alt={personalInfo.name}
@@ -282,27 +286,43 @@ export default function IDCard() {
                    drag gesture is actually listening to. draggable={false}
                    alone wasn't enough: the browser could still treat the
                    gesture as a native image drag before that ever mattered. */
-                style={{ objectPosition: "center 20%", pointerEvents: "none" }}
-              />
-              {/* Blends the photo's bottom edge into the info panel. */}
-              <div
-                aria-hidden
-                className="absolute inset-x-0 bottom-0 h-[45%]"
                 style={{
-                  background:
-                    "linear-gradient(180deg, transparent, rgba(8,9,13,0.94) 88%)",
+                  objectPosition: "center 20%",
+                  pointerEvents: "none",
+                  filter: "saturate(0.82) contrast(1.03) brightness(1.02)",
                 }}
               />
             </div>
 
-            {/* Info panel */}
-            <div className="relative flex h-[42%] flex-col items-center justify-center gap-1.5 px-4 text-center">
-              <span className="font-display text-[1.05rem] font-medium leading-tight tracking-supertight text-white">
-                {personalInfo.name}
-              </span>
-              <span className="text-[0.62rem] font-medium uppercase tracking-[0.14em] text-cyan/85">
-                {ROLE}
-              </span>
+            {/* White info panel with a wavy top edge cut into the photo,
+                instead of a straight seam — the panel's own shape carries
+                that curve rather than a separate overlay. */}
+            <div className="absolute inset-x-0 bottom-0 h-[42%] bg-[#c4c1ba]">
+              <svg
+                aria-hidden
+                viewBox="0 0 100 27"
+                preserveAspectRatio="none"
+                /* Overlaps 1px into the panel below (bottom-[calc(100%-1px)]
+                   instead of bottom-full) so there's no hairline gap between
+                   the curve and the flat panel it's sitting on. */
+                className="absolute inset-x-0 bottom-[calc(100%-1px)] h-[13%] w-full"
+              >
+                <path
+                  d="M0,27 L0,14 C22,2 38,24 60,12 C74,4 88,10 100,7 L100,27 Z"
+                  fill="#c4c1ba"
+                />
+              </svg>
+
+              <div className="relative flex h-full flex-col items-center justify-center gap-1.5 px-4 text-center">
+                <span className="font-display text-[1.15rem] font-semibold leading-tight tracking-supertight text-[#1c1c1c]">
+                  {personalInfo.name}
+                </span>
+                <span className="flex flex-col items-center gap-1 text-[0.68rem] font-semibold tracking-[0.02em] text-[#4a4844]">
+                  <span className="italic">Software Engineer</span>
+                  <span className="h-px w-10 bg-[#4a4844]/30" />
+                  <span>Quality Assurance</span>
+                </span>
+              </div>
             </div>
 
             {/* Diagonal plastic sheen — drifts with the tilt. */}
@@ -312,7 +332,7 @@ export default function IDCard() {
               style={{
                 opacity: sheenOpacity,
                 background:
-                  "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.5) 46%, transparent 60%)",
+                  "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.6) 46%, transparent 60%)",
                 backgroundSize: "220% 100%",
                 backgroundPositionX: useTransform(sheenX, (v) => `${v}%`),
                 mixBlendMode: "overlay",
@@ -324,8 +344,7 @@ export default function IDCard() {
               aria-hidden
               className="pointer-events-none absolute inset-0 rounded-[18px]"
               style={{
-                boxShadow:
-                  "inset 0 1px 0 rgba(255,255,255,0.16), inset 0 0 0 1px rgba(255,255,255,0.06)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5)",
               }}
             />
           </motion.div>
