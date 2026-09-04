@@ -12,8 +12,6 @@ import cloverEmporium from "../images/projects/clover_emporium.png";
 import masteriyoLms from "../images/projects/masteriyo-lms.webp";
 import myDemoApp from "../images/projects/mydemoapp-android.webp";
 import trelloBoard from "../images/projects/trello-board.webp";
-import juggleMaster from "../images/projects/juggle-master.png";
-import nudge from "../images/projects/nudge.png";
 import faceTune from "../images/projects/face_tune.png";
 
 // Labels live only in the dock, so the page body never announces its structure.
@@ -273,53 +271,18 @@ export const featuredProjects: FeaturedProject[] = [
     imageFit: "plate",
     accent: "cyan",
   },
-  {
-    id: "6",
-    index: "06",
-    strand: "build",
-    name: "Juggle Master",
-    kicker: "VS Code Extension · Game",
-    overview:
-      "A VS Code extension that turns the editor into a juggling game — keep the ball in the air without leaving your workspace.",
-    challenge:
-      "Creating an interactive game inside VS Code while making it feel natural to use as an editor extension.",
-
-    solution:
-      "Developed a lightweight VS Code extension that lets users play a simple juggling game directly within the editor.",
-
-    impact:
-      "Published on the VS Code Marketplace, making the game available for developers to install and play.",
-    tech: ["TypeScript", "VS Code API", "WebView", "Canvas API"],
-    github: "https://github.com/subin-shk/juggle-master-vs-code",
-    liveDemo: "https://marketplace.visualstudio.com/items?itemName=SubinShakya.juggle-master",
-    image: juggleMaster,
-    imageFit: "plate",
-    accent: "blue",
-  },
-  {
-    id: "7",
-    index: "07",
-    strand: "build",
-    name: "Nudge",
-    kicker: "Wellbeing · Desktop App",
-    overview:
-      "A lightweight desktop app that nudges you to drink water, stretch, and blink — the small habits that disappear when you're deep in focus.",
-    challenge:
-      "Wellness reminders are easy to dismiss and easier to turn off. The app had to be present enough to notice, unobtrusive enough to keep running.",
-    solution:
-      "Built a tray-resident app that fires gentle, timed reminders for hydration, movement, and eye rest — configurable intervals, no subscription, no noise.",
-    impact:
-      "Packaged as a downloadable release so it runs on install. A small thing that stays out of the way until it matters.",
-    tech: ["Electron", "JavaScript", "HTML", "CSS"],
-    github: "https://github.com/subin-shk/nudge",
-    image: nudge,
-    imageFit: "plate",
-    accent: "cyan",
-  },
 ];
 
 /** Everything else, shown as a quiet trailing strip. */
 export const archiveProjects: ArchiveProject[] = [
+  {
+    id: "6",
+    name: "Juggle Master",
+    description:
+      "A VS Code extension that turns the editor into a juggling game — keep the ball in the air without leaving your workspace. Published on the VS Code Marketplace.",
+    tech: ["TypeScript", "VS Code API", "WebView", "Canvas API"],
+    github: "https://github.com/subin-shk/juggle-master-vs-code",
+  },
   {
     id: "8",
     name: "MyDemoApp Automation",

@@ -1,34 +1,24 @@
 import type { LucideIcon } from "lucide-react";
 import { FlaskConical, Gauge, Globe, Search, Smartphone } from "lucide-react";
 
-type Tag = { label: string; icon: LucideIcon; rgb: string };
-
-const RGB = {
-  cyan: "95,212,232",
-  blue: "77,124,255",
-  violet: "155,123,255",
-} as const;
+type Tag = { label: string; icon: LucideIcon };
 
 const TAGS: Tag[] = [
-  { label: "Web Automation", icon: Globe, rgb: RGB.cyan },
-  { label: "Mobile Automation", icon: Smartphone, rgb: RGB.blue },
-  { label: "Web Scraping", icon: Search, rgb: RGB.violet },
-  { label: "API Testing", icon: FlaskConical, rgb: RGB.cyan },
-  { label: "Performance Testing", icon: Gauge, rgb: RGB.blue },
+  { label: "Web Automation", icon: Globe },
+  { label: "Mobile Automation", icon: Smartphone },
+  { label: "Web Scraping", icon: Search },
+  { label: "API Testing", icon: FlaskConical },
+  { label: "Performance Testing", icon: Gauge },
 ];
 
+/** One neutral glass treatment for every pill — a single quiet cyan touch
+ * on the icon is the only color, instead of cycling through the full
+ * accent palette per tag, which read as too busy/rainbow-ish. */
 function Pill({ tag }: { tag: Tag }) {
   const Icon = tag.icon;
   return (
-    <span
-      className="mx-2 inline-flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-[0.92rem] font-medium"
-      style={{
-        background: `rgba(${tag.rgb},0.12)`,
-        color: `rgb(${tag.rgb})`,
-        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px rgba(${tag.rgb},0.16)`,
-      }}
-    >
-      <Icon size={16} strokeWidth={2} />
+    <span className="glass edge mx-2.5 inline-flex shrink-0 items-center gap-2.5 rounded-xl px-7 py-3.5 text-[1.15rem] font-medium text-white/85 sm:text-[1.3rem]">
+      <Icon size={20} strokeWidth={1.8} className="text-cyan/80" />
       {tag.label}
     </span>
   );
@@ -73,14 +63,20 @@ function Row({
  * rather than two separate tickers.
  */
 export default function Focus() {
-  const rowA = TAGS;
-  const rowB = [...TAGS.slice(2), ...TAGS.slice(0, 2)];
+  // Row (the visual "half" that slides -50%) needs to stay wider than the
+  // viewport at any size, or the loop point becomes a visible gap on wide
+  // screens — repeating the 5-tag set a few times over guards against that
+  // regardless of how wide the browser window gets.
+  const REPEATS = 4;
+  const rowA = Array.from({ length: REPEATS }, () => TAGS).flat();
+  const shifted = [...TAGS.slice(2), ...TAGS.slice(0, 2)];
+  const rowB = Array.from({ length: REPEATS }, () => shifted).flat();
 
   return (
     <section aria-label="Focus areas" className="relative py-10 sm:py-14">
       <div className="flex flex-col gap-4">
-        <Row tags={rowA} direction="left" duration={26} />
-        <Row tags={rowB} direction="right" duration={30} />
+        <Row tags={rowA} direction="left" duration={190} />
+        <Row tags={rowB} direction="right" duration={215} />
       </div>
     </section>
   );
