@@ -25,14 +25,16 @@ const SWING_CLAMP = MAX_SWING_DEG + 4;
 const TILT_CLAMP = MAX_TILT + 3;
 const SWAY_CLAMP = MAX_SWING_PX + 6;
 
-/** Close to critically damped: a little give, no wild overshoot. */
-const TILT_SPRING = { stiffness: 60, damping: 15, mass: 1 };
-const SWING_SPRING = { stiffness: 42, damping: 15, mass: 1.1 };
-const SWAY_SPRING = { stiffness: 50, damping: 14, mass: 1 };
+/** Softer and heavier than a snappy UI spring — more mass, less stiffness,
+ * moderately underdamped, so the badge settles over a second or so with a
+ * couple of slow, gentle oscillations instead of snapping into place. */
+const TILT_SPRING = { stiffness: 34, damping: 9, mass: 1.3 };
+const SWING_SPRING = { stiffness: 20, damping: 7, mass: 1.8 };
+const SWAY_SPRING = { stiffness: 26, damping: 8, mass: 1.4 };
 
 /** Snap-back after a drag release: seeded with the release velocity so
  * a fast flick returns faster and overshoots more, like a real tether. */
-const RETURN_SPRING = { type: "spring", stiffness: 260, damping: 18, mass: 0.7 } as const;
+const RETURN_SPRING = { type: "spring", stiffness: 170, damping: 15, mass: 0.9 } as const;
 
 /**
  * A physical employee-badge hanging from a lanyard, built as a small
@@ -67,8 +69,9 @@ export default function IDCard() {
   // Smoothed through a spring so it lags the raw drag position slightly
   // instead of snapping to it.
   const dragTilt = useSpring(useTransform(dragX, [-70, 70], [14, -14]), {
-    stiffness: 280,
-    damping: 22,
+    stiffness: 140,
+    damping: 16,
+    mass: 1.1,
   });
 
   const tiltX = useSpring(reduced ? 0 : 4, TILT_SPRING);
@@ -137,7 +140,6 @@ export default function IDCard() {
         dragElastic={0.3}
         dragMomentum={false}
         onDragEnd={handleDragEnd}
-        whileDrag={{ scale: 1.04 }}
         style={{
           x: dragX,
           y: dragY,
