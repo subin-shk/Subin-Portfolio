@@ -10,6 +10,7 @@ import Achievements from "./components/Achievements";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Seo from "./components/Seo";
+import CustomCursor from "./components/CustomCursor";
 import { useSmoothScroll } from "./lib/useSmoothScroll";
 
 /**
@@ -23,6 +24,7 @@ export default function App() {
   return (
     <>
       <Seo />
+      <CustomCursor />
       <Atmosphere />
       <Orb />
 

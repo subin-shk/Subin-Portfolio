@@ -39,12 +39,11 @@ function Panel({
   });
 
   // Hold at full size through the read, then sink away in the last third.
+  // No scroll-scrubbed blur here — animating `filter: blur()` re-rasterises
+  // the whole (large) panel every scroll frame, which is exactly the kind
+  // of main-thread cost that made scrolling stutter past this section.
   const scale = useTransform(scrollYProgress, [0, 0.62, 1], [1, 1, 0.9]);
   const opacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 1, 0]);
-  // Blur starts only once the card is under 35% opaque. Any earlier and it
-  // softens text you are still actively reading.
-  const blur = useTransform(scrollYProgress, [0, 0.87, 1], [0, 0, 10]);
-  const blurCss = useTransform(blur, (b) => `blur(${b}px)`);
   const lift = useTransform(scrollYProgress, [0, 1], [0, -60]);
 
   const steps = [
@@ -54,34 +53,24 @@ function Panel({
   ];
 
   return (
-    <div ref={ref} className="relative py-6 lg:h-[178vh] lg:py-0">
+    <div ref={ref} className="relative py-6 lg:h-[108vh] lg:py-0">
       <div className="lg:sticky lg:top-0 lg:flex lg:h-[100svh] lg:items-center lg:overflow-hidden">
         <motion.div
           style={
             stacked
-              ? { scale, opacity, filter: blurCss, transformOrigin: "center 40%" }
+              ? { scale, opacity, transformOrigin: "center 40%" }
               : undefined
           }
           className="shell w-full gpu"
         >
           <GlassCard tilt={reduced ? 0 : 3}>
             <div
-              className="glass edge sheen relative overflow-hidden rounded-[1.75rem] sm:rounded-[2.25rem]"
+              data-cursor="project"
+              className="glass edge relative overflow-hidden rounded-[1.75rem] sm:rounded-[2.25rem]"
               style={{
-                boxShadow: `0 22px 52px -28px rgba(${rgb},0.55), inset 0 1px 0 rgba(255,255,255,0.14)`,
+                boxShadow: "0 22px 52px -28px rgba(0,0,0,0.6)",
               }}
             >
-              {/* Accent wash keyed to the project */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 opacity-70"
-                style={{
-                  background: `radial-gradient(90% 70% at ${
-                    flip ? "82%" : "18%"
-                  } 8%, rgba(${rgb},0.16), transparent 62%)`,
-                }}
-              />
-
               <div
                 /* Text gets the larger share — Challenge/Solution/Impact sit
                    in three columns and go unreadable at an even split. */
@@ -304,14 +293,6 @@ function ArchiveRow({ item, index }: { item: ArchiveProject; index: number }) {
       transition={{ duration: 0.8, ease: EASE, delay: index * 0.08 }}
       className="group relative block border-t border-white/8 py-7 transition-colors duration-500 last:border-b hover:border-white/20"
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 inset-y-1 -z-10 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{
-          background:
-            "radial-gradient(60% 100% at 50% 50%, rgba(255,255,255,0.05), transparent 70%)",
-        }}
-      />
       {/* Name column, blurb and tech meta only fit on one line from `md`.
           Turning the row at `sm` pushed the tech list past the viewport
           between 640px and ~680px — landscape phone territory. */}
