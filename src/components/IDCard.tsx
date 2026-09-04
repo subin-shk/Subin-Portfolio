@@ -176,6 +176,12 @@ export default function IDCard() {
         className="touch-none select-none"
       >
         <motion.div
+          /* Explicitly the positioned ancestor for the lanyard's `absolute`
+             below — relying on "a transform also creates a containing
+             block" left the centering ambiguous in practice. This makes
+             it unambiguous: the lanyard centers against *this* box, which
+             is exactly as wide as the card. */
+          className="relative"
           style={{
             rotateZ: swingZOut,
             x: swayXOut,
@@ -189,8 +195,16 @@ export default function IDCard() {
               card face stays flat. */}
           <motion.div
             aria-hidden
-            className="absolute left-1/2 -top-[70vh] h-[72vh] w-[14px] -translate-x-1/2 overflow-hidden rounded-b-sm"
+            className="absolute left-1/2 -top-[70vh] h-[72vh] w-[14px] overflow-hidden rounded-b-sm"
             style={{
+              // Centering has to be a motion value here, not the usual
+              // `-translate-x-1/2` Tailwind class: once this element also
+              // has rotateX/rotateY as motion values, Framer owns the
+              // whole `transform` property on it directly and silently
+              // drops any transform contributed by a plain CSS class,
+              // which was quietly pushing the strap half its own width
+              // off-center.
+              x: "-50%",
               rotateX: tiltXOut,
               rotateY: tiltYOut,
               /* This element is a tall 72vh strip, but only its very
