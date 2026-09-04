@@ -61,19 +61,14 @@ export default function Hero() {
         className="shell relative z-[2] flex w-full flex-col items-center text-center gpu lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-14 lg:text-left"
       >
         <motion.div
-          initial={
-            reduced
-              ? { opacity: 0 }
-              : blurs
-                ? { opacity: 0, scale: 1.06, filter: "blur(24px)" }
-                : { opacity: 0, scale: 1.06 }
-          }
-          animate={
-            blurs
-              ? { opacity: 1, scale: 1, filter: "blur(0px)" }
-              : { opacity: 1, scale: 1 }
-          }
-          transition={{ duration: 1.8, ease: EASE, delay: 0.25 }}
+          /* Quick, plain fade — IDCard's own drop-in spring is the entrance
+             motion here. A slow blur/scale reveal (fine for a static photo)
+             would leave the badge still near-transparent by the time its
+             drop had already finished, so the drop would read as if it
+             wasn't there. */
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, ease: EASE, delay: 0.05 }}
           className="relative mb-2 w-full sm:mb-4 lg:mb-0 lg:w-auto lg:shrink-0"
         >
           <IDCard />
