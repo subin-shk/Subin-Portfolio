@@ -442,6 +442,26 @@
   }
 }
 
+/* Marquee track: the track renders its children twice back to back, so
+   sliding exactly -50% loops seamlessly from the first copy to the
+   identical second one. */
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 /* Custom cursor: only engaged on fine-pointer desktops (see
    CustomCursor.tsx, which toggles this class). Text fields keep the
    native caret/selection cursor so typing and selecting still feel right. */
