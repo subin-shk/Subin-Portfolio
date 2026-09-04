@@ -32,9 +32,9 @@ const TILT_SPRING = { stiffness: 34, damping: 9, mass: 1.3 };
 const SWING_SPRING = { stiffness: 20, damping: 7, mass: 1.8 };
 const SWAY_SPRING = { stiffness: 26, damping: 8, mass: 1.4 };
 
-/** Snap-back after a drag release: seeded with the release velocity so
- * a fast flick returns faster and overshoots more, like a real tether. */
-const RETURN_SPRING = { type: "spring", stiffness: 170, damping: 15, mass: 0.9 } as const;
+/** Snap-back after a drag release: seeded with the release velocity, but
+ * damped hard enough to settle in one clean motion rather than shake. */
+const RETURN_SPRING = { type: "spring", stiffness: 170, damping: 24, mass: 0.9 } as const;
 
 /**
  * A physical employee-badge hanging from a lanyard, built as a small
@@ -70,7 +70,7 @@ export default function IDCard() {
   // instead of snapping to it.
   const dragTilt = useSpring(useTransform(dragX, [-70, 70], [14, -14]), {
     stiffness: 140,
-    damping: 16,
+    damping: 22,
     mass: 1.1,
   });
 
@@ -112,18 +112,15 @@ export default function IDCard() {
   // of swing/tilt so the return itself feels like part of the same motion
   // rather than a separate snap.
   const handleDragEnd = (_e: PointerEvent, info: PanInfo) => {
+    // Only the position needs to be driven back to 0 — dragTilt already
+    // reacts to dragX live (it's `useTransform(dragX, ...)`), so as this
+    // settles the lean settles with it, in exactly one motion. Kicking
+    // swingZ/tiltY on top of that used to double up the rotation and is
+    // what made the release look like a shake instead of a clean return —
+    // and however that kick settled, it was never guaranteed to land back
+    // on exactly 0, which is why the badge could rest slightly slanted.
     animate(dragX, 0, { ...RETURN_SPRING, velocity: info.velocity.x });
     animate(dragY, 0, { ...RETURN_SPRING, velocity: info.velocity.y });
-
-    // Both are already at rest (0); seeding a return-to-0 animation with a
-    // nonzero velocity makes the spring swing out and back on its own —
-    // the same trick as above, applied to the pendulum/tilt layer. Sign
-    // flipped versus dragTilt's mapping: rotateZ's positive direction
-    // swings the bottom left, so a rightward release velocity needs a
-    // negative kick to swing the same way it was moving.
-    animate(swingZ, 0, { type: "spring", ...SWING_SPRING, velocity: -info.velocity.x / 14 });
-    animate(swayX, 0, { type: "spring", ...SWAY_SPRING, velocity: info.velocity.x / 4 });
-    animate(tiltY, 0, { type: "spring", ...TILT_SPRING, velocity: info.velocity.x / 22 });
   };
 
   return (
