@@ -19,14 +19,17 @@ const base =
   "transition-[background,box-shadow,color] duration-300 ease-glass edge";
 
 const variants: Record<string, string> = {
+  // A dark tint reads as genuinely darker against the near-black page than
+  // any amount of white overlay can — white has a brightness floor, a dark
+  // tint doesn't.
   solid:
-    "text-white/95 bg-white/[0.11] hover:bg-white/[0.16] " +
-    "shadow-[0_8px_26px_-12px_rgba(77,124,255,0.65),inset_0_1px_0_rgba(255,255,255,0.22)]",
+    "text-white/95 bg-[rgba(9,11,17,0.55)] hover:bg-[rgba(9,11,17,0.4)] " +
+    "shadow-[0_8px_26px_-12px_rgba(77,124,255,0.32),inset_0_1px_0_rgba(255,255,255,0.14)]",
   glass:
-    "text-white/80 hover:text-white bg-white/[0.045] hover:bg-white/[0.09] " +
-    "shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]",
+    "text-white/80 hover:text-white bg-[rgba(9,11,17,0.4)] hover:bg-[rgba(9,11,17,0.28)] " +
+    "shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]",
   quiet:
-    "text-white/55 hover:text-white/90 bg-transparent hover:bg-white/[0.06]",
+    "text-white/55 hover:text-white/90 bg-transparent hover:bg-[rgba(9,11,17,0.3)]",
 };
 
 /**
@@ -58,10 +61,10 @@ export default function GlassButton({
       {variant === "solid" && (
         <span
           aria-hidden
-          className="absolute inset-0 opacity-70"
+          className="absolute inset-0 opacity-40"
           style={{
             background:
-              "linear-gradient(120deg, rgba(95,212,232,0.30), rgba(77,124,255,0.34) 48%, rgba(155,123,255,0.30))",
+              "linear-gradient(120deg, rgba(95,212,232,0.16), rgba(77,124,255,0.18) 48%, rgba(155,123,255,0.16))",
           }}
         />
       )}

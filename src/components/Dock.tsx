@@ -32,8 +32,11 @@ export default function Dock() {
   const [active, setActive] = useState(navigationItems[0].href.slice(1));
   const [condensed, setCondensed] = useState(false);
   const reduced = useReducedMotion();
-  /* Below `sm` the dock is an icon rail and only the active item is named. */
-  const compact = useMediaQuery("(max-width: 639px)");
+  /* Below `lg` the dock is an icon rail and only the active item is named
+     — icon+full-label together for all seven items needs more room than
+     the 640-1023px range actually has, which used to overflow the dock
+     rather than wrap or shrink. */
+  const compact = useMediaQuery("(max-width: 1023px)");
 
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, {
@@ -107,7 +110,7 @@ export default function Dock() {
           /* The dock floats over live content the whole time you scroll, so
              it stays opaque rather than translucent — it should always read
              clearly, not let whatever's behind it show through. */
-          className="edge pointer-events-auto relative max-w-[calc(100vw-1.25rem)] overflow-hidden rounded-full bg-[#0f1218]/95 px-1.5 py-1.5"
+          className="edge pointer-events-auto relative max-w-[calc(100vw-1.25rem)] overflow-hidden rounded-full bg-[#0f1218] px-1.5 py-1.5"
           style={{ boxShadow: "0 12px 30px -14px rgba(0,0,0,0.9)" }}
         >
           <ul className="relative flex items-center gap-0 sm:gap-0.5">
@@ -120,7 +123,19 @@ export default function Dock() {
                  so a label too long for the screen loses its tail rather than
                  pushing a whole destination out of the dock. */
               return (
-                <li key={item.href} className={isActive ? "min-w-0" : "shrink-0"}>
+                <li
+                  key={item.href}
+                  /* min-w-0 (letting the flex item shrink below its content's
+                     natural size) only ever made sense for the compact/mobile
+                     rail, where the active label is an animated, actually-
+                     truncatable overflow-hidden span. In wide mode the label
+                     never truncates, so shrinking the button just orphaned
+                     its icon+label past the (still content-sized) pill
+                     background — which is the "pill doesn't contain the
+                     active item" bug. Only allow the shrink where the
+                     truncation exists to back it up. */
+                  className={compact && isActive ? "min-w-0" : "shrink-0"}
+                >
                   <button
                     type="button"
                     onClick={() => scrollTo(item.href)}
@@ -128,7 +143,7 @@ export default function Dock() {
                     /* The visible label is absent or truncated at some widths,
                        so the accessible name comes from here at every size. */
                     aria-label={item.name}
-                    className="relative flex min-w-0 max-w-full items-center rounded-full px-1.5 py-2.5 sm:px-4 sm:py-2"
+                    className="relative flex min-w-0 max-w-full items-center rounded-full px-1.5 py-2.5 lg:px-4 lg:py-2"
                   >
                     {isActive &&
                       /* The sliding pill measures its target box once, so it
@@ -160,12 +175,14 @@ export default function Dock() {
                         />
                       ))}
 
-                    {/* Icon on narrow screens, label on wide */}
+                    {/* Icon always shows now — narrow screens name only the
+                        active section next to it, wide screens pair it with
+                        every label (see the lg:block span below). */}
                     {Icon && (
                       <Icon
                         aria-hidden
                         strokeWidth={1.75}
-                        className={`relative z-[1] h-4 w-4 shrink-0 transition-colors duration-400 sm:hidden ${
+                        className={`relative z-[1] h-4 w-4 shrink-0 transition-colors duration-400 lg:mr-1.5 ${
                           isActive ? "text-white" : "text-white/45"
                         }`}
                       />
@@ -192,7 +209,7 @@ export default function Dock() {
 
                     <span
                       aria-hidden
-                      className={`relative z-[1] hidden text-[0.74rem] font-medium tracking-[-0.005em] transition-colors duration-400 sm:block ${
+                      className={`relative z-[1] hidden text-[0.74rem] font-medium tracking-[-0.005em] transition-colors duration-400 lg:block ${
                         isActive ? "text-white" : "text-white/45 hover:text-white/80"
                       }`}
                     >

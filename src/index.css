@@ -6,8 +6,11 @@
   :root {
     --ink: #050505;
 
-    --glass: rgba(255, 255, 255, 0.06);
-    --glass-faint: rgba(255, 255, 255, 0.03);
+    /* Smoked, not milky: a *dark* tint over the backdrop rather than a
+       white film. Dialing the white down any further only made panels
+       vanish into the page instead of reading as darker than it. */
+    --glass: rgba(9, 11, 17, 0.5);
+    --glass-faint: rgba(9, 11, 17, 0.32);
 
     --blue: 77 124 255;
     --cyan: 95 212 232;
@@ -119,9 +122,9 @@
 
   /* Phones get no backdrop-filter at all — see usePhone() in lib/motion.
      The blur was also part of what separated a panel from the page, so the
-     film picks up the slack with a couple of points more white. It stays a
-     film: a dark backing would read as a hole punched in the backdrop
-     rather than as glass sitting on top of it. */
+     tint picks up the slack with a few points more opacity. The inset
+     highlights on .glass are what keep it reading as a panel sitting on
+     the backdrop rather than a hole punched through it. */
   @media (max-width: 767px) {
     .glass,
     .glass-faint {
@@ -129,10 +132,10 @@
       -webkit-backdrop-filter: none;
     }
     .glass {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(9, 11, 17, 0.62);
     }
     .glass-faint {
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(9, 11, 17, 0.42);
     }
   }
 
@@ -439,6 +442,26 @@
   }
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+/* Marquee track: the track renders its children twice back to back, so
+   sliding exactly -50% loops seamlessly from the first copy to the
+   identical second one. */
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
   }
 }
 

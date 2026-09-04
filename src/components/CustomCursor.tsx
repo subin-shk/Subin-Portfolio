@@ -247,7 +247,12 @@ export default function CustomCursor() {
                 opacity: { duration: 0.3, ease: "easeOut" },
               }}
             >
-              <path d={STAR_PATH} fill="#a5e9f5" />
+              <path
+                d={STAR_PATH}
+                fill="#a5e9f5"
+                stroke="rgba(8,12,20,0.35)"
+                strokeWidth={2.5}
+              />
             </motion.svg>
           );
         })}
@@ -327,6 +332,12 @@ export default function CustomCursor() {
           <motion.path
             d={STAR_PATH}
             fill="#eaf7ff"
+            /* A near-black stroke keeps the star readable over light
+               surfaces (the marquee pills, the ID card's light panel,
+               etc.) — without it the near-white fill just disappears
+               there. */
+            stroke="rgba(8,12,20,0.45)"
+            strokeWidth={2.5}
             animate={{
               fill: hover === "project" ? "#dff6ff" : "#eaf7ff",
             }}
@@ -344,8 +355,11 @@ export default function CustomCursor() {
             height={SIZE * 1.8}
             style={{
               position: "absolute",
-              top: "50%",
-              left: "50%",
+              // Centered on the star's tip (its hotspot — see TIP_ORIGIN),
+              // not the box's geometric center, so the sparkle bursts from
+              // exactly where the click actually landed.
+              top: `${TIP_Y}%`,
+              left: `${TIP_X}%`,
               marginLeft: -(SIZE * 1.8) / 2,
               marginTop: -(SIZE * 1.8) / 2,
               pointerEvents: "none",

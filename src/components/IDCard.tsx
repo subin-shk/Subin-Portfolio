@@ -10,6 +10,7 @@ import {
 import { personalInfo } from "../data/portfolioData";
 import { useReducedMotion } from "../lib/motion";
 import badgePortrait from "../images/subin-shk-hero2.jpg";
+import linkedinQr from "../images/subin-shk-linkedin-qr.png";
 
 /** Degrees/pixels of give per normalized (-1..1) pointer offset. */
 const MAX_TILT = 7; // matches GlassCard's default `tilt` prop
@@ -187,13 +188,20 @@ export default function IDCard() {
           }}
         >
           {/* Lanyard — narrow strip climbing out of frame, cut off by the
-              hero's own overflow rather than a hard-coded height. Carries
-              the 3D hover-depth tilt instead of the card, so the strap
-              itself is what visibly cants toward the pointer while the
-              card face stays flat. */}
+              hero's own overflow. Carries the 3D hover-depth tilt instead
+              of the card, so the strap itself is what visibly cants toward
+              the pointer while the card face stays flat.
+
+              Height is a fixed px, not 70vh: a rotateX/rotateY tilt on a
+              rectangle that tall visibly kinks partway up (perspective
+              foreshortening compounds hard over hundreds of extra px of
+              length it never needed — only a short sliver near the clip
+              is ever actually on screen). 340px comfortably clears the
+              space above the card at every breakpoint without the
+              distortion. */}
           <motion.div
             aria-hidden
-            className="absolute left-1/2 -top-[70vh] h-[72vh] w-[14px] overflow-hidden rounded-b-sm"
+            className="absolute left-1/2 -top-[340px] h-[340px] w-[14px] overflow-hidden rounded-b-sm"
             style={{
               // Centering has to be a motion value here, not the usual
               // `-translate-x-1/2` Tailwind class: once this element also
@@ -255,7 +263,7 @@ export default function IDCard() {
                  doesn't fit the strip is cleanly cropped by the
                  lanyard's own overflow-hidden instead of being squashed
                  into every other item. */}
-              {Array.from({ length: 60 }).map((_, i) => (
+              {Array.from({ length: 10 }).map((_, i) => (
                 <span
                   key={i}
                   className="shrink-0"
@@ -345,18 +353,68 @@ export default function IDCard() {
                 />
               </svg>
 
-              <span className="absolute bottom-2 right-3 text-[0.55rem] font-medium tracking-[0.02em] text-[#4a4844]/70">
+              <span className="absolute bottom-2 right-4 text-[0.55rem] font-medium tracking-[0.02em] text-[#4a4844]/70">
                 ID: SS-0209
               </span>
 
-              <div className="relative flex h-full flex-col items-center justify-start gap-1.5 px-4 pt-4 text-center">
-                <span className="font-display text-[1.15rem] font-semibold leading-tight tracking-supertight text-[#1c1c1c]">
-                  {personalInfo.name}
-                </span>
-                <span className="flex flex-col items-center gap-1 text-[0.68rem] font-semibold tracking-[0.02em] text-[#4a4844]">
-                  <span className="italic">Software Engineer</span>
+              {/* Content-height row (not h-full) so `items-center` aligns
+                  the QR against the *text block's* middle. With h-full the
+                  row was the whole panel's height, so centering the QR
+                  within it parked it far below the top-aligned text. */}
+              {/* Top padding stays small until the card is actually wide
+                  enough to earn it: the width clamp bottoms out at 200px
+                  from ~1024-1470px, so a fixed lg:pt-6 there left a big
+                  dead gap above the name. */}
+              <div className="relative flex items-center justify-between gap-3 px-4 pt-1 lg:pt-2.5 2xl:pt-5">
+                <div className="flex flex-col items-start gap-1.5 text-left">
+                  <span className="font-display text-[1.15rem] font-semibold leading-tight tracking-supertight text-[#1c1c1c]">
+                    {personalInfo.name}
+                  </span>
                   <span className="h-px w-10 bg-[#4a4844]/30" />
-                  <span>Quality Assurance</span>
+                  <span className="flex flex-col items-start text-[0.68rem] font-semibold italic leading-tight tracking-[0.02em] text-[#4a4844]">
+                    <span>Software</span>
+                    <span>Quality Assurance</span>
+                  </span>
+                </div>
+
+                {/* LinkedIn QR — a small light card behind it so the code
+                    keeps enough contrast against the panel's own tone.
+                    Double-click (not single, which the card's own drag
+                    gesture already owns) opens the profile directly, for
+                    anyone reading this on a screen rather than scanning it
+                    with a phone. Sized down a touch on mobile/tablet to
+                    fit the tighter panel, but not so far it stops actually
+                    being scannable. */}
+                <span
+                  role="button"
+                  tabIndex={0}
+                  title="Double-click to open LinkedIn"
+                  onDoubleClick={() =>
+                    window.open(
+                      "https://www.linkedin.com/in/subin-shk/",
+                      "_blank",
+                      "noopener,noreferrer"
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      window.open(
+                        "https://www.linkedin.com/in/subin-shk/",
+                        "_blank",
+                        "noopener,noreferrer"
+                      );
+                    }
+                  }}
+                  className="shrink-0 cursor-pointer rounded-md bg-[#ece9e2] p-1 shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
+                >
+                  <img
+                    src={linkedinQr}
+                    alt="QR code linking to Subin Shakya's LinkedIn profile — double-click to open"
+                    draggable={false}
+                    className="h-16 w-16 rounded-[3px] select-none lg:h-[4.75rem] lg:w-[4.75rem]"
+                    style={{ pointerEvents: "none" }}
+                  />
                 </span>
               </div>
             </div>

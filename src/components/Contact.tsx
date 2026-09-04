@@ -276,17 +276,17 @@ export default function Contact() {
                       transition={{ duration: 0.55, ease: EASE }}
                       className="edge relative grid h-14 place-items-center overflow-hidden rounded-full text-[0.9rem] font-medium text-white/95 disabled:cursor-wait md:backdrop-blur-xl"
                       style={{
-                        background: "rgba(255,255,255,0.13)",
+                        background: "rgba(255,255,255,0.08)",
                         boxShadow:
-                          "0 10px 28px -12px rgba(77,124,255,0.7), inset 0 1px 0 rgba(255,255,255,0.28)",
+                          "0 10px 28px -12px rgba(77,124,255,0.4), inset 0 1px 0 rgba(255,255,255,0.2)",
                       }}
                     >
                       <span
                         aria-hidden
-                        className="absolute inset-0 opacity-75"
+                        className="absolute inset-0 opacity-40"
                         style={{
                           background:
-                            "linear-gradient(120deg, rgba(95,212,232,0.32), rgba(77,124,255,0.36) 50%, rgba(155,123,255,0.32))",
+                            "linear-gradient(120deg, rgba(95,212,232,0.16), rgba(77,124,255,0.18) 50%, rgba(155,123,255,0.16))",
                         }}
                       />
                       <AnimatePresence mode="wait" initial={false}>
