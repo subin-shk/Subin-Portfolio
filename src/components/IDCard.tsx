@@ -58,11 +58,15 @@ export default function IDCard() {
 
   const dragX = useMotionValue(0);
   const dragY = useMotionValue(0);
-  // A little lean while actively being dragged, like the lanyard twisting
-  // in your hand — separate from the release-swing kick below. Smoothed
-  // through a spring so it lags the raw drag position slightly instead of
-  // snapping to it.
-  const dragTilt = useSpring(useTransform(dragX, [-70, 70], [-10, 10]), {
+  // A lean while actively being dragged, in the same direction as the
+  // drag — pull it left and the card cants left, like a real badge on a
+  // lanyard being tugged sideways. `transformOrigin` is "top center" on
+  // this layer: with y increasing downward, a *positive* (clockwise)
+  // rotateZ carries the bottom-anchored point to negative x — i.e. left —
+  // so a negative (left) drag needs a *positive* rotateZ to lean left.
+  // Smoothed through a spring so it lags the raw drag position slightly
+  // instead of snapping to it.
+  const dragTilt = useSpring(useTransform(dragX, [-70, 70], [14, -14]), {
     stiffness: 280,
     damping: 22,
   });
@@ -110,8 +114,11 @@ export default function IDCard() {
 
     // Both are already at rest (0); seeding a return-to-0 animation with a
     // nonzero velocity makes the spring swing out and back on its own —
-    // the same trick as above, applied to the pendulum/tilt layer.
-    animate(swingZ, 0, { type: "spring", ...SWING_SPRING, velocity: info.velocity.x / 14 });
+    // the same trick as above, applied to the pendulum/tilt layer. Sign
+    // flipped versus dragTilt's mapping: rotateZ's positive direction
+    // swings the bottom left, so a rightward release velocity needs a
+    // negative kick to swing the same way it was moving.
+    animate(swingZ, 0, { type: "spring", ...SWING_SPRING, velocity: -info.velocity.x / 14 });
     animate(swayX, 0, { type: "spring", ...SWAY_SPRING, velocity: info.velocity.x / 4 });
     animate(tiltY, 0, { type: "spring", ...TILT_SPRING, velocity: info.velocity.x / 22 });
   };
@@ -213,7 +220,13 @@ export default function IDCard() {
               draggable={false}
               onDragStart={(e) => e.preventDefault()}
               className="h-full w-full select-none object-cover"
-              style={{ objectPosition: "center 20%" }}
+              /* `pointer-events: none` keeps the <img> out of hit-testing
+                 entirely, so a pointerdown here is never "on the image" at
+                 all — it's on the card behind it, which is what Framer's
+                 drag gesture is actually listening to. draggable={false}
+                 alone wasn't enough: the browser could still treat the
+                 gesture as a native image drag before that ever mattered. */
+              style={{ objectPosition: "center 20%", pointerEvents: "none" }}
             />
             {/* Blends the photo's bottom edge into the info panel. */}
             <div
