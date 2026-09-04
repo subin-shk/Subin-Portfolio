@@ -2,35 +2,22 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Download } from "lucide-react";
 import { personalInfo } from "../data/portfolioData";
-import {
-  EASE,
-  useAnimatedBlur,
-  usePhone,
-  useReducedMotion,
-  useRise,
-} from "../lib/motion";
+import { EASE, useAnimatedBlur, useReducedMotion, useRise } from "../lib/motion";
 import { scrollTo } from "../lib/useSmoothScroll";
 import GlassButton from "./ui/GlassButton";
-import { useKeyedImage } from "../lib/keyBackground";
-import heroPortrait from "../images/subin-shk-hero.jpg";
+import IDCard from "./IDCard";
 
 const NAME = personalInfo.name.toUpperCase();
 
 /**
- * Opening screen.
- *
- * The portrait is a cutout on black, so `screen` blending drops its
- * background out against the near-black page and the figure composites
- * straight into the gradient mesh. A soft mask dissolves its lower edge
- * into the wordmark below, so the two read as one object rather than a
- * photo stacked on a heading.
+ * Opening screen. The portrait used to be a cutout composited into the
+ * gradient mesh; it's now a physical ID badge hanging from a lanyard —
+ * see IDCard.tsx for the swing/tilt physics.
  */
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const blurs = useAnimatedBlur();
-  const phone = usePhone();
-  const { src: keyed, ready: keyReady } = useKeyedImage(heroPortrait);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -71,26 +58,8 @@ export default function Hero() {
                 transformOrigin: "center 35%",
               }
         }
-        className="shell relative z-[2] flex w-full flex-col items-center text-center gpu"
+        className="shell relative z-[2] flex w-full flex-col items-center text-center gpu lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-14 lg:text-left"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-          className="glass edge relative inline-flex items-center gap-2.5 rounded-full px-4 py-2"
-        >
-          <span className="relative flex h-1.5 w-1.5">
-            <span
-              className="absolute inline-flex h-full w-full rounded-full bg-cyan opacity-70"
-              style={{ animation: "ripple-out 2.6s ease-out infinite" }}
-            />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-cyan" />
-          </span>
-          <span className="eyebrow !tracking-[0.28em] !text-white/55">
-            {personalInfo.location}
-          </span>
-        </motion.div>
-
         <motion.div
           initial={
             reduced
@@ -105,55 +74,12 @@ export default function Hero() {
               : { opacity: 1, scale: 1 }
           }
           transition={{ duration: 1.8, ease: EASE, delay: 0.25 }}
-          className="pointer-events-none relative -mb-[6vh] w-full sm:-mb-[7vh]"
+          className="relative mb-2 w-full sm:mb-4 lg:mb-0 lg:w-auto lg:shrink-0"
         >
-          <div className="relative mx-auto h-[clamp(20rem,50vh,34rem)] w-full max-w-[38rem]">
-            {/* Rim light behind the figure. Static — a pulsing halo behind a
-                portrait reads as a gimmick, not as lighting.
-
-                The phone build drops the blur, which means the gradient has
-                to reach transparent before the box clips it — `farthest-corner`
-                (the default) leaves alpha at the edges and the box outline
-                becomes visible. `ellipse closest-side` lands the last stop on
-                all four sides instead. */}
-            <div
-              aria-hidden
-              className="absolute left-1/2 top-[16%] h-[62%] w-[62%] -translate-x-1/2 rounded-full"
-              style={{
-                background: phone
-                  ? "radial-gradient(ellipse closest-side, rgba(120,170,255,0.26), rgba(137,152,255,0.15) 32%, rgba(155,123,255,0.06) 58%, transparent 88%)"
-                  : "radial-gradient(circle, rgba(120,170,255,0.30), rgba(155,123,255,0.10) 48%, transparent 72%)",
-                ...(phone ? null : { filter: "blur(46px)" }),
-              }}
-            />
-
-            {/* Real alpha, so the gradient mesh shows right up to the
-                silhouette. A bottom fade dissolves the figure into the
-                wordmark below. */}
-            <motion.img
-              src={keyed}
-              alt=""
-              aria-hidden="true"
-              width={1213}
-              height={1440}
-              fetchPriority="high"
-              decoding="async"
-              initial={false}
-              animate={{ opacity: keyReady ? 1 : 0 }}
-              transition={{ duration: 1.1, ease: EASE }}
-              className="relative h-full w-full object-contain object-bottom"
-              style={{
-                filter:
-                  "saturate(0.88) contrast(1.05) brightness(1.02) drop-shadow(0 14px 30px rgba(0,0,0,0.8))",
-                WebkitMaskImage:
-                  "linear-gradient(to bottom, #000 62%, transparent 97%)",
-                maskImage:
-                  "linear-gradient(to bottom, #000 62%, transparent 97%)",
-              }}
-            />
-          </div>
+          <IDCard />
         </motion.div>
 
+        <div className="flex w-full flex-col items-center text-center lg:items-start lg:text-left">
         <h1
           className="relative z-[3] whitespace-nowrap font-display font-medium uppercase leading-[0.9] text-white"
           /* Capped so the name always sits on one line: the shell stops
@@ -165,7 +91,7 @@ export default function Hero() {
           }}
         >
           <span className="sr-only">{personalInfo.name}</span>
-          <span aria-hidden="true" className="flex flex-nowrap justify-center">
+          <span aria-hidden="true" className="flex flex-nowrap justify-center lg:justify-start">
             {chars.map((ch, i) =>
               ch === " " ? (
                 <span key={i} className="w-[0.26em]" />
@@ -231,7 +157,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: EASE, delay: nameDone + 0.34 }}
-          className="mt-8 flex flex-wrap items-center justify-center gap-3"
+          className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
         >
           <GlassButton
             variant="solid"
@@ -270,6 +196,7 @@ export default function Hero() {
             Get In Touch
           </GlassButton>
         </motion.div>
+        </div>
       </motion.div>
 
       <motion.button
