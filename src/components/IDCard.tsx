@@ -226,7 +226,7 @@ export default function IDCard() {
                  top meant every repetition landed somewhere in the
                  offscreen upper 70vh and none ever reached the visible
                  bit near the clip. */
-              className="absolute inset-0 flex flex-col items-center justify-end gap-4 pb-[38px] text-[9px] font-semibold uppercase tracking-[0.3em] text-white/70"
+              className="absolute inset-0 flex flex-col items-center justify-end gap-4 pb-[28px] text-[9px] font-semibold uppercase tracking-[0.3em] text-white/70"
             >
               {/* Dense enough (and packed with a small enough gap) that the
                  repeat tiles continuously along the whole strip — with only
