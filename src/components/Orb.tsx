@@ -90,7 +90,7 @@ export default function Orb() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[120] hidden [@media(hover:hover)and(pointer:fine)]:block"
+      className="pointer-events-none fixed inset-0 z-[120] hidden [@media(hover:hover)_and_(pointer:fine)]:block"
       style={{ opacity: visible ? 1 : 0, transition: "opacity .35s ease" }}
     >
       {/* Soft residue, furthest behind */}

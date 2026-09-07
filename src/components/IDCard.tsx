@@ -1,466 +1,343 @@
-import { useEffect, type PointerEvent as ReactPointerEvent } from "react";
+import { Suspense, useMemo, useRef, useState } from "react";
+import * as THREE from "three";
+import { Canvas, extend, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
+import { Text, RoundedBox, useTexture } from "@react-three/drei";
+import { MeshLineGeometry, MeshLineMaterial } from "meshline";
+
+extend({ MeshLineGeometry, MeshLineMaterial });
+
+declare module "@react-three/fiber" {
+  interface ThreeElements {
+    meshLineGeometry: ThreeElements["bufferGeometry"];
+    meshLineMaterial: ThreeElements["meshBasicMaterial"] & {
+      lineWidth?: number;
+    };
+  }
+}
 import {
-  animate,
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  type PanInfo,
-} from "framer-motion";
+  Physics,
+  RigidBody,
+  BallCollider,
+  CuboidCollider,
+  useRopeJoint,
+  useSphericalJoint,
+  type RigidBodyProps,
+} from "@react-three/rapier";
 import { personalInfo } from "../data/portfolioData";
 import { useReducedMotion } from "../lib/motion";
 import badgePortrait from "../images/subin-shk-hero2.jpg";
-import linkedinQr from "../images/subin-shk-linkedin-qr.png";
 
-/** Degrees/pixels of give per normalized (-1..1) pointer offset. */
-const MAX_TILT = 7; // matches GlassCard's default `tilt` prop
-const MAX_SWING_DEG = 6;
-const MAX_SWING_PX = 9;
+const ROLE_LINES = ["Software", "Quality Assurance"];
 
-/** Hard ceiling on the *rendered* value, independent of the spring math —
- * a defensive clamp so a fast flick or a retargeted-mid-flight spring can
- * never visually fling the badge past a believable swing. */
-const SWING_CLAMP = MAX_SWING_DEG + 4;
-const TILT_CLAMP = MAX_TILT + 3;
-const SWAY_CLAMP = MAX_SWING_PX + 6;
+// Card dimensions in world units — 0.64 aspect matches the site's other
+// (CSS) badge treatment before this one.
+const CARD_W = 1.6;
+const CARD_H = 2.5;
+const CARD_T = 0.09;
 
-/** Same snappy tuning as GlassCard's own pointer-tilt spring, since this
- * value now drives a matching hover-depth effect. */
-const TILT_SPRING = { stiffness: 150, damping: 18, mass: 0.5 };
-/** Softer and heavier than a snappy UI spring — more mass, less stiffness,
- * moderately underdamped, so the badge settles over a second or so with a
- * couple of slow, gentle oscillations instead of snapping into place. */
-const SWING_SPRING = { stiffness: 20, damping: 7, mass: 1.8 };
-const SWAY_SPRING = { stiffness: 26, damping: 8, mass: 1.4 };
+// Where the fixed anchor sits and how far apart each rope-jointed chain
+// link starts. A rope joint only limits the *maximum* distance between
+// two bodies — if a body's initial position is placed farther from its
+// joint partner than the rope's length (as opposed to right at it), the
+// joint has nothing valid to hold at frame one and everything free-falls
+// from there. Every initial position below is derived from this same
+// anchor/spacing so they can never drift out of sync again.
+const ANCHOR_Y = 2.4;
+const LINK_GAP = 0.4;
 
-/** Snap-back after a drag release: critically damped (no overshoot) and
- * on the soft side, so letting go reads as a smooth glide back to rest
- * rather than a snap — seeded with release velocity so a fast flick still
- * takes proportionally longer to settle. */
-const RETURN_SPRING = { type: "spring", stiffness: 110, damping: 22, mass: 1 } as const;
+/** One segment of chain between the fixed anchor and the card. Three
+ * short rope-jointed bodies (matching the source article's j1/j2/j3)
+ * read as a real hanging chain instead of one rigid rod. */
+function Band({ anchorRef, cardRef }: { anchorRef: React.RefObject<any>; cardRef: React.RefObject<any> }) {
+  const j1 = useRef<any>(null);
+  const j2 = useRef<any>(null);
+  const j3 = useRef<any>(null);
 
-/** First-load drop: the badge starts up near the clip and falls into
- * place. Damped enough not to bounce — a smooth descent, not a boing. */
-const DROP_SPRING = { stiffness: 13, damping: 8.5, mass: 2 };
-const DROP_START = -160;
+  useRopeJoint(anchorRef, j1, [[0, 0, 0], [0, 0, 0], 0.4]);
+  useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 0.4]);
+  useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 0.4]);
+  useSphericalJoint(j3, cardRef, [[0, 0, 0], [0, CARD_H / 2, 0]]);
+
+  const line = useRef<any>(null);
+  const points = useMemo(() => Array.from({ length: 4 }, () => new THREE.Vector3()), []);
+
+  useFrame(() => {
+    const refs = [anchorRef, j1, j2, j3];
+    refs.forEach((r, i) => {
+      const p = r.current?.translation?.();
+      if (p) points[i].set(p.x, p.y, p.z);
+    });
+    if (line.current) {
+      const curve = new THREE.CatmullRomCurve3(points);
+      line.current.setPoints(curve.getPoints(24).flatMap((p) => [p.x, p.y, p.z]));
+    }
+  });
+
+  const bodyProps: Partial<RigidBodyProps> = {
+    type: "dynamic",
+    colliders: false,
+    angularDamping: 4,
+    linearDamping: 4,
+  };
+
+  return (
+    <>
+      <RigidBody ref={j1} {...bodyProps} position={[0, ANCHOR_Y - LINK_GAP, 0]}>
+        <BallCollider args={[0.08]} />
+      </RigidBody>
+      <RigidBody ref={j2} {...bodyProps} position={[0, ANCHOR_Y - LINK_GAP * 2, 0]}>
+        <BallCollider args={[0.08]} />
+      </RigidBody>
+      <RigidBody ref={j3} {...bodyProps} position={[0, ANCHOR_Y - LINK_GAP * 3, 0]}>
+        <BallCollider args={[0.08]} />
+      </RigidBody>
+      <mesh>
+        <meshLineGeometry ref={line} />
+        <meshLineMaterial
+          color="#5fd4e8"
+          lineWidth={0.045}
+          transparent
+          opacity={0.92}
+        />
+      </mesh>
+    </>
+  );
+}
+
+/** The card itself: a physical rigid body you can grab and fling, which
+ * snaps back to hanging from the band once released. Dragging swaps it
+ * to a kinematic body driven by a pointer raycast against a plane facing
+ * the camera, rather than physically pushing it (which is the pattern
+ * the source article uses — see "camera unprojection" in its write-up). */
+function Card({ cardRef }: { cardRef: React.RefObject<any> }) {
+  const { camera, raycaster, pointer } = useThree();
+  const portrait = useTexture(badgePortrait);
+  const [dragging, setDragging] = useState(false);
+  const dragPlane = useRef(new THREE.Plane());
+  const dragOffset = useRef(new THREE.Vector3());
+  const meshRef = useRef<THREE.Group>(null);
+
+  const onPointerDown = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    const body = cardRef.current;
+    if (!body) return;
+    body.setBodyType(2, true); // kinematicPosition
+    const normal = new THREE.Vector3();
+    camera.getWorldDirection(normal);
+    dragPlane.current.setFromNormalAndCoplanarPoint(normal, e.point);
+    const t = body.translation();
+    dragOffset.current.set(e.point.x - t.x, e.point.y - t.y, e.point.z - t.z);
+    setDragging(true);
+    document.body.style.cursor = "grabbing";
+  };
+
+  const stopDragging = () => {
+    const body = cardRef.current;
+    if (body) {
+      body.setBodyType(0, true); // back to dynamic
+      body.wakeUp();
+    }
+    setDragging(false);
+    document.body.style.cursor = "auto";
+  };
+
+  const onPointerUp = (e: ThreeEvent<PointerEvent>) => {
+    (e.target as Element).releasePointerCapture?.(e.pointerId);
+    stopDragging();
+  };
+
+  useFrame(() => {
+    const body = cardRef.current;
+    if (!body) return;
+
+    if (dragging) {
+      raycaster.setFromCamera(pointer, camera);
+      const hit = new THREE.Vector3();
+      raycaster.ray.intersectPlane(dragPlane.current, hit);
+      if (hit) {
+        body.setNextKinematicTranslation({
+          x: hit.x - dragOffset.current.x,
+          y: hit.y - dragOffset.current.y,
+          z: hit.z - dragOffset.current.z,
+        });
+      }
+    }
+
+    // Keep the card facing the viewer rather than tumbling — a real
+    // badge on a lanyard mostly swings, it doesn't cartwheel, and an
+    // unconstrained rigid body looks wrong doing that in a UI context.
+    const rot = body.rotation();
+    const euler = new THREE.Euler().setFromQuaternion(
+      new THREE.Quaternion(rot.x, rot.y, rot.z, rot.w)
+    );
+    const damped = THREE.MathUtils.damp(euler.z, 0, 6, 1 / 60);
+    const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(euler.x, euler.y, damped));
+    body.setRotation({ x: q.x, y: q.y, z: q.z, w: q.w }, true);
+
+    if (meshRef.current) {
+      const t = body.translation();
+      meshRef.current.position.set(t.x, t.y, t.z);
+      meshRef.current.quaternion.set(rot.x, rot.y, rot.z, rot.w);
+    }
+  });
+
+  return (
+    <>
+      <RigidBody
+        ref={cardRef}
+        colliders={false}
+        type="dynamic"
+        angularDamping={3}
+        linearDamping={1.2}
+        position={[0, ANCHOR_Y - LINK_GAP * 3 - CARD_H / 2, 0]}
+      >
+        <CuboidCollider args={[CARD_W / 2, CARD_H / 2, CARD_T / 2]} />
+      </RigidBody>
+
+      <group
+        ref={meshRef}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerMissed={() => dragging && stopDragging()}
+        onPointerOver={() => {
+          document.body.style.cursor = "grab";
+        }}
+        onPointerOut={() => {
+          if (!dragging) document.body.style.cursor = "auto";
+        }}
+      >
+        {/* Clip connecting the card to the band. */}
+        <mesh position={[0, CARD_H / 2 + 0.06, 0]}>
+          <boxGeometry args={[0.22, 0.14, 0.06]} />
+          <meshStandardMaterial color="#d8dce2" metalness={0.3} roughness={0.4} />
+        </mesh>
+
+        <RoundedBox args={[CARD_W, CARD_H, CARD_T]} radius={0.06} smoothness={4}>
+          <meshPhysicalMaterial
+            color="#0a0c11"
+            roughness={0.35}
+            clearcoat={0.6}
+            clearcoatRoughness={0.25}
+          />
+        </RoundedBox>
+
+        {/* Portrait */}
+        <mesh position={[0, CARD_H * 0.14, CARD_T / 2 + 0.001]}>
+          <planeGeometry args={[CARD_W - 0.04, CARD_H * 0.56]} />
+          <meshBasicMaterial map={portrait} toneMapped={false} />
+        </mesh>
+
+        {/* Info panel */}
+        <mesh position={[0, -CARD_H * 0.31, CARD_T / 2 + 0.001]}>
+          <planeGeometry args={[CARD_W - 0.02, CARD_H * 0.36]} />
+          <meshStandardMaterial color="#c4c1ba" roughness={0.9} />
+        </mesh>
+
+        <Text
+          position={[-CARD_W / 2 + 0.14, -CARD_H * 0.22, CARD_T / 2 + 0.01]}
+          fontSize={0.15}
+          color="#1c1c1c"
+          anchorX="left"
+          anchorY="middle"
+          fontWeight={700}
+        >
+          {personalInfo.name}
+        </Text>
+        {ROLE_LINES.map((line, i) => (
+          <Text
+            key={line}
+            position={[-CARD_W / 2 + 0.14, -CARD_H * 0.32 - i * 0.14, CARD_T / 2 + 0.01]}
+            fontSize={0.1}
+            color="#4a4844"
+            anchorX="left"
+            anchorY="middle"
+          >
+            {line}
+          </Text>
+        ))}
+      </group>
+    </>
+  );
+}
+
+function Scene() {
+  const anchor = useRef<any>(null);
+  const card = useRef<any>(null);
+
+  return (
+    <>
+      {/* No drei <Environment> — its presets fetch an HDRI from an
+          external CDN at runtime, which is a fragile thing to depend on
+          in production (and hung this exact page load in testing). A
+          second, dimmer directional light standing in for bounce/fill
+          light gets a similar clearcoat highlight without the network
+          dependency. */}
+      <ambientLight intensity={0.7} />
+      <directionalLight position={[3, 5, 4]} intensity={1.4} />
+      <directionalLight position={[-4, -2, 3]} intensity={0.35} />
+
+      <RigidBody ref={anchor} type="fixed" position={[0, ANCHOR_Y, 0]}>
+        <CuboidCollider args={[0.05, 0.05, 0.05]} />
+      </RigidBody>
+
+      {/* Card mounts before Band: Band's spherical joint reads
+          cardRef.current once in its own mount effect, and if Card's
+          RigidBody hasn't populated that ref yet by then, the joint is
+          silently created against `null` and never actually attaches —
+          which is exactly what was happening with Card declared second. */}
+      <Card cardRef={card} />
+      <Band anchorRef={anchor} cardRef={card} />
+    </>
+  );
+}
 
 /**
- * A physical employee-badge hanging from a lanyard, built as a small
- * multi-layer spring system rather than a looping float animation:
+ * A real, physically-simulated 3D badge — react-three-fiber + Rapier
+ * rigid bodies and rope joints for the lanyard, instead of the earlier
+ * spring-driven CSS/DOM version. Built after
+ * vercel.com/blog/building-an-interactive-3d-event-badge-with-react-three-fiber:
+ * a fixed anchor, three rope-jointed chain links, and the card itself as
+ * a fourth body on a spherical joint, so it hangs and swings under real
+ * gravity rather than a hand-tuned spring approximation of one.
  *
- * - It falls into place on first mount (dropY), then the pendulum layer
- *   (rotateZ/x, pivoted from the clip) settles from a one-time mount
- *   "disturbance".
- * - Hovering the card retargets the *lanyard's* rotateX/rotateY — a 3D
- *   depth tilt toward the pointer, tuned like GlassCard's — while the
- *   card face itself stays flat.
- * - The outermost layer is draggable: it owns its own x/y motion values
- *   that Framer's `drag` gesture animates directly, kept on a short
- *   elastic tether so tugging the badge stretches the "lanyard" a
- *   little and it glides back smoothly on release.
+ * Drag turns the card into a kinematic body driven by a pointer raycast
+ * against a camera-facing plane (see Card's onPointerDown) instead of
+ * applying forces — release hands it back to the physics simulation,
+ * which is what makes it fall and settle believably afterward.
  */
 export default function IDCard() {
   const reduced = useReducedMotion();
 
-  const dragX = useMotionValue(0);
-  const dragY = useMotionValue(0);
-  // A lean while actively being dragged, in the same direction as the
-  // drag — pull it left and the card cants left, like a real badge on a
-  // lanyard being tugged sideways. `transformOrigin` is "top center" on
-  // this layer: with y increasing downward, a *positive* (clockwise)
-  // rotateZ carries the bottom-anchored point to negative x — i.e. left —
-  // so a negative (left) drag needs a *positive* rotateZ to lean left.
-  // Smoothed through a spring so it lags the raw drag position slightly
-  // instead of snapping to it.
-  const dragTilt = useSpring(useTransform(dragX, [-70, 70], [14, -14]), {
-    stiffness: 140,
-    damping: 22,
-    mass: 1.1,
-  });
-
-  // Falls in from just above rest on first mount, independent of the drag
-  // layer below (dropY is its own translate, stacked on top of dragY
-  // rather than combined into it, so dragging never fights this).
-  const dropY = useSpring(reduced ? 0 : DROP_START, DROP_SPRING);
-
-  const tiltX = useSpring(reduced ? 0 : 4, TILT_SPRING);
-  const tiltY = useSpring(reduced ? 0 : -5, TILT_SPRING);
-  const swingZ = useSpring(reduced ? 0 : -7, SWING_SPRING);
-  const swayX = useSpring(reduced ? 0 : -5, SWAY_SPRING);
-
-  const tiltXOut = useTransform(tiltX, (v) => clamp(v, -TILT_CLAMP, TILT_CLAMP));
-  const tiltYOut = useTransform(tiltY, (v) => clamp(v, -TILT_CLAMP, TILT_CLAMP));
-  const swingZOut = useTransform(swingZ, (v) => clamp(v, -SWING_CLAMP, SWING_CLAMP));
-  const swayXOut = useTransform(swayX, (v) => clamp(v, -SWAY_CLAMP, SWAY_CLAMP));
-
-  // Sheen drifts opposite the tilt, like light catching plastic.
-  const sheenX = useTransform(tiltYOut, [-MAX_TILT, MAX_TILT], [-30, 130]);
-  const sheenOpacity = useTransform(
-    tiltYOut,
-    [-MAX_TILT, 0, MAX_TILT],
-    [0.22, 0.1, 0.22]
-  );
-
-  useEffect(() => {
-    if (reduced) return;
-    // The badge starts slightly disturbed (and dropped) and settles —
-    // not a repeating loop, just the springs relaxing to rest once.
-    const t = window.setTimeout(() => {
-      dropY.set(0);
-      tiltX.set(0);
-      tiltY.set(0);
-      swingZ.set(0);
-      swayX.set(0);
-    }, 60);
-    return () => window.clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduced]);
-
-  // Drag is free-form while it's happening; on release the badge glides
-  // back to its resting position by a real spring (seeded with however
-  // fast it was moving when you let go).
-  const handleDragEnd = (_e: PointerEvent, info: PanInfo) => {
-    // Only the position needs to be driven back to 0 — dragTilt already
-    // reacts to dragX live (it's `useTransform(dragX, ...)`), so as this
-    // settles the lean settles with it, in exactly one motion. Kicking
-    // swingZ/tiltY on top of that used to double up the rotation, which
-    // was both an over-shaky release and why the badge could rest at a
-    // slight (never-guaranteed-zero) angle.
-    animate(dragX, 0, { ...RETURN_SPRING, velocity: info.velocity.x });
-    animate(dragY, 0, { ...RETURN_SPRING, velocity: info.velocity.y });
-  };
-
-  // 3D hover depth: tilts the *lanyard's* rotateX/rotateY toward wherever
-  // the pointer is over the card, independent of the swing/drag layers
-  // (those are rotateZ/translate — a different axis, so this never
-  // fights them). Detection happens on the card (a practical hit target)
-  // but the visible tilt lands on the strap, so the card face stays flat.
-  // Mouse only: on touch there's no hover to react to.
-  const handleCardHover = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (reduced || e.pointerType !== "mouse") return;
-    const r = e.currentTarget.getBoundingClientRect();
-    const nx = clamp(((e.clientX - r.left) / r.width) * 2 - 1, -1, 1);
-    const ny = clamp(((e.clientY - r.top) / r.height) * 2 - 1, -1, 1);
-    tiltX.set(-ny * MAX_TILT);
-    tiltY.set(nx * MAX_TILT);
-  };
-
-  const handleCardLeave = () => {
-    tiltX.set(0);
-    tiltY.set(0);
-  };
+  if (reduced) {
+    // A full physics simulation is exactly the kind of motion this
+    // preference exists to opt out of — render the card at rest, no
+    // canvas, no simulation loop.
+    return (
+      <div
+        className="relative mx-auto flex flex-col items-center gap-3 rounded-[18px] border border-white/10 bg-[#0a0c11] p-6 text-center"
+        style={{ width: "clamp(200px, 17vw, 250px)", aspectRatio: "0.64" }}
+      >
+        <span className="font-display text-[1.05rem] font-semibold text-white">
+          {personalInfo.name}
+        </span>
+        <span className="text-[0.75rem] text-white/60">Software QA Automation Engineer</span>
+      </div>
+    );
+  }
 
   return (
-    <motion.div
-      className="relative mx-auto"
-      style={{
-        width: "clamp(200px, 17vw, 250px)",
-        perspective: 1400,
-        y: dropY,
-      }}
+    <div
+      className="relative mx-auto touch-none"
+      style={{ width: "clamp(230px, 22vw, 320px)", height: "clamp(340px, 34vw, 480px)" }}
     >
-      <motion.div
-        drag={!reduced}
-        dragConstraints={{ left: -70, right: 70, top: -35, bottom: 55 }}
-        dragElastic={0.3}
-        dragMomentum={false}
-        onDragEnd={handleDragEnd}
-        style={{
-          x: dragX,
-          y: dragY,
-          rotateZ: dragTilt,
-          transformOrigin: "top center",
-          cursor: reduced ? undefined : "grab",
-        }}
-        className="touch-none select-none"
-      >
-        <motion.div
-          /* Explicitly the positioned ancestor for the lanyard's `absolute`
-             below — relying on "a transform also creates a containing
-             block" left the centering ambiguous in practice. This makes
-             it unambiguous: the lanyard centers against *this* box, which
-             is exactly as wide as the card. */
-          className="relative"
-          style={{
-            rotateZ: swingZOut,
-            x: swayXOut,
-            transformOrigin: "top center",
-          }}
-        >
-          {/* Lanyard — narrow strip climbing out of frame, cut off by the
-              hero's own overflow. Carries the 3D hover-depth tilt instead
-              of the card, so the strap itself is what visibly cants toward
-              the pointer while the card face stays flat.
-
-              Height is a fixed px, not 70vh: a rotateX/rotateY tilt on a
-              rectangle that tall visibly kinks partway up (perspective
-              foreshortening compounds hard over hundreds of extra px of
-              length it never needed — only a short sliver near the clip
-              is ever actually on screen). 340px comfortably clears the
-              space above the card at every breakpoint without the
-              distortion. */}
-          <motion.div
-            aria-hidden
-            className="absolute left-1/2 -top-[340px] h-[340px] w-[14px] overflow-hidden rounded-b-sm"
-            style={{
-              // Centering has to be a motion value here, not the usual
-              // `-translate-x-1/2` Tailwind class: once this element also
-              // has rotateX/rotateY as motion values, Framer owns the
-              // whole `transform` property on it directly and silently
-              // drops any transform contributed by a plain CSS class,
-              // which was quietly pushing the strap half its own width
-              // off-center.
-              x: "-50%",
-              rotateX: tiltXOut,
-              rotateY: tiltYOut,
-              /* This element is a tall 72vh strip, but only its very
-                 bottom edge (where it meets the clip) is ever visible.
-                 Pivoting on the default center would swing that bottom
-                 edge sideways by a lot for even a small tilt — pivoting
-                 on the bottom edge instead keeps it glued to the clip and
-                 lets only the (offscreen) top sway. */
-              transformOrigin: "bottom center",
-              background:
-                "linear-gradient(180deg, rgba(60,150,175,0.95), rgba(50,85,190,0.92))",
-              boxShadow: "0 0 1px rgba(0,0,0,0.4)",
-            }}
-          >
-            <div
-              aria-hidden
-              /* justify-end (not the default top-start) so the text
-                 stack is anchored to the *bottom* of this box — the only
-                 part of a 72vh-tall strip that's ever actually on screen
-                 is the sliver right above the clip. Anchoring from the
-                 top meant every repetition landed somewhere in the
-                 offscreen upper 70vh and none ever reached the visible
-                 bit near the clip. */
-              className="absolute inset-0 flex flex-col items-center justify-end gap-4 pb-[28px] text-[9px] font-semibold uppercase tracking-[0.3em] text-white/70"
-            >
-              {/* Dense enough (and packed with a small enough gap) that the
-                 repeat tiles continuously along the whole strip — with only
-                 14 sparser copies, whatever fraction of the 72vh strap
-                 happens to be visible on a given screen could easily land
-                 in a gap between two repetitions instead of on one.
-
-                 writing-mode lives on each item, not the flex container:
-                 vertical-rl on the *container* swaps its own block/inline
-                 axes, so flex-col ends up stacking items sideways along
-                 the (now-horizontal) block axis instead of down the
-                 strap — inside a 14px-wide strip that clips everything
-                 but one item. Keeping the container in normal writing
-                 mode (so flex-col stacks vertically, as intended) and
-                 rotating only each span's own text avoids that.
-
-                 shrink-0 matters too: with 60 items' natural height far
-                 exceeding the container's, flexbox's default
-                 flex-shrink:1 squeezed every item's box down to a
-                 fraction of what its own text needs — the text still
-                 rendered at full size and spilled out of that shrunken
-                 box into its neighbors, so overlapping fragments from
-                 different items painted over each other and only
-                 "SHAKYA" ever consistently won. shrink-0 keeps each
-                 item's box at its actual content size; whatever then
-                 doesn't fit the strip is cleanly cropped by the
-                 lanyard's own overflow-hidden instead of being squashed
-                 into every other item. */}
-              {Array.from({ length: 10 }).map((_, i) => (
-                <span
-                  key={i}
-                  className="shrink-0"
-                  style={{ writingMode: "vertical-rl" }}
-                >
-                  Subin Shakya.
-                </span>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Clip — the physical joint between lanyard and card. */}
-          <div
-            aria-hidden
-            className="relative z-[1] mx-auto h-4 w-8 rounded-[5px]"
-            style={{
-              background: "linear-gradient(180deg, #e7ebf0, #b9c1cc)",
-              boxShadow:
-                "inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 1px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.35)",
-            }}
-          />
-          <div
-            aria-hidden
-            className="relative z-[1] mx-auto -mt-1 h-3 w-3 rounded-full"
-            style={{
-              background: "radial-gradient(circle at 35% 30%, #f4f6f8, #9aa3ad)",
-              boxShadow: "0 2px 3px rgba(0,0,0,0.4)",
-            }}
-          />
-
-          {/* Card — flat; the pointer-tracked 3D depth tilt lives on the
-              lanyard above instead (see handleCardHover). This element
-              stays the hover hit-target since the strap itself is too
-              narrow to hover reliably. */}
-          <motion.div
-            onPointerMove={handleCardHover}
-            onPointerLeave={handleCardLeave}
-            className="relative -mt-3 overflow-hidden rounded-[18px]"
-            style={{
-              aspectRatio: "0.64",
-              background: "linear-gradient(165deg, #adaba4 0%, #918f89 100%)",
-              boxShadow:
-                "0 30px 60px -20px rgba(0,0,0,0.55), 0 2px 0 rgba(255,255,255,0.35) inset",
-              border: "1px solid rgba(255,255,255,0.5)",
-            }}
-          >
-            {/* Portrait */}
-            <div className="relative h-[62%] w-full overflow-hidden">
-              <img
-                src={badgePortrait}
-                alt={personalInfo.name}
-                loading="eager"
-                decoding="async"
-                draggable={false}
-                onDragStart={(e) => e.preventDefault()}
-                className="h-full w-full select-none object-cover"
-                /* `pointer-events: none` keeps the <img> out of hit-testing
-                   entirely, so a pointerdown here is never "on the image" at
-                   all — it's on the card behind it, which is what Framer's
-                   drag gesture is actually listening to. draggable={false}
-                   alone wasn't enough: the browser could still treat the
-                   gesture as a native image drag before that ever mattered. */
-                style={{
-                  objectPosition: "center 20%",
-                  pointerEvents: "none",
-                  filter: "saturate(0.82) contrast(1.03) brightness(1.02)",
-                }}
-              />
-            </div>
-
-            {/* White info panel with a wavy top edge cut into the photo,
-                instead of a straight seam — the panel's own shape carries
-                that curve rather than a separate overlay. */}
-            <div className="absolute inset-x-0 bottom-0 h-[42%] bg-[#c4c1ba]">
-              <svg
-                aria-hidden
-                viewBox="0 0 100 27"
-                preserveAspectRatio="none"
-                /* Overlaps 1px into the panel below (bottom-[calc(100%-1px)]
-                   instead of bottom-full) so there's no hairline gap between
-                   the curve and the flat panel it's sitting on. */
-                className="absolute inset-x-0 bottom-[calc(100%-1px)] h-[13%] w-full"
-              >
-                <path
-                  d="M0,27 L0,14 C22,2 38,24 60,12 C74,4 88,10 100,7 L100,27 Z"
-                  fill="#c4c1ba"
-                />
-              </svg>
-
-              <span className="absolute bottom-2 right-4 text-[0.55rem] font-medium tracking-[0.02em] text-[#4a4844]/70">
-                ID: SS-0209
-              </span>
-
-              {/* Content-height row (not h-full) so `items-center` aligns
-                  the QR against the *text block's* middle. With h-full the
-                  row was the whole panel's height, so centering the QR
-                  within it parked it far below the top-aligned text. */}
-              {/* Top padding stays small until the card is actually wide
-                  enough to earn it: the width clamp bottoms out at 200px
-                  from ~1024-1470px, so a fixed lg:pt-6 there left a big
-                  dead gap above the name. */}
-              <div className="relative flex items-center justify-between gap-3 px-4 pt-1 lg:pt-2.5 2xl:pt-5">
-                <div className="flex flex-col items-start gap-1.5 text-left">
-                  <span className="font-display text-[1.15rem] font-semibold leading-tight tracking-supertight text-[#1c1c1c]">
-                    {personalInfo.name}
-                  </span>
-                  <span className="h-px w-10 bg-[#4a4844]/30" />
-                  <span className="flex flex-col items-start text-[0.68rem] font-semibold italic leading-tight tracking-[0.02em] text-[#4a4844]">
-                    <span>Software</span>
-                    <span>Quality Assurance</span>
-                  </span>
-                </div>
-
-                {/* LinkedIn QR — a small light card behind it so the code
-                    keeps enough contrast against the panel's own tone.
-                    Double-click (not single, which the card's own drag
-                    gesture already owns) opens the profile directly, for
-                    anyone reading this on a screen rather than scanning it
-                    with a phone. Sized down a touch on mobile/tablet to
-                    fit the tighter panel, but not so far it stops actually
-                    being scannable. */}
-                <span
-                  role="button"
-                  tabIndex={0}
-                  title="Double-click to open LinkedIn"
-                  onDoubleClick={() =>
-                    window.open(
-                      "https://www.linkedin.com/in/subin-shk/",
-                      "_blank",
-                      "noopener,noreferrer"
-                    )
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      window.open(
-                        "https://www.linkedin.com/in/subin-shk/",
-                        "_blank",
-                        "noopener,noreferrer"
-                      );
-                    }
-                  }}
-                  className="shrink-0 cursor-pointer rounded-md bg-[#ece9e2] p-1 shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
-                >
-                  <img
-                    src={linkedinQr}
-                    alt="QR code linking to Subin Shakya's LinkedIn profile — double-click to open"
-                    draggable={false}
-                    className="h-16 w-16 rounded-[3px] select-none lg:h-[4.75rem] lg:w-[4.75rem]"
-                    style={{ pointerEvents: "none" }}
-                  />
-                </span>
-              </div>
-            </div>
-
-            {/* Diagonal plastic sheen — drifts with the tilt. */}
-            <motion.div
-              aria-hidden
-              className="pointer-events-none absolute inset-0"
-              style={{
-                opacity: sheenOpacity,
-                background:
-                  "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.6) 46%, transparent 60%)",
-                backgroundSize: "220% 100%",
-                backgroundPositionX: useTransform(sheenX, (v) => `${v}%`),
-                mixBlendMode: "overlay",
-              }}
-            />
-
-            {/* Top inner edge highlight, like light along a bevel. */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 rounded-[18px]"
-              style={{
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5)",
-              }}
-            />
-          </motion.div>
-
-          {/* Contact shadow, cast onto the page below the badge. */}
-          <motion.div
-            aria-hidden
-            className="mx-auto mt-3 h-4 rounded-[50%]"
-            style={{
-              width: "70%",
-              background:
-                "radial-gradient(closest-side, rgba(0,0,0,0.45), transparent 75%)",
-              opacity: useTransform(tiltYOut, [-MAX_TILT, 0, MAX_TILT], [0.6, 0.85, 0.6]),
-              x: useTransform(swayXOut, (v) => v * 0.6),
-            }}
-          />
-        </motion.div>
-      </motion.div>
-    </motion.div>
+      <Canvas camera={{ position: [0, 0, 6], fov: 30 }} dpr={[1, 1.5]}>
+        <Suspense fallback={null}>
+          <Physics gravity={[0, -30, 0]} interpolate>
+            <Scene />
+          </Physics>
+        </Suspense>
+      </Canvas>
+    </div>
   );
-}
-
-function clamp(v: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, v));
 }

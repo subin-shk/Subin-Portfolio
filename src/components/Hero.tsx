@@ -1,18 +1,22 @@
-import { useRef } from "react";
+import { lazy, Suspense, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Download } from "lucide-react";
 import { personalInfo } from "../data/portfolioData";
 import { EASE, useAnimatedBlur, useReducedMotion, useRise } from "../lib/motion";
 import { scrollTo } from "../lib/useSmoothScroll";
 import GlassButton from "./ui/GlassButton";
-import IDCard from "./IDCard";
+
+// Three.js + Rapier's physics/WASM pull the bundle up several hundred KB —
+// lazy so that weight loads after the critical hero content, not blocking it.
+const IDCard = lazy(() => import("./IDCard"));
 
 const NAME = personalInfo.name.toUpperCase();
 
 /**
  * Opening screen. The portrait used to be a cutout composited into the
- * gradient mesh; it's now a physical ID badge hanging from a lanyard —
- * see IDCard.tsx for the swing/tilt physics.
+ * gradient mesh; it's now a real physics-simulated 3D badge (react-three-fiber
+ * + Rapier rigid bodies/rope joints) hanging from a lanyard — see
+ * IDCard.tsx.
  */
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -71,7 +75,9 @@ export default function Hero() {
           transition={{ duration: 0.5, ease: EASE, delay: 0.05 }}
           className="relative mb-2 w-full sm:mb-4 lg:mb-0 lg:w-auto lg:shrink-0"
         >
-          <IDCard />
+          <Suspense fallback={null}>
+            <IDCard />
+          </Suspense>
         </motion.div>
 
         <div className="flex w-full flex-col items-center text-center lg:items-start lg:text-left">
