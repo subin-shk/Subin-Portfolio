@@ -56,7 +56,7 @@ export default function Focus() {
   return (
     <section
       aria-label="Focus areas"
-      className="relative overflow-hidden border-y border-white/10 bg-[#08090c] py-4 sm:py-5"
+      className="relative overflow-hidden py-4 sm:py-5"
     >
       <Row tags={row} duration={130} />
     </section>
