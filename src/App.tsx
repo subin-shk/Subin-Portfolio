@@ -12,6 +12,7 @@ import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Seo from "./components/Seo";
 import CustomCursor from "./components/CustomCursor";
+import Preloader from "./components/Preloader";
 import { useSmoothScroll } from "./lib/useSmoothScroll";
 
 /**
@@ -26,6 +27,7 @@ export default function App() {
     <>
       <Seo />
       <CustomCursor />
+      <Preloader />
       <Atmosphere />
       <Orb />
 
