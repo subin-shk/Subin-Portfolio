@@ -427,7 +427,7 @@ export const testimonials: Testimonial[] = [
     role: "Software Quality Assurance",
     company: "",
     quote:
-      "I had the pleasure of working with Subin on multiple projects, and his expertise in Quality Assurance truly stands out. His attention to detail, ability to identify critical issues, and dedication to delivering high-quality software made a significant impact on our team's success. Subin is highly skilled in manual and automation testing, and his proficiency with tools like JIRA, Postman, Appium, and Selenium made testing processes much more efficient. He is not only technically strong but also an excellent team player who is always willing to help others. I highly recommend Subin for any QA role!",
+      "I had the pleasure of working with Subin on multiple projects, and his expertise in Quality Assurance truly stands out. His attention to detail, ability to identify critical issues, and dedication to delivering high-quality software made a significant impact on our team's success. Subin is highly skilled in manual and automation testing, and his proficiency with tools like JIRA, Postman, Appium, and Selenium made testing processes much more efficient.\n\nHe is not only technically strong but also an excellent team player who is always willing to help others. I highly recommend Subin for any QA role!",
     image: aarzuAwal,
   },
   {
@@ -436,7 +436,7 @@ export const testimonials: Testimonial[] = [
     role: "Technical Support Team Lead | QA Manager",
     company: "",
     quote:
-      "I had the pleasure of mentoring Subin as the QA Mentor and building the QA team at ThemeGrill. During this time, I saw him grow into a confident and capable team member. He is a fast learner, always eager to learn new things, and has great potential. His positive attitude and willingness to take on new challenges make him a valuable addition to any team. I highly recommend Subin.",
+      "I had the pleasure of mentoring Subin as the QA Mentor and building the QA team at ThemeGrill. During this time, I saw him grow into a confident and capable team member.\n\nHe is a fast learner, always eager to learn new things, and has great potential. His positive attitude and willingness to take on new challenges make him a valuable addition to any team. I highly recommend Subin.",
     image: amritKumarShrestha,
   },
 ];

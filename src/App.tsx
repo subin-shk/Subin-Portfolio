@@ -1,5 +1,4 @@
 import Atmosphere from "./components/Atmosphere";
-import Orb from "./components/Orb";
 import Dock from "./components/Dock";
 import Hero from "./components/Hero";
 import Focus from "./components/Focus";
@@ -28,7 +27,6 @@ export default function App() {
       <Seo />
       <CustomCursor />
       <Atmosphere />
-      <Orb />
 
       <a
         href="#about"

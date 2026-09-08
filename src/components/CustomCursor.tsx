@@ -28,8 +28,6 @@ const TIP_ORIGIN = `${TIP_X}% ${TIP_Y}%`;
 const TRAIL = [
   { stiffness: 210, damping: 24, scale: 0.46, opacity: 0.42 },
   { stiffness: 150, damping: 23, scale: 0.36, opacity: 0.3 },
-  { stiffness: 105, damping: 22, scale: 0.27, opacity: 0.2 },
-  { stiffness: 75, damping: 21, scale: 0.2, opacity: 0.12 },
 ] as const;
 
 const INTERACTIVE_SELECTOR =
@@ -86,15 +84,9 @@ export default function CustomCursor() {
   const trailY0 = useSpring(mouseY, { ...TRAIL[0], mass: 0.6 });
   const trailX1 = useSpring(mouseX, { ...TRAIL[1], mass: 0.6 });
   const trailY1 = useSpring(mouseY, { ...TRAIL[1], mass: 0.6 });
-  const trailX2 = useSpring(mouseX, { ...TRAIL[2], mass: 0.6 });
-  const trailY2 = useSpring(mouseY, { ...TRAIL[2], mass: 0.6 });
-  const trailX3 = useSpring(mouseX, { ...TRAIL[3], mass: 0.6 });
-  const trailY3 = useSpring(mouseY, { ...TRAIL[3], mass: 0.6 });
   const trailSprings = [
     [trailX0, trailY0],
     [trailX1, trailY1],
-    [trailX2, trailY2],
-    [trailX3, trailY3],
   ] as const;
 
   const [visible, setVisible] = useState(false);
@@ -102,14 +94,10 @@ export default function CustomCursor() {
   const [hover, setHover] = useState<HoverKind>("default");
   const [overText, setOverText] = useState(false);
   const [burstId, setBurstId] = useState(0);
-  const [particles, setParticles] = useState<
-    { id: number; x: number; y: number }[]
-  >([]);
 
   const awakeRef = useRef(true);
   const lastMove = useRef(0);
   const hiddenRef = useRef(false);
-  const particleId = useRef(0);
 
   useEffect(() => {
     if (isTouch) return;
@@ -164,22 +152,6 @@ export default function CustomCursor() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTouch]);
-
-  // A steady trickle of tiny stars off the bottom point, independent of
-  // movement — the constellation companions above only appear while
-  // dragging, this is the mascot's constant "stardust".
-  useEffect(() => {
-    if (isTouch || reduced) return;
-    const spawn = window.setInterval(() => {
-      if (hiddenRef.current) return;
-      const id = ++particleId.current;
-      const px = x.get() + (Math.random() * 12 - 6);
-      const py = y.get() + SIZE * 0.4;
-      setParticles((prev) => [...prev.slice(-10), { id, x: px, y: py }]);
-    }, 240);
-    return () => window.clearInterval(spawn);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTouch, reduced]);
 
   if (isTouch) return null;
 
@@ -256,37 +228,6 @@ export default function CustomCursor() {
             </motion.svg>
           );
         })}
-
-      {/* Stardust — a steady trickle of tiny stars off the bottom point */}
-      <AnimatePresence>
-        {particles.map((p) => (
-          <motion.svg
-            key={p.id}
-            aria-hidden
-            viewBox="0 0 100 100"
-            width={9}
-            height={9}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              marginLeft: -4.5,
-              marginTop: -4.5,
-              pointerEvents: "none",
-              zIndex: 2147483645,
-              filter: "drop-shadow(0 0 2px rgba(95,212,232,0.7))",
-            }}
-            initial={{ x: p.x, y: p.y, opacity: 0.9, scale: 0.7 }}
-            animate={{ y: p.y + 22, opacity: 0, scale: 0.15 }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-            onAnimationComplete={() =>
-              setParticles((prev) => prev.filter((q) => q.id !== p.id))
-            }
-          >
-            <path d={STAR_PATH} fill="#cdeffb" />
-          </motion.svg>
-        ))}
-      </AnimatePresence>
 
       <motion.div
         aria-hidden

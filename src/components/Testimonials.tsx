@@ -57,9 +57,11 @@ export default function Testimonials() {
                   exit={reduced ? { opacity: 0 } : { opacity: 0, x: -24 * direction, filter: "blur(6px)" }}
                   transition={{ duration: reduced ? 0.25 : 0.55, ease: EASE }}
                 >
-                  <p className="font-display max-w-[58ch] text-[clamp(1.15rem,1.9vw,1.5rem)] font-light leading-[1.58] tracking-supertight text-white/92">
-                    {active.quote}
-                  </p>
+                  <div className="font-display max-w-[58ch] space-y-4 text-[clamp(1.15rem,1.9vw,1.5rem)] font-light leading-[1.58] tracking-supertight text-white/92 text-left">
+                    {active.quote.split("\n\n").map((para, i) => (
+                      <p key={i}>{para}</p>
+                    ))}
+                  </div>
 
                   <div className="mt-8 flex items-center gap-3">
                     <div className="rule w-10" />
@@ -144,7 +146,7 @@ export default function Testimonials() {
                       }}
                     />
                     <span
-                      className="relative block h-20 w-20 overflow-hidden rounded-full bg-[#12151c] sm:h-24 sm:w-24"
+                      className="relative block h-16 w-16 overflow-hidden rounded-full bg-[#12151c] sm:h-20 sm:w-20"
                       style={{
                         opacity: isActive ? 1 : 0.5,
                         boxShadow: isActive
