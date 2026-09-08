@@ -92,6 +92,15 @@ export interface FeaturedProject {
   accent: Accent;
 }
 
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  quote: string;
+  image: string;
+}
+
 export interface ArchiveProject {
   id: string;
   name: string;

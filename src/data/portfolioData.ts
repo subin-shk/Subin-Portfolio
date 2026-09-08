@@ -7,12 +7,15 @@ import type {
   Stat,
   FeaturedProject,
   ArchiveProject,
+  Testimonial,
 } from "../types";
 import cloverEmporium from "../images/projects/clover_emporium.png";
 import masteriyoLms from "../images/projects/masteriyo-lms.webp";
 import myDemoApp from "../images/projects/mydemoapp-android.webp";
 import trelloBoard from "../images/projects/trello-board.webp";
 import faceTune from "../images/projects/face_tune.png";
+import amritKumarShrestha from "../images/amrit_kumar_shrestha.jpg";
+import aarzuAwal from "../images/aarzu_awal.jpg";
 
 // Labels live only in the dock, so the page body never announces its structure.
 export const navigationItems: NavItem[] = [
@@ -22,6 +25,7 @@ export const navigationItems: NavItem[] = [
   { name: "Projects", href: "#projects" },
   { name: "Journey", href: "#journey" },
   { name: "Achievements", href: "#achievements" },
+  { name: "Testimonials", href: "#testimonials" },
   { name: "Contact", href: "#contact" },
 ];
 
@@ -96,6 +100,10 @@ export const narrative = {
   achievements: {
     beat: "With a few moments worth <em>keeping</em>.",
     body: "Competition, community, and the occasional certificate.",
+  },
+  testimonials: {
+    beat: "What they <em>said</em>.",
+    body: "A few words from the people I've tested, shipped, and shared a standup with.",
   },
   contact: {
     beat: "Let's build something <em>amazing</em>.",
@@ -409,5 +417,26 @@ export const achievements: Achievement[] = [
     metric: "8th",
     metricLabel: "Overall",
     icon: "medal",
+  },
+];
+
+export const testimonials: Testimonial[] = [
+  {
+    id: "1",
+    name: "Aarzu Awal",
+    role: "Software Quality Assurance",
+    company: "ThemeGrill",
+    quote:
+      "I had the pleasure of working with Subin on multiple projects, and his expertise in Quality Assurance truly stands out. His attention to detail, ability to identify critical issues, and dedication to delivering high-quality software made a significant impact on our team's success. Subin is highly skilled in manual and automation testing, and his proficiency with tools like JIRA, Postman, Appium, and Selenium made testing processes much more efficient. He is not only technically strong but also an excellent team player who is always willing to help others. I highly recommend Subin for any QA role!",
+    image: aarzuAwal,
+  },
+  {
+    id: "2",
+    name: "Amrit Kumar Shrestha",
+    role: "Technical Support Team Lead",
+    company: "QA Manager",
+    quote:
+      "I had the pleasure of mentoring Subin as the QA Mentor and building the QA team at ThemeGrill. During this time, I saw him grow into a confident and capable team member. He is a fast learner, always eager to learn new things, and has great potential. His positive attitude and willingness to take on new challenges make him a valuable addition to any team. I highly recommend Subin.",
+    image: amritKumarShrestha,
   },
 ];

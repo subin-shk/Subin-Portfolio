@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
-import { Code2, Home, LayoutGrid, Mail, Route, Trophy, User } from "lucide-react";
+import {
+  Code2,
+  Home,
+  LayoutGrid,
+  Mail,
+  MessageSquareQuote,
+  Route,
+  Trophy,
+  User,
+} from "lucide-react";
 import { navigationItems } from "../data/portfolioData";
 import { EASE, useMediaQuery, useReducedMotion } from "../lib/motion";
 import { scrollTo } from "../lib/useSmoothScroll";
 
-/** Seven labels don't fit a phone, so narrow screens navigate by icon. */
+/** Eight labels don't fit a phone, so narrow screens navigate by icon. */
 const ICONS: Record<string, typeof Home> = {
   home: Home,
   about: User,
@@ -13,6 +22,7 @@ const ICONS: Record<string, typeof Home> = {
   projects: LayoutGrid,
   journey: Route,
   achievements: Trophy,
+  testimonials: MessageSquareQuote,
   contact: Mail,
 };
 
