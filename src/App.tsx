@@ -8,6 +8,7 @@ import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import Journey from "./components/Journey";
 import Achievements from "./components/Achievements";
+import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Seo from "./components/Seo";
@@ -46,6 +47,7 @@ export default function App() {
         <Projects />
         <Journey />
         <Achievements />
+        <Testimonials />
         <Contact />
       </main>
 
