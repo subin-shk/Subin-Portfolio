@@ -20,6 +20,7 @@ export default {
         blue: { DEFAULT: "#4d7cff", soft: "#7fa2ff" },
         cyan: { DEFAULT: "#5fd4e8", soft: "#a5e9f5" },
         violet: { DEFAULT: "#9b7bff", soft: "#c3aeff" },
+        pink: { DEFAULT: "#ff4d8d", soft: "#ff8fb8" },
       },
       letterSpacing: {
         tightest: "-0.055em",
