@@ -8,6 +8,18 @@ gsap.registerPlugin(ScrollTrigger);
 
 let lenis: Lenis | null = null;
 
+/** Pins real scrolling while the intro curtain plays its own, unrelated
+ * open animation — otherwise Lenis would keep smoothing whatever wheel/touch
+ * input the user sent during that gesture and the page would creep away
+ * from the top underneath it. */
+export function stopScroll() {
+  lenis?.stop();
+}
+
+export function startScroll() {
+  lenis?.start();
+}
+
 /** Anchor links and the dock both route through this. */
 export function scrollTo(target: string | HTMLElement, offset = 0) {
   if (lenis) {

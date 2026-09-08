@@ -1,59 +1,104 @@
-import { useEffect, useState } from "react";
-import {
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { animate, motion, useMotionValue } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { personalInfo } from "../data/portfolioData";
-import { useReducedMotion } from "../lib/motion";
+import { EASE, useReducedMotion } from "../lib/motion";
+import { startScroll, stopScroll } from "../lib/useSmoothScroll";
 
-/** Scroll distance (px) over which the curtain fully opens. */
-const REVEAL_DISTANCE = 480;
+/** How long the tear takes once triggered — a fixed, eased duration rather
+ * than something scrubbed 1:1 with scroll delta, so it always reads as one
+ * smooth gesture regardless of how hard or lightly it was triggered. */
+const OPEN_DURATION = 1.15;
 
 /**
  * Full-screen name curtain, up ahead of everything else while the page is
- * still at rest. Scrolling tears it open — top half up, bottom half down —
- * onto the real Hero underneath, instead of it fading out on a timer.
+ * still at rest. The first scroll/swipe/key doesn't move the real page at
+ * all — it's just the trigger for a one-shot open animation (top half up,
+ * bottom half down, at a fixed smooth duration) that tears the curtain off
+ * the real Hero underneath. Real scrolling stays locked for that one beat
+ * so the page is still sitting at the very top, Hero in view, once it
+ * finishes — instead of having already crept down by whatever the trigger
+ * gesture's own scroll delta happened to be.
  *
- * Built as two overflow-hidden halves each holding a *doubled*-height copy
- * of the same content, anchored to their own outer edge: that puts both
- * copies' centers exactly on the viewport's vertical center, so together
- * they read as one uncut name even though each half only ever shows its
- * own 50%.
+ * Both halves stay fully opaque for their entire time on screen — this is
+ * a solid panel sliding out of the way, not something dissolving away.
  */
 export default function Preloader() {
   const reduced = useReducedMotion();
   const [done, setDone] = useState(reduced);
-  const { scrollY } = useScroll();
+  const openedRef = useRef(false);
 
-  const progress = useTransform(scrollY, [0, REVEAL_DISTANCE], [0, 1], {
-    clamp: true,
-  });
-  const topY = useTransform(progress, [0, 1], ["0%", "-100%"]);
-  const bottomY = useTransform(progress, [0, 1], ["0%", "100%"]);
-  const opacity = useTransform(progress, [0, 1], [1, 0]);
+  const topY = useMotionValue("0%");
+  const bottomY = useMotionValue("0%");
 
-  useMotionValueEvent(progress, "change", (v) => {
-    if (v >= 1) setDone(true);
-  });
-
-  // A refresh mid-page would otherwise start half-open with nothing above
-  // it left to tear — pin to the top for the one frame this owns.
   useEffect(() => {
-    if (!reduced) window.scrollTo(0, 0);
+    if (reduced) return;
+
+    window.scrollTo(0, 0);
+    stopScroll();
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    const unlock = () => {
+      window.scrollTo(0, 0);
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      startScroll();
+    };
+
+    const open = () => {
+      if (openedRef.current) return;
+      openedRef.current = true;
+
+      animate(topY, "-100%", { duration: OPEN_DURATION, ease: EASE });
+      animate(bottomY, "100%", {
+        duration: OPEN_DURATION,
+        ease: EASE,
+        onComplete: () => {
+          unlock();
+          setDone(true);
+        },
+      });
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (e.deltaY > 0) open();
+    };
+    let touchStartY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const y = e.touches[0]?.clientY ?? touchStartY;
+      if (touchStartY - y > 12) open();
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (["ArrowDown", "PageDown", " ", "Spacebar"].includes(e.key)) open();
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("keydown", onKeyDown);
+      // Only undo the lock here if the open animation never got to —
+      // `unlock` above already ran it once on the success path, and
+      // running it twice is harmless but the effect could also unmount
+      // (e.g. fast refresh) mid-lock with no animation ever kicking off.
+      if (!openedRef.current) unlock();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduced]);
 
   if (done) return null;
 
   return (
-    <motion.div
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[300]"
-      style={{ opacity }}
-    >
+    <motion.div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[300]">
       <Half edge="top" y={topY} />
       <Half edge="bottom" y={bottomY} />
     </motion.div>
@@ -65,7 +110,7 @@ function Half({
   y,
 }: {
   edge: "top" | "bottom";
-  y: MotionValue<string>;
+  y: ReturnType<typeof useMotionValue<string>>;
 }) {
   return (
     <motion.div
