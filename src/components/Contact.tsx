@@ -155,7 +155,7 @@ export default function Contact() {
         </Rise>
 
         <Rise delay={0.24} className="mt-12 w-full max-w-[38rem]">
-          <div className="glass edge relative overflow-hidden rounded-[1.9rem] p-6 text-left sm:p-9">
+          <div className="glass edge edge-strong relative overflow-hidden rounded-[1.9rem] p-6 text-left sm:p-9">
             {/* Ripple that expands out of the button on success */}
             <AnimatePresence>
               {sent && !reduced && (

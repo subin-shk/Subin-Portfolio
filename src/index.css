@@ -165,6 +165,19 @@
     z-index: 1;
   }
 
+  /* Same hairline, turned up — for panels (project cards) that need to read
+     as clearly outlined rather than just catching a soft highlight. */
+  .edge-strong::before {
+    padding: 1.5px;
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.55),
+      rgba(255, 255, 255, 0.22) 32%,
+      rgba(255, 255, 255, 0.14) 55%,
+      rgba(255, 255, 255, 0.4)
+    );
+  }
+
   /* Specular sheen that sweeps on hover. */
   .sheen::after {
     content: "";

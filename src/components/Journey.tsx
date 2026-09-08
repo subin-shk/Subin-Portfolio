@@ -84,7 +84,7 @@ function Node({ item, index }: { item: Milestone; index: number }) {
         </span>
       </span>
 
-      <div className="glass edge lit group relative overflow-hidden rounded-[1.4rem] px-6 py-6 transition-transform duration-700 ease-glass hover:-translate-y-1 sm:px-8 sm:py-7">
+      <div className="glass edge edge-strong lit group relative overflow-hidden rounded-[1.4rem] px-6 py-6 transition-transform duration-700 ease-glass hover:-translate-y-1 sm:px-8 sm:py-7">
         {lit && (
           <div
             aria-hidden

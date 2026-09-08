@@ -196,12 +196,15 @@ export default function IDCard() {
               rectangle that tall visibly kinks partway up (perspective
               foreshortening compounds hard over hundreds of extra px of
               length it never needed — only a short sliver near the clip
-              is ever actually on screen). 340px comfortably clears the
-              space above the card at every breakpoint without the
-              distortion. */}
+              is ever actually on screen). The transform pivots on the
+              *bottom* edge though (see transformOrigin below), so that
+              kink only ever shows up near the far (top, offscreen) end —
+              1000px comfortably outruns the space above the card on tall
+              monitors and ultrawide/short-viewport combos alike, so the
+              strap's own top edge never surfaces as a visible break. */}
           <motion.div
             aria-hidden
-            className="absolute left-1/2 -top-[340px] h-[340px] w-[14px] overflow-hidden rounded-b-sm"
+            className="absolute left-1/2 -top-[1000px] h-[1000px] w-[14px] overflow-hidden rounded-b-sm"
             style={{
               // Centering has to be a motion value here, not the usual
               // `-translate-x-1/2` Tailwind class: once this element also

@@ -59,7 +59,7 @@ function StatTile({ stat, index }: { stat: Stat; index: number }) {
       whileInView={rise.animate}
       viewport={inView}
       transition={{ duration: 0.9, ease: EASE, delay: index * 0.09 }}
-      className="glass edge group relative flex flex-col items-center overflow-hidden rounded-[1.5rem] px-4 py-7 text-center"
+      className="glass edge edge-strong group relative flex flex-col items-center overflow-hidden rounded-[1.5rem] px-4 py-7 text-center"
     >
       {ripples.map((id) => (
         <span
