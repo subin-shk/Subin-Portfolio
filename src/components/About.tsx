@@ -1,92 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  animate,
-  motion,
-  useInView,
-  useMotionValue,
-  useScroll,
-  useTransform,
-} from "framer-motion";
-import { narrative, personalInfo, stats } from "../data/portfolioData";
-import type { Stat } from "../types";
-import { EASE, inView, usePhone, useReducedMotion, useRise } from "../lib/motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { narrative, personalInfo } from "../data/portfolioData";
+import { usePhone, useReducedMotion } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
 import portrait from "../images/subin_shk.webp";
-
-function StatTile({ stat, index }: { stat: Stat; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const seen = useInView(ref, { once: true, amount: 0.6 });
-  const reduced = useReducedMotion();
-  const rise = useRise(24, 7);
-
-  const count = useMotionValue(0);
-  const [shown, setShown] = useState("0");
-  const [ripples, setRipples] = useState<number[]>([]);
-
-  const decimals = stat.value % 1 === 0 ? 0 : 1;
-
-  useEffect(() => {
-    if (!seen) return;
-    if (reduced) {
-      setShown(stat.value.toFixed(decimals));
-      return;
-    }
-    const controls = animate(count, stat.value, {
-      duration: 1.8,
-      ease: EASE,
-      delay: index * 0.08,
-      onUpdate: (v) => setShown(v.toFixed(decimals)),
-    });
-    return () => controls.stop();
-  }, [seen, stat.value, count, decimals, index, reduced]);
-
-  // Each hover drops a ring that cleans itself up when the animation ends.
-  const ripple = () => {
-    if (reduced) return;
-    const id = Date.now();
-    setRipples((r) => [...r, id]);
-    window.setTimeout(
-      () => setRipples((r) => r.filter((x) => x !== id)),
-      1000
-    );
-  };
-
-  return (
-    <motion.div
-      ref={ref}
-      onPointerEnter={ripple}
-      initial={rise.initial}
-      whileInView={rise.animate}
-      viewport={inView}
-      transition={{ duration: 0.9, ease: EASE, delay: index * 0.09 }}
-      className="glass edge edge-strong group relative flex flex-col items-center overflow-hidden rounded-[1.5rem] px-4 py-7 text-center"
-    >
-      {ripples.map((id) => (
-        <span
-          key={id}
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-1/2 h-24 w-24 rounded-full"
-          style={{
-            border: "1px solid rgba(160,200,255,0.5)",
-            animation: "ripple-center .95s var(--ease-glass) forwards",
-          }}
-        />
-      ))}
-
-      <span
-        className="font-display text-[clamp(2rem,4.4vw,3.1rem)] font-light leading-none tracking-tightest text-white transition-transform duration-700 ease-glass group-hover:-translate-y-0.5"
-        style={{ fontVariantNumeric: "tabular-nums" }}
-      >
-        {shown}
-        <span className="tint">{stat.suffix}</span>
-      </span>
-
-      <span className="mt-3 max-w-[10ch] text-[0.72rem] leading-snug tracking-[0.08em] text-white/45">
-        {stat.label}
-      </span>
-    </motion.div>
-  );
-}
 
 export default function About() {
   const ref = useRef<HTMLElement>(null);
@@ -223,12 +140,6 @@ export default function About() {
               </p>
             </Rise>
           </div>
-        </div>
-
-        <div className="mt-[clamp(4.5rem,9vh,7rem)] grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {stats.map((s, i) => (
-            <StatTile key={s.id} stat={s} index={i} />
-          ))}
         </div>
       </div>
     </section>

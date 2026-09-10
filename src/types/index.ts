@@ -51,13 +51,6 @@ export interface SkillGroup {
   items: SkillItem[];
 }
 
-export interface Stat {
-  id: string;
-  value: number;
-  suffix: string;
-  label: string;
-}
-
 export interface FeaturedProject {
   id: string;
   /** Zero-padded ordinal shown in the corner. */

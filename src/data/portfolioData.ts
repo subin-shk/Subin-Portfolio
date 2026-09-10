@@ -4,7 +4,6 @@ import type {
   Education,
   NavItem,
   SkillGroup,
-  Stat,
   FeaturedProject,
   ArchiveProject,
   Testimonial,
@@ -111,15 +110,6 @@ export const narrative = {
   },
 };
 
-// `projects` and `frameworks` are counted from the lists below; `years` runs
-// from the Chulo Solutions start (Feb 2025).
-export const stats: Stat[] = [
-  { id: "years", value: 1.5, suffix: "+", label: "Years of Experience" },
-  { id: "projects", value: 9, suffix: "", label: "Projects Automated" },
-  { id: "cases", value: 500, suffix: "+", label: "Test Cases Written" },
-  { id: "frameworks", value: 6, suffix: "", label: "Automation Frameworks" },
-];
-
 // Grouped exactly as the capsules render them.
 export const skillGroups: SkillGroup[] = [
   {
@@ -142,16 +132,16 @@ export const skillGroups: SkillGroup[] = [
     id: "performance",
     label: "Performance",
     accent: "violet",
-    items: [
-      { name: "JMeter", note: "Load" },
-      { name: "Locust", note: "Scripted load" },
-    ],
+    items: [{ name: "JMeter", note: "Load" }],
   },
   {
     id: "bdd",
     label: "BDD",
     accent: "cyan",
-    items: [{ name: "Cucumber", note: "Gherkin specs" }],
+    items: [
+      { name: "Cucumber", note: "Gherkin specs" },
+      { name: "pytest-bdd", note: "Gherkin in Pytest" },
+    ],
   },
   {
     id: "rpa",
