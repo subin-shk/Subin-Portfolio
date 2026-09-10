@@ -34,7 +34,7 @@ export const personalInfo = {
   title: "Software QA Engineer",
   tagline:
     "Building reliable software through automation, precision, and modern quality engineering.",
-  email: "subin12.shakya@gmail.com",
+  email: "subinshakya.work@gmail.com",
   location: "Kathmandu, Nepal",
   /**
    * ACTION REQUIRED — drop your CV at `public/Subin-Shakya-Resume.pdf`.
