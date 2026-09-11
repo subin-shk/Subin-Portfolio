@@ -7,7 +7,6 @@ import {
   Leaf,
   MousePointerClick,
   Radio,
-  Workflow,
 } from "lucide-react";
 import { narrative, skillGroups } from "../data/portfolioData";
 import type { Accent, SkillGroup } from "../types";
@@ -19,7 +18,6 @@ const ICONS: Record<string, typeof Braces> = {
   api: Radio,
   performance: GaugeCircle,
   bdd: Leaf,
-  rpa: Workflow,
   programming: Braces,
   vcs: GitBranch,
 };

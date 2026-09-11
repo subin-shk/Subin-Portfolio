@@ -205,7 +205,7 @@ export default function Atmosphere() {
            every drift frame — it was the single most expensive thing on the
            page. Multi-stop radial gradients are already perfectly smooth;
            the blur was rendering softness that was there anyway. */}
-      <div className="absolute inset-0 opacity-[0.62]">
+      <div className="absolute inset-0 opacity-[0.4]">
         <div
           className="absolute rounded-full gpu"
           style={{
@@ -214,7 +214,7 @@ export default function Atmosphere() {
             top: "-22vmax",
             left: "-14vmax",
             background:
-              "radial-gradient(closest-side, rgba(77,124,255,0.40), rgba(77,124,255,0.22) 32%, rgba(77,124,255,0.08) 58%, transparent 78%)",
+              "radial-gradient(closest-side, rgba(77,124,255,0.28), rgba(77,124,255,0.15) 32%, rgba(77,124,255,0.05) 58%, transparent 78%)",
             animation: "drift-a 34s var(--ease-liquid) infinite",
           }}
         />
@@ -226,7 +226,7 @@ export default function Atmosphere() {
             top: "26vmax",
             right: "-18vmax",
             background:
-              "radial-gradient(closest-side, rgba(155,123,255,0.34), rgba(155,123,255,0.19) 32%, rgba(155,123,255,0.07) 58%, transparent 78%)",
+              "radial-gradient(closest-side, rgba(155,123,255,0.24), rgba(155,123,255,0.13) 32%, rgba(155,123,255,0.05) 58%, transparent 78%)",
             animation: "drift-b 42s var(--ease-liquid) infinite",
           }}
         />
@@ -238,7 +238,7 @@ export default function Atmosphere() {
             bottom: "-16vmax",
             left: "22vw",
             background:
-              "radial-gradient(closest-side, rgba(95,212,232,0.28), rgba(95,212,232,0.15) 34%, rgba(95,212,232,0.05) 60%, transparent 80%)",
+              "radial-gradient(closest-side, rgba(95,212,232,0.20), rgba(95,212,232,0.10) 34%, rgba(95,212,232,0.03) 60%, transparent 80%)",
             animation: "drift-c 50s var(--ease-liquid) infinite",
           }}
         />
@@ -249,7 +249,7 @@ export default function Atmosphere() {
         className="absolute left-0 top-0 h-[60rem] w-[60rem] gpu"
         style={{
           background:
-            "radial-gradient(circle, rgba(120,170,255,0.13), rgba(95,212,232,0.05) 38%, transparent 66%)",
+            "radial-gradient(circle, rgba(120,170,255,0.09), rgba(95,212,232,0.03) 38%, transparent 66%)",
           transform: "translate3d(50vw, 50vh, 0) translate(-50%, -50%)",
         }}
       />

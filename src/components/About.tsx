@@ -43,7 +43,7 @@ export default function About() {
               <motion.div
                 aria-hidden
                 style={reduced ? undefined : { y: backY, scale: glowScale }}
-                className="absolute -inset-10 rounded-full opacity-80 gpu"
+                className="absolute -inset-10 rounded-full opacity-50 gpu"
               >
                 {/* A conic gradient is already smooth all the way round; the
                     blur was only softening its hard outer edge. On a phone a
@@ -52,7 +52,7 @@ export default function About() {
                   className="h-full w-full rounded-[50%]"
                   style={{
                     background:
-                      "conic-gradient(from 210deg at 50% 50%, rgba(95,212,232,0.30), rgba(77,124,255,0.34), rgba(155,123,255,0.30), rgba(95,212,232,0.30))",
+                      "conic-gradient(from 210deg at 50% 50%, rgba(95,212,232,0.20), rgba(77,124,255,0.22), rgba(155,123,255,0.20), rgba(95,212,232,0.20))",
                     ...(phone
                       ? {
                           WebkitMaskImage:

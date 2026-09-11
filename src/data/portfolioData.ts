@@ -23,7 +23,6 @@ export const navigationItems: NavItem[] = [
   { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
   { name: "Journey", href: "#journey" },
-  { name: "Achievements", href: "#achievements" },
   { name: "Testimonials", href: "#testimonials" },
   { name: "Contact", href: "#contact" },
 ];
@@ -43,7 +42,7 @@ export const personalInfo = {
    */
   resume: "/Subin-Shakya-Resume.pdf",
   hasResume: false,
-  summary: `A dedicated Software Quality Assurance Engineer specialising in automated testing and the processes that keep it dependable. Works across web, mobile, and API layers with Selenium, Appium, Robot Framework, and Postman. Committed to high quality standards and to continuously improving how software is verified before it ships.`,
+  summary: `Specialising in automated testing across web, mobile, and API layers with Selenium, Appium, Robot Framework, and Postman.`,
   socialLinks: {
     linkedin: "https://linkedin.com/in/subinshk",
     github: "https://github.com/subin-shk",
@@ -73,7 +72,7 @@ export const seo = {
 
 export const narrative = {
   about: {
-    beat: "Every release carries a <em>promise</em>.",
+    beat: "Every release carries a promise.",
     body: [
       "I spend my days making sure that promise holds. Based in Kathmandu, I work as a Software QA Engineer — the person between a feature that looks finished and a feature that actually is.",
       "The work is quieter than it sounds. Read the spec, find the edge nobody scoped, write the script that catches it every time from then on. Repeat until the release is boring.",
@@ -81,7 +80,7 @@ export const narrative = {
   },
   skills: {
     beat: "Kept with a small set of <em>sharp instruments</em>.",
-    body: "Not a toolbox for its own sake — each one earns its place by covering a layer the others can't reach.",
+    body: "Each one earns its place by covering a layer the others can't reach.",
   },
   projects: {
     beat: "Sharpened on <em>real systems</em>.",
@@ -90,7 +89,7 @@ export const narrative = {
   /** Turns the corner from testing systems to having built them. */
   projectsAside: {
     beat: "Though it doesn't stop at <em>breaking things</em>.",
-    body: "Some of these I designed and shipped end to end. Knowing how software gets built is most of knowing where it gives way — the instinct for what to test came from being on the other side of it first.",
+    body: "Some of these I designed and shipped end to end. Knowing how software gets built is most of knowing where it gives way.",
   },
   journey: {
     beat: "Built one <em>deliberate step</em> at a time.",
@@ -102,7 +101,7 @@ export const narrative = {
   },
   testimonials: {
     beat: "What they <em>said</em>.",
-    body: "A few words from the people I've tested, shipped, and shared a standup with.",
+    body: "From people I've shipped alongside.",
   },
   contact: {
     beat: "Let's build something <em>amazing</em>.",
@@ -144,18 +143,13 @@ export const skillGroups: SkillGroup[] = [
     ],
   },
   {
-    id: "rpa",
-    label: "Automation",
-    accent: "blue",
-    items: [{ name: "Robot Process Automation", note: "Desktop flows" }],
-  },
-  {
     id: "programming",
     label: "Programming",
     accent: "violet",
     items: [
       { name: "Java", note: "" },
       { name: "Python", note: "" },
+      { name: "SQL", note: "" },
     ],
   },
   {
@@ -176,13 +170,13 @@ export const featuredProjects: FeaturedProject[] = [
     name: "Masteriyo LMS Automation",
     kicker: "Robot Framework · WordPress Suite",
     overview:
-      "A hybrid UI and API suite for the Masteriyo LMS plugin, owned end to end at ThemeGrill — and since extended across the wider product catalogue, including Everest Forms.",
+      "Hybrid UI and API regression suite for Masteriyo LMS, owned end to end at ThemeGrill and extended across the wider catalogue.",
     challenge:
-      "A WordPress LMS changes on two axes at once — the plugin ships new builds while themes and WordPress core move underneath it. UI-only checks broke constantly and told you nothing about why.",
+      "The plugin, its themes and WordPress core all move independently. UI-only checks broke constantly.",
     solution:
-      "Built the suite in Robot Framework with Selenium for the interface and RequestsLibrary for the same flows at the API layer, so a failure separates a broken contract from a broken screen.",
+      "Selenium for the interface, RequestsLibrary for the same flows — failures separate a broken contract from a broken screen.",
     impact:
-      "Regression passes that used to be manual now run unattended across several products, and coverage keeps up with the release cadence instead of trailing it.",
+      "Regression passes that were manual now run unattended across several products.",
     tech: ["Robot Framework", "Selenium", "RequestsLibrary", "Python", "API Testing"],
     image: masteriyoLms,
     imageFit: "float",
@@ -195,13 +189,13 @@ export const featuredProjects: FeaturedProject[] = [
     name: "MyDemoApp BDD Automation",
     kicker: "Cucumber · Appium",
     overview:
-      "Mobile automation for a native shopping app, written as behaviour specifications rather than scripts.",
+      "Mobile automation for a native shopping app, written as behaviour specs rather than scripts.",
     challenge:
-      "Mobile test code drifts away from the acceptance criteria it was written for. Six months on, nobody can tell which requirement a failing test actually defends.",
+      "Test code drifts away from the acceptance criteria it was written to defend.",
     solution:
-      "Drove Appium through Cucumber, so every scenario is a readable Gherkin spec backed by step definitions. The feature files are the documentation; the automation is what keeps them honest.",
+      "Appium driven through Cucumber — every scenario is a readable Gherkin spec.",
     impact:
-      "Failures point at a business rule, not a line number — which means non-engineers can read the report and act on it.",
+      "Failures name a business rule, not a line number. Non-engineers can read the report.",
     tech: ["Cucumber", "Appium", "BDD", "Gherkin", "Mobile Testing"],
     github: "https://github.com/subin-shk/MyDemoApp-BDD/tree/main/features",
     image: myDemoApp,
@@ -216,13 +210,13 @@ export const featuredProjects: FeaturedProject[] = [
     name: "Trello API Collection",
     kicker: "Postman · REST",
     overview:
-      "A Postman collection that exercises Trello's REST API across the full lifecycle of a board.",
+      "A Postman collection exercising Trello's REST API across the full lifecycle of a board.",
     challenge:
-      "API endpoints are easy to test one at a time and hard to test as a sequence. A board has to exist before a list can, and a list before a card.",
+      "Endpoints are easy to test one at a time, hard to test as a sequence.",
     solution:
-      "Chained the requests with environment variables carrying IDs forward between steps, and wrote assertions on status, schema, and payload so each stage validates the last one's output.",
+      "Chained requests carrying IDs forward, with assertions on status, schema and payload.",
     impact:
-      "One run creates, mutates, and tears down a board while checking every response along the way — repeatable, and safe to run against a live workspace.",
+      "One run creates, mutates and tears down a board — safe against a live workspace.",
     tech: ["Postman", "REST", "API Testing", "JavaScript", "Assertions"],
     github: "https://github.com/subin-shk/Trello_Postman_Collection",
     image: trelloBoard,
@@ -236,13 +230,13 @@ export const featuredProjects: FeaturedProject[] = [
     name: "Clover Emporium",
     kicker: "Full Stack · E-Commerce",
     overview:
-      "An e-commerce clothing store built from the ground up — catalogue, cart, checkout, and an admin side to keep it stocked.",
+      "An e-commerce clothing store built end to end — catalogue, cart, checkout and admin.",
     challenge:
-      "Shopping carts are where quality problems hide. State has to survive navigation, refreshes, and a login halfway through, and the price at checkout has to match the price on the shelf.",
+      "Cart state has to survive navigation, refreshes and a login halfway through.",
     solution:
-      "Built the storefront on PHP and MySQL with server-side session handling for the cart and parameterised queries throughout, then tested the checkout path the way a QA engineer would — from the edges inward.",
+      "PHP and MySQL, with server-side sessions for the cart and parameterised queries throughout.",
     impact:
-      "Writing the thing I'd normally be testing changed how I test. It's the project that pushed me toward quality engineering.",
+      "Building what I'd normally be testing is what pushed me toward quality engineering.",
     tech: ["HTML", "CSS", "JavaScript", "Bootstrap", "PHP", "SQL"],
     github: "https://github.com/subin-shk/CloverEmporium",
     image: cloverEmporium,
@@ -256,13 +250,13 @@ export const featuredProjects: FeaturedProject[] = [
     name: "Face Tune",
     kicker: "Machine Learning · Flask",
     overview:
-      "Real-time facial emotion recognition that reads a mood from a live camera feed and answers it with music to match.",
+      "Real-time facial emotion recognition that reads a mood from a live camera feed and answers it with music.",
     challenge:
-      "Emotion isn't a clean label. A classifier that looks accurate on paper still flickers between states frame to frame as lighting and expression shift — and a playlist that changes every second is useless.",
+      "A classifier that scores well on paper still flickers between states frame to frame.",
     solution:
-      "Trained the recogniser on facial expression data and put a Flask service in front of it, smoothing predictions across a window of frames before committing to a mood and querying the library for it.",
+      "Predictions smoothed across a window of frames behind a Flask service before a mood is committed.",
     impact:
-      "It taught me how differently you test something probabilistic. There's no single expected value to assert against — only a distribution to hold honest, which is a habit I've kept.",
+      "Taught me to test probabilistic output — no expected value, only a distribution to hold honest.",
     tech: ["Python", "Flask", "Machine Learning", "JavaScript", "SQLite"],
     github: "https://github.com/subin-shk/FaceTune",
     image: faceTune,
@@ -277,7 +271,7 @@ export const archiveProjects: ArchiveProject[] = [
     id: "6",
     name: "Juggle Master",
     description:
-      "A VS Code extension that turns the editor into a juggling game — keep the ball in the air without leaving your workspace. Published on the VS Code Marketplace.",
+      "A VS Code extension that turns the editor into a juggling game. Published on the Marketplace.",
     tech: ["TypeScript", "VS Code API", "WebView", "Canvas API"],
     github: "https://github.com/subin-shk/juggle-master-vs-code",
   },
@@ -285,7 +279,7 @@ export const archiveProjects: ArchiveProject[] = [
     id: "8",
     name: "MyDemoApp Automation",
     description:
-      "The script-first counterpart to the BDD suite — Mocha and Appium over the same native app, with a page-object layer and clean session teardown between specs.",
+      "The script-first counterpart to the BDD suite — Mocha and Appium, with a page-object layer.",
     tech: ["Mocha JS", "Appium", "JavaScript"],
     github: "https://github.com/subin-shk/MyDemoApp-Automation",
   },
@@ -293,7 +287,7 @@ export const archiveProjects: ArchiveProject[] = [
     id: "9",
     name: "CodeNotes Automation",
     description:
-      "End-to-end coverage of a note-taking app's auth and CRUD flows, with Pytest fixtures building the logged-in state once and injecting it everywhere.",
+      "Auth and CRUD coverage for a note-taking app, on Pytest fixtures that build the logged-in state once.",
     tech: ["Python", "Pytest", "Selenium"],
     github: "https://github.com/subin-shk/CodeNotes-Automation",
   },
@@ -301,7 +295,7 @@ export const archiveProjects: ArchiveProject[] = [
     id: "10",
     name: "Student Management System",
     description:
-      "A Java Swing desktop client covering full CRUD over student records against a SQL backend.",
+      "Java Swing desktop client with full CRUD over student records.",
     tech: ["Java", "Swing", "SQL"],
     github:
       "https://github.com/subin-shk/Student-Management-System-in-Java-Swing",
@@ -310,7 +304,7 @@ export const archiveProjects: ArchiveProject[] = [
     id: "11",
     name: "Pharmacy Management System",
     description:
-      "Inventory and customer records for a pharmacy counter, built as a Java Swing desktop application.",
+      "Inventory and customer records for a pharmacy counter, in Java Swing.",
     tech: ["Java", "Swing", "SQL"],
     github: "https://github.com/subin-shk/Pharmacy-Management-System",
   },
@@ -383,7 +377,7 @@ export const achievements: Achievement[] = [
     title: "Hackathon Champion",
     context: "NCCS Hackathon Plus+ 2024",
     description:
-      "First Runner-Up for a virtual try-on glasses application, built and demoed under competition time.",
+      "First Runner-Up for a virtual try-on glasses app, built under competition time.",
     metric: "1st",
     metricLabel: "Runner-Up",
     icon: "trophy",
@@ -393,7 +387,7 @@ export const achievements: Achievement[] = [
     title: "GSSoC Extended '24",
     context: "GirlScript Summer of Code",
     description:
-      "Contributed across the extended programme and finished ranked 216 out of 3,917 participants.",
+      "Ranked 216 of 3,917 participants across the extended programme.",
     metric: "216",
     metricLabel: "of 3,917",
     icon: "award",
@@ -403,7 +397,7 @@ export const achievements: Achievement[] = [
     title: "Frogtoberfest",
     context: "Organised by LeapFrog",
     description:
-      "Placed 8th overall for sustained open-source contribution through the event month.",
+      "8th overall for sustained open-source contribution through the event month.",
     metric: "8th",
     metricLabel: "Overall",
     icon: "medal",
@@ -417,7 +411,7 @@ export const testimonials: Testimonial[] = [
     role: "Software Quality Assurance",
     company: "",
     quote:
-      "I had the pleasure of working with Subin on multiple projects, and his expertise in Quality Assurance truly stands out. His attention to detail, ability to identify critical issues, and dedication to delivering high-quality software made a significant impact on our team's success. Subin is highly skilled in manual and automation testing, and his proficiency with tools like JIRA, Postman, Appium, and Selenium made testing processes much more efficient.\n\nHe is not only technically strong but also an excellent team player who is always willing to help others. I highly recommend Subin for any QA role!",
+      "His attention to detail, ability to identify critical issues, and dedication to delivering high-quality software made a significant impact on our team's success. Highly skilled across manual and automation testing, and an excellent team player. I highly recommend Subin for any QA role.",
     image: aarzuAwal,
   },
   {
@@ -426,7 +420,7 @@ export const testimonials: Testimonial[] = [
     role: "Technical Support Team Lead | QA Manager",
     company: "",
     quote:
-      "I had the pleasure of mentoring Subin as the QA Mentor and building the QA team at ThemeGrill. During this time, I saw him grow into a confident and capable team member.\n\nHe is a fast learner, always eager to learn new things, and has great potential. His positive attitude and willingness to take on new challenges make him a valuable addition to any team. I highly recommend Subin.",
+      "I mentored Subin while building the QA team at ThemeGrill, and saw him grow into a confident and capable engineer. A fast learner with real potential, and a positive attitude toward every new challenge. I highly recommend him.",
     image: amritKumarShrestha,
   },
 ];

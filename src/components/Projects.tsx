@@ -29,8 +29,8 @@ function Panel({
   const rgb = RGB[project.accent];
   const flip = position % 2 === 1;
 
-  /* A full card is taller than a phone screen, so the stacking treatment
-     is desktop-only; below that the panels simply scroll past. */
+  /* The scroll-scrubbed sink is desktop-only; below that the panels
+     simply scroll past. */
   const stacked = wide && !reduced;
 
   const { scrollYProgress } = useScroll({
@@ -53,8 +53,12 @@ function Panel({
   ];
 
   return (
-    <div ref={ref} className="relative py-6 lg:h-[108vh] lg:py-0">
-      <div className="lg:sticky lg:top-0 lg:flex lg:h-[100svh] lg:items-center lg:overflow-hidden">
+    /* One gap token for every breakpoint. The stage used to be a fixed
+       108vh/100svh pair, so the space between cards was whatever the card
+       failed to fill — tiny on a phone, a hole on a desktop. Height now
+       follows the card and the padding is the only thing setting the gap. */
+    <div ref={ref} className="relative py-[clamp(1.25rem,3vh,2.25rem)]">
+      <div className="lg:flex lg:items-center">
         <motion.div
           style={
             stacked

@@ -70,7 +70,7 @@ export default function Testimonials() {
                         {active.name}
                       </p>
                       <p className="mt-0.5 text-[0.76rem] tracking-[0.04em] text-white/45">
-                        {active.role} · {active.company}
+                        {[active.role, active.company].filter(Boolean).join(" · ")}
                       </p>
                     </div>
                   </div>

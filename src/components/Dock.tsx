@@ -7,21 +7,19 @@ import {
   Mail,
   MessageSquareQuote,
   Route,
-  Trophy,
   User,
 } from "lucide-react";
-import { navigationItems } from "../data/portfolioData";
+import { navigationItems, personalInfo } from "../data/portfolioData";
 import { EASE, useMediaQuery, useReducedMotion } from "../lib/motion";
 import { scrollTo } from "../lib/useSmoothScroll";
 
-/** Eight labels don't fit a phone, so narrow screens navigate by icon. */
+/** Seven labels don't fit a phone, so narrow screens navigate by icon. */
 const ICONS: Record<string, typeof Home> = {
   home: Home,
   about: User,
   skills: Code2,
   projects: LayoutGrid,
   journey: Route,
-  achievements: Trophy,
   testimonials: MessageSquareQuote,
   contact: Mail,
 };
@@ -41,6 +39,7 @@ const PILL = {
 export default function Dock() {
   const [active, setActive] = useState(navigationItems[0].href.slice(1));
   const [condensed, setCondensed] = useState(false);
+  const [monogramOpen, setMonogramOpen] = useState(false);
   const reduced = useReducedMotion();
   /* Below `lg` the dock is an icon rail and only the active item is named
      — icon+full-label together for all seven items needs more room than
@@ -85,18 +84,42 @@ export default function Dock() {
 
   return (
     <>
-      {/* Monogram, top-left. Doubles as "back to top". */}
+      {/* Monogram, top-left. Doubles as "back to top" and, on hover or
+          touch, unfolds into the full name. Both labels stay mounted the
+          whole time and their widths animate in tandem — "SS." closing
+          exactly as "Subin Shakya." opens — rather than a sequential
+          fade-out/fade-in swap, which always reads as a stutter. */}
       <motion.button
         type="button"
         onClick={() => scrollTo("#home")}
+        onHoverStart={() => setMonogramOpen(true)}
+        onHoverEnd={() => setMonogramOpen(false)}
+        onFocus={() => setMonogramOpen(true)}
+        onBlur={() => setMonogramOpen(false)}
+        onTouchStart={() => setMonogramOpen(true)}
         aria-label="Back to top"
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: EASE, delay: 0.6 }}
-        className="fixed left-[max(1.25rem,var(--gutter))] top-6 z-[90] hidden items-center gap-2.5 md:flex"
+        className="fixed left-[max(1.25rem,var(--gutter))] top-6 z-[90] hidden items-center md:flex"
       >
-        <span className="glass edge grid h-9 w-9 place-items-center rounded-xl font-display text-[0.75rem] font-medium tracking-[0.02em] text-white/80">
-          SS
+        <span className="glass edge flex h-9 items-center overflow-hidden rounded-xl">
+          <motion.span
+            initial={false}
+            animate={{ width: monogramOpen ? 0 : 36, opacity: monogramOpen ? 0 : 1 }}
+            transition={{ duration: reduced ? 0 : 0.6, ease: EASE }}
+            className="grid h-9 shrink-0 place-items-center overflow-hidden whitespace-nowrap font-display text-[0.75rem] font-medium tracking-[0.02em] text-white/80"
+          >
+            SS.
+          </motion.span>
+          <motion.span
+            initial={false}
+            animate={{ width: monogramOpen ? "auto" : 0, opacity: monogramOpen ? 1 : 0 }}
+            transition={{ duration: reduced ? 0 : 0.6, ease: EASE }}
+            className="overflow-hidden whitespace-nowrap font-display text-[0.75rem] font-medium tracking-[-0.005em] text-white/85"
+          >
+            <span className="block py-2 pr-3.5">{personalInfo.name}.</span>
+          </motion.span>
         </span>
       </motion.button>
 
