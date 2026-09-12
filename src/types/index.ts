@@ -40,14 +40,20 @@ export interface Education {
 
 export interface SkillItem {
   name: string;
-  /** Short qualifier shown on hover. */
-  note: string;
+  /**
+   * Key into the logo table in `ui/SkillLogos`. Brand marks live there
+   * rather than here, so the data file stays free of asset imports; a key
+   * with no mark falls back to a drawn glyph.
+   */
+  logo: string;
 }
 
 export interface SkillGroup {
   id: string;
   label: string;
   accent: Accent;
+  /** Margin note in marker pen — why the group is on the bench at all. */
+  aside: string;
   items: SkillItem[];
 }
 

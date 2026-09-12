@@ -20,6 +20,21 @@
     --muted: rgba(255, 255, 255, 0.66);
     --faint: rgba(255, 255, 255, 0.54);
 
+
+    /* ——— Paper stock ———
+       The board is near-black; anything physical pinned to it (the polaroid
+       in About, the bench sheet in Skills) is cut from this one stock, so
+       two sections lit the same way read as the same material. Ink is the
+       navy of the marker-pen scraps rather than black — pure black on warm
+       paper reads as printed, not written. */
+    --paper: #efe9dd;
+    --paper-shade: #e2d9c8;
+    --paper-ink: #1f2d4d;
+    --paper-ink-soft: rgba(31, 45, 77, 0.66);
+    --paper-ink-faint: rgba(31, 45, 77, 0.44);
+    --paper-line: rgba(31, 45, 77, 0.09);
+    --paper-edge: rgba(63, 52, 36, 0.1);
+
     --ease-glass: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-liquid: cubic-bezier(0.65, 0, 0.35, 1);
 
@@ -248,6 +263,73 @@
       rgba(255, 255, 255, 0.18) 78%,
       transparent
     );
+  }
+
+
+  /* ——— Paper ———
+     A sheet cut from --paper stock and lit from the top-left, so the tilt
+     the caller gives it reads as a real sheet lying on the board. The two
+     outer shadows do different jobs: a tight contact shadow that pins the
+     sheet down, and a wide ambient one that lifts the whole thing off a
+     near-black page. */
+  .paper {
+    position: relative;
+    background:
+      radial-gradient(
+        130% 90% at 14% 6%,
+        rgba(255, 255, 255, 0.62),
+        transparent 58%
+      ),
+      linear-gradient(168deg, var(--paper), var(--paper-shade));
+    color: var(--paper-ink);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      inset 0 0 0 1px var(--paper-edge),
+      0 2px 6px -2px rgba(0, 0, 0, 0.6),
+      0 38px 76px -38px rgba(0, 0, 0, 0.95);
+  }
+
+  /* Graph ruling, faded well before the sheet's edges so the grid never
+     collides with the deckle or the shadow. Sits under the content on its
+     own layer rather than on the sheet's background, which keeps the
+     ruling's opacity independent of the stock's gradient. */
+  .paper-rule::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--paper-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px);
+    background-size: 30px 30px;
+    -webkit-mask-image: radial-gradient(
+      112% 84% at 50% 44%,
+      #000 42%,
+      transparent 88%
+    );
+    mask-image: radial-gradient(112% 84% at 50% 44%, #000 42%, transparent 88%);
+  }
+
+  /* Highlighter swipe behind a label. The caller sets --mk to an accent's
+     rgb triplet and may animate scaleX to sweep it on. Corners are drawn
+     with an elliptical radius per corner so the swipe has the uneven ends a
+     marker leaves, and `multiply` lets the paper's grain show through the
+     ink instead of a flat block sitting on top of it. */
+  .marker {
+    position: absolute;
+    inset: -0.3em -0.62em -0.24em -0.5em;
+    z-index: -1;
+    background: linear-gradient(
+      100deg,
+      rgba(var(--mk), 0.16),
+      rgba(var(--mk), 0.34) 18%,
+      rgba(var(--mk), 0.26) 74%,
+      rgba(var(--mk), 0.12)
+    );
+    border-radius: 0.8rem 0.5rem 0.7rem 0.55rem / 1rem 0.8rem 0.9rem 1.1rem;
+    mix-blend-mode: multiply;
+    transform: rotate(-0.6deg);
   }
 
   .eyebrow {

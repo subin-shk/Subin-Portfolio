@@ -126,54 +126,76 @@ export const narrative = {
   },
 };
 
-// Grouped exactly as the capsules render them.
+// One card per group on the bench sheet, in the order they are read.
 export const skillGroups: SkillGroup[] = [
   {
     id: "automation",
-    label: "Automation",
+    label: "Automation & Testing",
     accent: "blue",
+    aside: "Automate the boring stuff.",
     items: [
-      { name: "Selenium", note: "Web UI" },
-      { name: "Appium", note: "Mobile" },
-      { name: "Robot Framework", note: "Hybrid suites" },
+      { name: "Selenium", logo: "selenium" },
+      { name: "Appium", logo: "appium" },
+      { name: "Robot Framework", logo: "robotframework" },
+      { name: "Cucumber", logo: "cucumber" },
+      { name: "pytest-bdd", logo: "pytest" },
     ],
   },
   {
     id: "api",
-    label: "API",
+    label: "API & Data",
     accent: "cyan",
-    items: [{ name: "Postman", note: "Contract & flow" }],
-  },
-  {
-    id: "performance",
-    label: "Performance",
-    accent: "violet",
-    items: [{ name: "JMeter", note: "Load" }],
-  },
-  {
-    id: "bdd",
-    label: "BDD",
-    accent: "cyan",
+    aside: "Connect & verify.",
     items: [
-      { name: "Cucumber", note: "Gherkin specs" },
-      { name: "pytest-bdd", note: "Gherkin in Pytest" },
+      { name: "Postman", logo: "postman" },
+      { name: "REST", logo: "rest" },
+      { name: "MySQL", logo: "mysql" },
     ],
   },
   {
     id: "programming",
     label: "Programming",
     accent: "violet",
+    aside: "Write better code.",
     items: [
-      { name: "Java", note: "" },
-      { name: "Python", note: "" },
-      { name: "SQL", note: "" },
+      { name: "Python", logo: "python" },
+      { name: "JavaScript", logo: "javascript" },
+      { name: "SQL", logo: "sql" },
     ],
   },
   {
-    id: "vcs",
-    label: "Version Control",
+    id: "performance",
+    label: "Performance & Load",
+    accent: "blue",
+    aside: "Find bottlenecks.",
+    items: [
+      { name: "JMeter", logo: "jmeter" },
+      { name: "Locust", logo: "locust" },
+    ],
+  },
+  {
+    id: "web",
+    label: "Web & CMS",
     accent: "cyan",
-    items: [{ name: "Git", note: "" }],
+    aside: "Test the real thing.",
+    items: [
+      { name: "WordPress", logo: "wordpress" },
+      { name: "Elementor", logo: "elementor" },
+      { name: "WooCommerce", logo: "woocommerce" },
+      { name: "ThemeGrill", logo: "themegrill" },
+    ],
+  },
+  {
+    id: "tools",
+    label: "Tooling & Tracking",
+    accent: "violet",
+    aside: "Ship & track.",
+    items: [
+      { name: "Git", logo: "git" },
+      { name: "GitHub", logo: "github" },
+      { name: "VS Code", logo: "vscode" },
+      { name: "Jira", logo: "jira" },
+    ],
   },
 ];
 
