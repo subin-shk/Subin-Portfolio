@@ -66,10 +66,10 @@ export default function Testimonials() {
                   <div className="mt-8 flex items-center gap-3">
                     <div className="rule w-10" />
                     <div>
-                      <p className="text-[0.92rem] font-medium text-white/90">
+                      <p className="text-[0.92rem] font-medium text-white/92">
                         {active.name}
                       </p>
-                      <p className="mt-0.5 text-[0.76rem] tracking-[0.04em] text-white/45">
+                      <p className="mt-0.5 text-[0.76rem] tracking-[0.04em] text-white/54">
                         {[active.role, active.company].filter(Boolean).join(" · ")}
                       </p>
                     </div>
@@ -83,7 +83,7 @@ export default function Testimonials() {
                   type="button"
                   aria-label="Previous testimonial"
                   onClick={() => go(index - 1)}
-                  className="edge glass-faint grid h-10 w-10 place-items-center rounded-full text-white/60 transition-colors duration-300 hover:text-white"
+                  className="edge glass-faint grid h-10 w-10 place-items-center rounded-full text-white/66 transition-colors duration-300 hover:text-white"
                 >
                   <ArrowLeft size={16} strokeWidth={1.8} />
                 </button>
@@ -91,12 +91,12 @@ export default function Testimonials() {
                   type="button"
                   aria-label="Next testimonial"
                   onClick={() => go(index + 1)}
-                  className="edge glass-faint grid h-10 w-10 place-items-center rounded-full text-white/60 transition-colors duration-300 hover:text-white"
+                  className="edge glass-faint grid h-10 w-10 place-items-center rounded-full text-white/66 transition-colors duration-300 hover:text-white"
                 >
                   <ArrowRight size={16} strokeWidth={1.8} />
                 </button>
                 <span
-                  className="ml-1 font-display text-[0.78rem] text-white/35"
+                  className="ml-1 font-display text-[0.78rem] text-white/54"
                   style={{ fontVariantNumeric: "tabular-nums" }}
                 >
                   {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}

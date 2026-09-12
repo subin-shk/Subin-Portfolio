@@ -131,7 +131,7 @@ function Capsule({
         />
       </span>
 
-      <span className="whitespace-nowrap text-[0.86rem] font-medium tracking-[-0.01em] text-white/88">
+      <span className="whitespace-nowrap text-[0.86rem] font-medium tracking-[-0.01em] text-white/92">
         {name}
       </span>
 
@@ -144,7 +144,7 @@ function Capsule({
             opacity: isActive && !reduced ? 1 : 0,
           }}
           transition={{ duration: 0.45, ease: EASE }}
-          className="overflow-hidden whitespace-nowrap text-[0.7rem] tracking-[0.06em] text-white/40"
+          className="overflow-hidden whitespace-nowrap text-[0.7rem] tracking-[0.06em] text-white/54"
         >
           <span className="pl-2">{note}</span>
         </motion.span>

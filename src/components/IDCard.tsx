@@ -1,4 +1,4 @@
-import { useEffect, type PointerEvent as ReactPointerEvent } from "react";
+import { Fragment, useEffect, type PointerEvent as ReactPointerEvent } from "react";
 import {
   animate,
   motion,
@@ -39,6 +39,11 @@ const SWAY_SPRING = { stiffness: 26, damping: 8, mass: 1.4 };
  * takes proportionally longer to settle. */
 const RETURN_SPRING = { type: "spring", stiffness: 110, damping: 22, mass: 1 } as const;
 
+/** How fast the drag lean unwinds once you let go. Short relative to the
+ * return glide above, so the badge straightens up first and then travels
+ * home flat instead of sliding back at an angle. */
+const TILT_RELEASE = { duration: 0.18, ease: "easeOut" } as const;
+
 /** First-load drop: the badge starts up near the clip and falls into
  * place. Damped enough not to bounce — a smooth descent, not a boing. */
 const DROP_SPRING = { stiffness: 13, damping: 8.5, mass: 2 };
@@ -72,11 +77,21 @@ export default function IDCard() {
   // so a negative (left) drag needs a *positive* rotateZ to lean left.
   // Smoothed through a spring so it lags the raw drag position slightly
   // instead of snapping to it.
-  const dragTilt = useSpring(useTransform(dragX, [-70, 70], [14, -14]), {
+  const dragLean = useSpring(useTransform(dragX, [-70, 70], [14, -14]), {
     stiffness: 140,
     damping: 22,
     mass: 1.1,
   });
+  // ...but *only* while the drag is actually happening. Because the lean
+  // is derived from dragX, it would otherwise stay applied for the whole
+  // return glide — the badge sliding home still canted over, unwinding
+  // as it goes. This gate multiplies it out on release, so the card is
+  // flat (upright) for the entire trip back to rest.
+  const tiltGate = useMotionValue(1);
+  const dragTilt = useTransform(
+    [dragLean, tiltGate],
+    ([lean, gate]: number[]) => lean * gate
+  );
 
   // Falls in from just above rest on first mount, independent of the drag
   // layer below (dropY is its own translate, stacked on top of dragY
@@ -120,14 +135,20 @@ export default function IDCard() {
   // back to its resting position by a real spring (seeded with however
   // fast it was moving when you let go).
   const handleDragEnd = (_e: PointerEvent, info: PanInfo) => {
-    // Only the position needs to be driven back to 0 — dragTilt already
-    // reacts to dragX live (it's `useTransform(dragX, ...)`), so as this
-    // settles the lean settles with it, in exactly one motion. Kicking
-    // swingZ/tiltY on top of that used to double up the rotation, which
-    // was both an over-shaky release and why the badge could rest at a
-    // slight (never-guaranteed-zero) angle.
+    // Only the position and the lean gate are driven back to 0 here.
+    // Kicking swingZ/tiltY on top of that used to double up the
+    // rotation, which was both an over-shaky release and why the badge
+    // could rest at a slight (never-guaranteed-zero) angle.
     animate(dragX, 0, { ...RETURN_SPRING, velocity: info.velocity.x });
     animate(dragY, 0, { ...RETURN_SPRING, velocity: info.velocity.y });
+    // Drop the lean quickly and on its own clock — fast enough that the
+    // badge reads as upright almost immediately, but not an instant snap
+    // from a 14deg cant to flat.
+    animate(tiltGate, 0, TILT_RELEASE);
+  };
+
+  const handleDragStart = () => {
+    tiltGate.set(1);
   };
 
   // 3D hover depth: tilts the *lanyard's* rotateX/rotateY toward wherever
@@ -164,6 +185,7 @@ export default function IDCard() {
         dragConstraints={{ left: -70, right: 70, top: -35, bottom: 55 }}
         dragElastic={0.3}
         dragMomentum={false}
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         style={{
           x: dragX,
@@ -204,7 +226,7 @@ export default function IDCard() {
               strap's own top edge never surfaces as a visible break. */}
           <motion.div
             aria-hidden
-            className="absolute left-1/2 -top-[1000px] h-[1000px] w-[14px] overflow-hidden rounded-b-sm"
+            className="absolute left-1/2 -top-[1000px] h-[1000px] w-[1.75rem] overflow-hidden rounded-b-sm sm:w-[2.1rem]"
             style={{
               // Centering has to be a motion value here, not the usual
               // `-translate-x-1/2` Tailwind class: once this element also
@@ -223,8 +245,10 @@ export default function IDCard() {
                  on the bottom edge instead keeps it glued to the clip and
                  lets only the (offscreen) top sway. */
               transformOrigin: "bottom center",
+              // Fully opaque: the webbing is a physical object, and any
+              // alpha let the atmosphere's drifting mesh bleed through it.
               background:
-                "linear-gradient(180deg, rgba(60,150,175,0.95), rgba(50,85,190,0.92))",
+                "linear-gradient(180deg, rgb(60,150,175), rgb(50,85,190))",
               boxShadow: "0 0 1px rgba(0,0,0,0.4)",
             }}
           >
@@ -237,7 +261,7 @@ export default function IDCard() {
                  top meant every repetition landed somewhere in the
                  offscreen upper 70vh and none ever reached the visible
                  bit near the clip. */
-              className="absolute inset-0 flex flex-col items-center justify-end gap-4 pb-[28px] text-[9px] font-semibold uppercase tracking-[0.3em] text-white/70"
+              className="absolute inset-0 flex flex-col items-center justify-end gap-3 pb-[30px] font-display text-[0.66rem] font-semibold uppercase tracking-[0.3em] text-white/78 sm:text-[0.72rem]"
             >
               {/* Dense enough (and packed with a small enough gap) that the
                  repeat tiles continuously along the whole strip — with only
@@ -267,13 +291,17 @@ export default function IDCard() {
                  lanyard's own overflow-hidden instead of being squashed
                  into every other item. */}
               {Array.from({ length: 10 }).map((_, i) => (
-                <span
-                  key={i}
-                  className="shrink-0"
-                  style={{ writingMode: "vertical-rl" }}
-                >
-                  Subin Shakya.
-                </span>
+                <Fragment key={i}>
+                  {/* Bead between repeats — same rhythm, same warm ember
+                      the background straps print. */}
+                  <span className="h-[0.3rem] w-[0.3rem] shrink-0 rounded-full bg-ember sm:h-[0.34rem] sm:w-[0.34rem]" />
+                  <span
+                    className="shrink-0"
+                    style={{ writingMode: "vertical-rl" }}
+                  >
+                    Subin Shakya
+                  </span>
+                </Fragment>
               ))}
             </div>
           </motion.div>
@@ -281,7 +309,7 @@ export default function IDCard() {
           {/* Clip — the physical joint between lanyard and card. */}
           <div
             aria-hidden
-            className="relative z-[1] mx-auto h-4 w-8 rounded-[5px]"
+            className="relative z-[1] mx-auto h-4 w-[2.35rem] rounded-[5px] sm:w-[2.75rem]"
             style={{
               background: "linear-gradient(180deg, #e7ebf0, #b9c1cc)",
               boxShadow:
@@ -307,7 +335,7 @@ export default function IDCard() {
             className="relative -mt-3 overflow-hidden rounded-[18px]"
             style={{
               aspectRatio: "0.64",
-              background: "linear-gradient(165deg, #adaba4 0%, #918f89 100%)",
+              background: "linear-gradient(165deg, #f4f2ec 0%, #ddd9d0 100%)",
               boxShadow:
                 "0 30px 60px -20px rgba(0,0,0,0.55), 0 2px 0 rgba(255,255,255,0.35) inset",
               border: "1px solid rgba(255,255,255,0.5)",
@@ -340,7 +368,7 @@ export default function IDCard() {
             {/* White info panel with a wavy top edge cut into the photo,
                 instead of a straight seam — the panel's own shape carries
                 that curve rather than a separate overlay. */}
-            <div className="absolute inset-x-0 bottom-0 h-[42%] bg-[#c4c1ba]">
+            <div className="absolute inset-x-0 bottom-0 h-[42%] bg-[#e8e5de]">
               <svg
                 aria-hidden
                 viewBox="0 0 100 27"
@@ -352,7 +380,7 @@ export default function IDCard() {
               >
                 <path
                   d="M0,27 L0,14 C22,2 38,24 60,12 C74,4 88,10 100,7 L100,27 Z"
-                  fill="#c4c1ba"
+                  fill="#e8e5de"
                 />
               </svg>
 

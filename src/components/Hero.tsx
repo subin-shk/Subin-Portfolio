@@ -5,6 +5,7 @@ import { personalInfo } from "../data/portfolioData";
 import { EASE, useAnimatedBlur, useReducedMotion, useRise } from "../lib/motion";
 import { scrollTo } from "../lib/useSmoothScroll";
 import GlassButton from "./ui/GlassButton";
+import HeroStraps from "./HeroStraps";
 import IDCard from "./IDCard";
 
 const NAME = personalInfo.name.toUpperCase();
@@ -46,6 +47,18 @@ export default function Hero() {
       /* Bottom padding clears the floating dock at every viewport height. */
       className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden pb-[8.5rem] pt-20"
     >
+      {/* Straps ride the hero's own fade so they leave with it rather than
+          sliding out from under the next section. Opacity only — the
+          content wrapper's scale/blur would cost a re-raster on two
+          viewport-sized bands every scroll frame. */}
+      <motion.div
+        aria-hidden
+        style={reduced ? undefined : { opacity }}
+        className="pointer-events-none absolute inset-0 z-[1]"
+      >
+        <HeroStraps />
+      </motion.div>
+
       <motion.div
         style={
           reduced
@@ -134,7 +147,7 @@ export default function Hero() {
           initial={rise.initial}
           animate={rise.animate}
           transition={{ duration: 1, ease: EASE, delay: nameDone + 0.08 }}
-          className="font-display text-[clamp(1.05rem,2.4vw,1.7rem)] font-light tracking-supertight text-white/80"
+          className="font-display text-[clamp(1.05rem,2.4vw,1.7rem)] font-light tracking-supertight text-white/78"
         >
           {personalInfo.title}
         </motion.p>

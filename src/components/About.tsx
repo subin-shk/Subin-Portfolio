@@ -107,7 +107,7 @@ export default function About() {
                 className="glass edge absolute -bottom-5 right-2 rounded-2xl px-5 py-3.5 gpu sm:-right-8"
               >
                 <p className="eyebrow !tracking-[0.3em]">Currently</p>
-                <p className="mt-1.5 text-[0.82rem] font-medium text-white/85">
+                <p className="mt-1.5 text-[0.82rem] font-medium text-white/78">
                   Software QA · ThemeGrill
                 </p>
               </motion.div>

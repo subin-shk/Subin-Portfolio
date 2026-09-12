@@ -1,7 +1,6 @@
 import Atmosphere from "./components/Atmosphere";
 import Dock from "./components/Dock";
 import Hero from "./components/Hero";
-import Focus from "./components/Focus";
 import About from "./components/About";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
@@ -39,7 +38,6 @@ export default function App() {
 
       <main className="relative z-[1]">
         <Hero />
-        <Focus />
         <About />
         <Skills />
         <Projects />

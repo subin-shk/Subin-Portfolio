@@ -79,7 +79,7 @@ function Node({ item, index }: { item: Milestone; index: number }) {
           <Icon
             size={13}
             strokeWidth={1.8}
-            className={lit ? "text-cyan" : "text-white/45"}
+            className={lit ? "text-cyan" : "text-white/54"}
           />
         </span>
       </span>
@@ -109,12 +109,12 @@ function Node({ item, index }: { item: Milestone; index: number }) {
         <h3 className="relative mt-3 font-display text-[clamp(1.15rem,2.2vw,1.6rem)] font-normal leading-tight tracking-supertight text-white">
           {item.title}
         </h3>
-        <p className="relative mt-1.5 text-[0.88rem] text-white/48">{item.place}</p>
+        <p className="relative mt-1.5 text-[0.88rem] text-white/54">{item.place}</p>
 
         {item.points && (
           <ul className="relative mt-5 space-y-2.5">
             {item.points.map((p, i) => (
-              <li key={i} className="flex gap-3 text-[0.85rem] leading-relaxed text-white/58">
+              <li key={i} className="flex gap-3 text-[0.85rem] leading-relaxed text-white/66">
                 <span
                   aria-hidden
                   className="mt-[0.55rem] h-px w-3.5 shrink-0 bg-white/25"
@@ -126,7 +126,7 @@ function Node({ item, index }: { item: Milestone; index: number }) {
         )}
 
         {item.aside && (
-          <p className="relative mt-4 font-mono text-[0.7rem] tracking-[0.1em] text-white/38">
+          <p className="relative mt-4 font-mono text-[0.7rem] tracking-[0.1em] text-white/54">
             {item.aside}
           </p>
         )}
@@ -136,7 +136,7 @@ function Node({ item, index }: { item: Milestone; index: number }) {
             {item.tools.map((t) => (
               <span
                 key={t}
-                className="glass-faint rounded-full px-2.5 py-1 text-[0.66rem] tracking-[0.04em] text-white/45"
+                className="glass-faint rounded-full px-2.5 py-1 text-[0.66rem] tracking-[0.04em] text-white/54"
               >
                 {t}
               </span>

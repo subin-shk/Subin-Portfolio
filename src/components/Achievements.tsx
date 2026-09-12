@@ -58,7 +58,7 @@ function AwardCard({ item, index }: { item: Achievement; index: number }) {
               >
                 {item.metric}
               </span>
-              <span className="text-[0.72rem] tracking-[0.12em] text-white/40">
+              <span className="text-[0.72rem] tracking-[0.12em] text-white/54">
                 {item.metricLabel}
               </span>
             </div>
@@ -74,7 +74,7 @@ function AwardCard({ item, index }: { item: Achievement; index: number }) {
             >
               {item.context}
             </p>
-            <p className="relative mt-4 text-[0.85rem] leading-[1.7] text-white/52">
+            <p className="relative mt-4 text-[0.85rem] leading-[1.7] text-white/66">
               {item.description}
             </p>
           </div>
