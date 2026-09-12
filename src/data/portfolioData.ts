@@ -71,12 +71,29 @@ export const seo = {
 };
 
 export const narrative = {
+  /**
+   * About reads as a pinned-up scrapbook rather than a movement, so it
+   * carries its own furniture: the margin notes in marker pen, the terminal
+   * aside, the tally. Every string the section renders lives here.
+   */
   about: {
-    beat: "Every release carries a <em>promise</em>.",
+    greeting: "Hey, I’m",
     body: [
-      "I spend my days making sure that promise holds. Based in Kathmandu, I work as a Software QA Engineer — the person between a feature that looks finished and a feature that actually is.",
-      "The work is quieter than it sounds. Read the spec, find the edge nobody scoped, write the script that catches it every time from then on. Repeat until the release is boring.",
+      "I build reliable software through <strong>automation</strong>, <strong>precision</strong>, and a deep focus on quality. As a Software QA Engineer, I design and maintain test frameworks, verify features across frontend, backend, and APIs, and turn real-world problems into better, more stable products.",
+      "I enjoy exploring new technologies, improving test coverage, and making the dev process smoother. Always learning, always building.",
     ],
+    disciplines: [
+      { label: "Automation", icon: "automation" },
+      { label: "Manual Testing", icon: "manual" },
+      { label: "API Testing", icon: "api" },
+      { label: "Performance Testing", icon: "performance" },
+    ],
+    stats: [
+      { value: "1+", label: "Years Experience" },
+      { value: "5+", label: "Projects" },
+      { value: "100%", label: "Curiosity" },
+    ],
+    footline: ["Automate", "Test", "Improve"],
   },
   skills: {
     beat: "Kept with a small set of <em>sharp instruments</em>.",

@@ -76,7 +76,9 @@ export function useAnimatedBlur(): boolean {
  */
 export function useRise(y: number, blur: number) {
   const reduced = useReducedMotion();
-  const blurs = useAnimatedBlur();
+  // A caller asking for no blur gets no `filter` at all: `blur(0px)` still
+  // builds a stacking context and a raster layer for nothing.
+  const blurs = useAnimatedBlur() && blur > 0;
 
   if (reduced) return { initial: { opacity: 0 }, animate: { opacity: 1 } };
 

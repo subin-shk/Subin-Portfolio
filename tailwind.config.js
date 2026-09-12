@@ -8,6 +8,8 @@ export default {
         display: ['"Inter Tight"', '"Inter"', "system-ui", "sans-serif"],
         serif: ['"Instrument Serif"', "Georgia", "serif"],
         mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+        /* Marker pen for the About scrapbook's margin notes. */
+        hand: ['"Caveat"', '"Segoe Script"', "cursive"],
       },
       colors: {
         ink: "#050505",
