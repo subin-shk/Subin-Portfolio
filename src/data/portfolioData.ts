@@ -72,7 +72,7 @@ export const seo = {
 
 export const narrative = {
   about: {
-    beat: "Every release carries a promise.",
+    beat: "Every release carries a <em>promise</em>.",
     body: [
       "I spend my days making sure that promise holds. Based in Kathmandu, I work as a Software QA Engineer — the person between a feature that looks finished and a feature that actually is.",
       "The work is quieter than it sounds. Read the spec, find the edge nobody scoped, write the script that catches it every time from then on. Repeat until the release is boring.",

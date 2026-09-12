@@ -46,10 +46,10 @@ function Panel({
   const opacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 1, 0]);
   const lift = useTransform(scrollYProgress, [0, 1], [0, -60]);
 
-  const steps = [
+  /* Setup reads as a pair; the outcome gets the floor to itself. */
+  const setup = [
     { label: "Challenge", body: project.challenge },
     { label: "Solution", body: project.solution },
-    { label: "Impact", body: project.impact },
   ];
 
   return (
@@ -161,7 +161,7 @@ function Panel({
                     }`}
                   >
                     <span
-                      className="font-display text-[2.6rem] font-light leading-none tracking-tightest text-white/22"
+                      className="font-display text-[2.6rem] font-light leading-none tracking-tightest text-white/42"
                       style={{ fontVariantNumeric: "tabular-nums" }}
                     >
                       {project.index}
@@ -191,27 +191,47 @@ function Panel({
 
                   <div className="rule my-7 max-w-[22rem]" />
 
-                  <div className="grid gap-5 sm:grid-cols-3 sm:gap-6">
-                    {steps.map((s) => (
+                  {/* Two columns, not three: at three the measure fell to
+                      ~22 characters, half a readable line. */}
+                  <div className="grid gap-5 sm:grid-cols-2 sm:gap-7">
+                    {setup.map((s) => (
                       <div key={s.label}>
                         <p
                           className="eyebrow !text-[0.55rem]"
-                          style={{ color: `rgba(${rgb},0.8)` }}
+                          style={{ color: `rgba(${rgb},0.9)` }}
                         >
                           {s.label}
                         </p>
-                        <p className="mt-2.5 text-[0.82rem] leading-[1.65] text-white/58">
+                        <p className="mt-2.5 text-[0.84rem] leading-[1.65] text-white/66">
                           {s.body}
                         </p>
                       </div>
                     ))}
                   </div>
 
+                  {/* Impact is the payload — the only line a reader has to
+                      leave with. It gets the accent rule, the weight and
+                      the full measure that the two columns above give up. */}
+                  <div
+                    className="mt-7 border-l-2 pl-5"
+                    style={{ borderColor: `rgb(${rgb})` }}
+                  >
+                    <p
+                      className="eyebrow !text-[0.55rem]"
+                      style={{ color: `rgba(${rgb},0.9)` }}
+                    >
+                      Impact
+                    </p>
+                    <p className="mt-2.5 max-w-[52ch] text-[0.98rem] font-medium leading-[1.55] text-white/92">
+                      {project.impact}
+                    </p>
+                  </div>
+
                   <div className="mt-9 flex flex-wrap gap-1.5">
                     {project.tech.map((t) => (
                       <span
                         key={t}
-                        className="glass-faint rounded-full px-3 py-1.5 text-[0.68rem] tracking-[0.04em] text-white/55"
+                        className="glass-faint rounded-full px-3 py-1.5 text-[0.68rem] tracking-[0.04em] text-white/66"
                       >
                         {t}
                       </span>
@@ -224,7 +244,7 @@ function Panel({
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group/link inline-flex items-center gap-2 text-[0.82rem] text-white/70 transition-colors duration-300 hover:text-white"
+                        className="group/link inline-flex items-center gap-2 text-[0.82rem] text-white/66 transition-colors duration-300 hover:text-white"
                       >
                         <Github size={15} strokeWidth={1.7} />
                         <span className="relative">
@@ -233,7 +253,7 @@ function Panel({
                         </span>
                       </a>
                     ) : (
-                      <span className="inline-flex items-center gap-2 text-[0.82rem] text-white/28">
+                      <span className="inline-flex items-center gap-2 text-[0.82rem] text-white/42">
                         <Github size={15} strokeWidth={1.7} />
                         Private — internal suite
                       </span>
@@ -244,7 +264,7 @@ function Panel({
                         href={project.liveDemo}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group/link inline-flex items-center gap-2 text-[0.82rem] text-white/70 transition-colors duration-300 hover:text-white"
+                        className="group/link inline-flex items-center gap-2 text-[0.82rem] text-white/66 transition-colors duration-300 hover:text-white"
                       >
                         <ArrowUpRight size={15} strokeWidth={1.7} />
                         <span className="relative">
@@ -254,7 +274,7 @@ function Panel({
                       </a>
                     )}
 
-                    <span className="ml-auto font-mono text-[0.65rem] tracking-[0.2em] text-white/22">
+                    <span className="ml-auto font-mono text-[0.65rem] tracking-[0.2em] text-white/42">
                       {project.index} / {String(total).padStart(2, "0")}
                     </span>
                   </div>
@@ -301,20 +321,20 @@ function ArchiveRow({ item, index }: { item: ArchiveProject; index: number }) {
           Turning the row at `sm` pushed the tech list past the viewport
           between 640px and ~680px — landscape phone territory. */}
       <div className="flex flex-col gap-3 md:flex-row md:items-baseline md:gap-8">
-        <h4 className="font-display text-[1.15rem] font-normal tracking-supertight text-white/85 transition-transform duration-500 ease-glass group-hover:translate-x-1.5 md:min-w-[15rem]">
+        <h4 className="font-display text-[1.15rem] font-normal tracking-supertight text-white/78 transition-transform duration-500 ease-glass group-hover:translate-x-1.5 md:min-w-[15rem]">
           {item.name}
         </h4>
-        <p className="max-w-[42ch] flex-1 text-[0.85rem] leading-relaxed text-white/45">
+        <p className="max-w-[42ch] flex-1 text-[0.85rem] leading-relaxed text-white/54">
           {item.description}
         </p>
         <div className="flex shrink-0 items-center gap-3">
-          <span className="font-mono text-[0.65rem] tracking-[0.12em] text-white/30">
+          <span className="font-mono text-[0.65rem] tracking-[0.12em] text-white/42">
             {item.tech.join(" · ")}
           </span>
           <ArrowUpRight
             size={16}
             strokeWidth={1.6}
-            className="text-white/30 transition-all duration-500 ease-glass group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white/80"
+            className="text-white/42 transition-all duration-500 ease-glass group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white/78"
           />
         </div>
       </div>

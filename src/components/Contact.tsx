@@ -39,7 +39,7 @@ function Field({
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       onChange(e.target.value),
     className:
-      "peer w-full bg-transparent px-5 text-[0.95rem] text-white/90 outline-none placeholder:text-transparent",
+      "peer w-full bg-transparent px-5 text-[0.95rem] text-white/92 outline-none placeholder:text-transparent",
   };
 
   return (
@@ -54,7 +54,7 @@ function Field({
       >
         <label
           htmlFor={id}
-          className="pointer-events-none absolute left-5 z-[1] origin-left text-white/40 transition-all duration-400 ease-glass"
+          className="pointer-events-none absolute left-5 z-[1] origin-left text-white/54 transition-all duration-400 ease-glass"
           style={{
             top: lifted ? "0.65rem" : textarea ? "1.15rem" : "50%",
             transform: lifted
@@ -203,7 +203,7 @@ export default function Contact() {
                   <button
                     type="button"
                     onClick={() => setStatus("idle")}
-                    className="mt-7 text-[0.78rem] text-white/40 underline-offset-4 transition-colors hover:text-white/75 hover:underline"
+                    className="mt-7 text-[0.78rem] text-white/54 underline-offset-4 transition-colors hover:text-white/78 hover:underline"
                   >
                     Send another
                   </button>
@@ -261,7 +261,7 @@ export default function Contact() {
                       initial={{ opacity: 0, y: -6 }}
                       animate={{ opacity: 1, y: 0 }}
                       role="alert"
-                      className="text-[0.78rem] leading-relaxed text-white/55"
+                      className="text-[0.78rem] leading-relaxed text-white/66"
                     >
                       {error}
                     </motion.p>
@@ -274,7 +274,7 @@ export default function Contact() {
                       aria-label="Send message"
                       animate={{ width: status === "sending" ? 56 : 172 }}
                       transition={{ duration: 0.55, ease: EASE }}
-                      className="edge relative grid h-14 place-items-center overflow-hidden rounded-full text-[0.9rem] font-medium text-white/95 disabled:cursor-wait md:backdrop-blur-xl"
+                      className="edge relative grid h-14 place-items-center overflow-hidden rounded-full text-[0.9rem] font-medium text-white/92 disabled:cursor-wait md:backdrop-blur-xl"
                       style={{
                         background: "rgba(255,255,255,0.08)",
                         boxShadow:
@@ -325,7 +325,7 @@ export default function Contact() {
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
             <a
               href={`mailto:${personalInfo.email}`}
-              className="group inline-flex items-center gap-2.5 text-[0.85rem] text-white/55 transition-colors duration-300 hover:text-white"
+              className="group inline-flex items-center gap-2.5 text-[0.85rem] text-white/66 transition-colors duration-300 hover:text-white"
             >
               <Mail size={15} strokeWidth={1.7} />
               <span className="relative">
@@ -337,7 +337,7 @@ export default function Contact() {
               href={personalInfo.socialLinks.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2.5 text-[0.85rem] text-white/55 transition-colors duration-300 hover:text-white"
+              className="group inline-flex items-center gap-2.5 text-[0.85rem] text-white/66 transition-colors duration-300 hover:text-white"
             >
               <Linkedin size={15} strokeWidth={1.7} />
               LinkedIn
@@ -350,7 +350,7 @@ export default function Contact() {
               href={personalInfo.socialLinks.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2.5 text-[0.85rem] text-white/55 transition-colors duration-300 hover:text-white"
+              className="group inline-flex items-center gap-2.5 text-[0.85rem] text-white/66 transition-colors duration-300 hover:text-white"
             >
               <Github size={15} strokeWidth={1.7} />
               GitHub

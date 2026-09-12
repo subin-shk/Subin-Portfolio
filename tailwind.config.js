@@ -21,6 +21,8 @@ export default {
         cyan: { DEFAULT: "#5fd4e8", soft: "#a5e9f5" },
         violet: { DEFAULT: "#9b7bff", soft: "#c3aeff" },
         pink: { DEFAULT: "#ff4d8d", soft: "#ff8fb8" },
+        /* The one warm note: printed beads on the lanyard and hero straps. */
+        ember: { DEFAULT: "#ff6b2c", soft: "#ff9460" },
       },
       letterSpacing: {
         tightest: "-0.055em",

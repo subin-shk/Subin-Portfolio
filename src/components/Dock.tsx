@@ -108,7 +108,7 @@ export default function Dock() {
             initial={false}
             animate={{ width: monogramOpen ? 0 : 36, opacity: monogramOpen ? 0 : 1 }}
             transition={{ duration: reduced ? 0 : 0.6, ease: EASE }}
-            className="grid h-9 shrink-0 place-items-center overflow-hidden whitespace-nowrap font-display text-[0.75rem] font-medium tracking-[0.02em] text-white/80"
+            className="grid h-9 shrink-0 place-items-center overflow-hidden whitespace-nowrap font-display text-[0.75rem] font-medium tracking-[0.02em] text-white/78"
           >
             SS.
           </motion.span>
@@ -116,7 +116,7 @@ export default function Dock() {
             initial={false}
             animate={{ width: monogramOpen ? "auto" : 0, opacity: monogramOpen ? 1 : 0 }}
             transition={{ duration: reduced ? 0 : 0.6, ease: EASE }}
-            className="overflow-hidden whitespace-nowrap font-display text-[0.75rem] font-medium tracking-[-0.005em] text-white/85"
+            className="overflow-hidden whitespace-nowrap font-display text-[0.75rem] font-medium tracking-[-0.005em] text-white/78"
           >
             <span className="block py-2 pr-3.5">{personalInfo.name}.</span>
           </motion.span>
@@ -216,7 +216,7 @@ export default function Dock() {
                         aria-hidden
                         strokeWidth={1.75}
                         className={`relative z-[1] h-4 w-4 shrink-0 transition-colors duration-400 lg:mr-1.5 ${
-                          isActive ? "text-white" : "text-white/45"
+                          isActive ? "text-white" : "text-white/54"
                         }`}
                       />
                     )}
@@ -243,7 +243,7 @@ export default function Dock() {
                     <span
                       aria-hidden
                       className={`relative z-[1] hidden text-[0.74rem] font-medium tracking-[-0.005em] transition-colors duration-400 lg:block ${
-                        isActive ? "text-white" : "text-white/45 hover:text-white/80"
+                        isActive ? "text-white" : "text-white/54 hover:text-white/78"
                       }`}
                     >
                       {item.name}
