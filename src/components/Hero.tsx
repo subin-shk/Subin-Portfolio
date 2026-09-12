@@ -28,12 +28,6 @@ export default function Hero() {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
   const y = useTransform(scrollYProgress, [0, 1], [0, 80]);
   const opacity = useTransform(scrollYProgress, [0, 0.78], [1, 0]);
-  // Held sharp until the hero is already half faded — blurring text that is
-  // still legible just makes it unreadable rather than cinematic.
-  const filter = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0, 14], {
-    clamp: true,
-  });
-  const blurCss = useTransform(filter, (b) => `blur(${b}px)`);
   const rise = useRise(14, 7);
 
   const chars = NAME.split("");
@@ -67,7 +61,6 @@ export default function Hero() {
                 scale,
                 y,
                 opacity,
-                ...(blurs ? { filter: blurCss } : null),
                 transformOrigin: "center 35%",
               }
         }
