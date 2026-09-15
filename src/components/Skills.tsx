@@ -9,7 +9,7 @@ import {
   Radio,
 } from "lucide-react";
 import { narrative, skillGroups } from "../data/portfolioData";
-import type { Accent, SkillGroup } from "../types";
+import type { SkillGroup } from "../types";
 import { EASE, inView, useReducedMotion } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
 
@@ -22,24 +22,16 @@ const ICONS: Record<string, typeof Braces> = {
   vcs: GitBranch,
 };
 
-const ACCENT: Record<Accent, { rgb: string }> = {
-  blue: { rgb: "77,124,255" },
-  cyan: { rgb: "95,212,232" },
-  violet: { rgb: "155,123,255" },
-};
-
 type Hovered = { group: string; index: number } | null;
 
 function Capsule({
   name,
-  note,
   group,
   index,
   hovered,
   onHover,
 }: {
   name: string;
-  note: string;
   group: SkillGroup;
   index: number;
   hovered: Hovered;
@@ -47,7 +39,6 @@ function Capsule({
 }) {
   const reduced = useReducedMotion();
   const [rings, setRings] = useState<number[]>([]);
-  const accent = ACCENT[group.accent];
   const Icon = ICONS[group.id] ?? Braces;
 
   const isActive = hovered?.group === group.id && hovered.index === index;
@@ -97,10 +88,13 @@ function Capsule({
             }
       }
       transition={{ duration: 0.55, ease: EASE }}
-      className="glass edge relative flex items-center gap-2.5 overflow-visible rounded-full py-2.5 pl-3.5 pr-5 gpu"
+      /* Same chip as the disciplines in About: glass, a hairline edge, and a
+         plain white icon — no per-group colour, so the eye reads the set as
+         one kit rather than six palettes. */
+      className="glass edge relative flex items-center gap-2 overflow-visible rounded-full px-3.5 py-2 gpu"
       style={{
         boxShadow: isActive
-          ? `0 0 0 1px rgba(${accent.rgb},0.35), 0 12px 44px -10px rgba(${accent.rgb},0.55), inset 0 1px 0 rgba(255,255,255,0.2)`
+          ? "0 0 0 1px rgba(255,255,255,0.18), 0 12px 44px -12px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.16)"
           : undefined,
         transition: "box-shadow .55s var(--ease-glass)",
       }}
@@ -111,44 +105,21 @@ function Capsule({
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-full"
           style={{
-            border: `1px solid rgba(${accent.rgb},0.55)`,
+            border: "1px solid rgba(255,255,255,0.3)",
             animation: "ripple-out .9s var(--ease-glass) forwards",
           }}
         />
       ))}
 
-      <span
-        className="grid h-7 w-7 shrink-0 place-items-center rounded-full"
-        style={{
-          background: `radial-gradient(circle at 30% 25%, rgba(${accent.rgb},0.34), rgba(${accent.rgb},0.10))`,
-          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.22)`,
-        }}
-      >
-        <Icon
-          size={13}
-          strokeWidth={1.9}
-          style={{ color: `rgb(${accent.rgb})` }}
-        />
-      </span>
+      <Icon
+        size={16}
+        strokeWidth={1.6}
+        className="h-4 w-4 shrink-0 text-white/55"
+      />
 
       <span className="whitespace-nowrap text-[0.86rem] font-medium tracking-[-0.01em] text-white/92">
         {name}
       </span>
-
-      {/* Qualifier only surfaces on the lit capsule */}
-      {note && (
-        <motion.span
-          aria-hidden={!isActive}
-          animate={{
-            width: isActive && !reduced ? "auto" : 0,
-            opacity: isActive && !reduced ? 1 : 0,
-          }}
-          transition={{ duration: 0.45, ease: EASE }}
-          className="overflow-hidden whitespace-nowrap text-[0.7rem] tracking-[0.06em] text-white/54"
-        >
-          <span className="pl-2">{note}</span>
-        </motion.span>
-      )}
     </motion.div>
     </motion.div>
   );
@@ -198,7 +169,6 @@ export default function Skills() {
                       <Capsule
                         key={item.name}
                         name={item.name}
-                        note={item.note}
                         group={group}
                         index={i}
                         hovered={hovered}

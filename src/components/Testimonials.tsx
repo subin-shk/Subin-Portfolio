@@ -45,7 +45,7 @@ export default function Testimonials() {
                 aria-hidden
                 size={46}
                 strokeWidth={0}
-                className="tint mb-3 -scale-x-100 fill-current opacity-90"
+                className="mb-3 -scale-x-100 fill-current text-white/40"
               />
 
               <AnimatePresence mode="wait" custom={direction} initial={false}>
