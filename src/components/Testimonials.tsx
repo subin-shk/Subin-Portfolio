@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Quote } from "lucide-react";
 import { narrative, testimonials } from "../data/portfolioData";
 import { EASE, useReducedMotion } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
+import { SectionTitle } from "./ui/SectionTitle";
 
 export default function Testimonials() {
   const reduced = useReducedMotion();
@@ -24,10 +25,7 @@ export default function Testimonials() {
         <div className="grid gap-x-16 gap-y-6 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Rise>
-              <h2
-                className="beat"
-                dangerouslySetInnerHTML={{ __html: narrative.testimonials.beat }}
-              />
+              <SectionTitle>Testimonials</SectionTitle>
             </Rise>
           </div>
           <div className="flex items-end lg:col-span-5">

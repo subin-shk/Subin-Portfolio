@@ -10,6 +10,7 @@ import {
 import { narrative, skillGroups } from "../data/portfolioData";
 import { EASE, inView } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
+import { SectionTitle } from "./ui/SectionTitle";
 
 const ICONS: Record<string, typeof Braces> = {
   automation: MousePointerClick,
@@ -61,17 +62,7 @@ export default function Skills() {
         <div className="grid gap-x-16 gap-y-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <Rise>
-              {/* Section title, in the same "// ● Label" mark as About,
-                  rather than a narrative beat — this movement opens on a
-                  plain label instead of a line of copy. */}
-              <p className="eyebrow flex items-center gap-3">
-                <span className="text-white/20">//</span>
-                <span
-                  aria-hidden
-                  className="h-1.5 w-1.5 rounded-full bg-violet shadow-[0_0_9px_rgba(155,123,255,0.9)]"
-                />
-                Skills
-              </p>
+              <SectionTitle>Skills</SectionTitle>
             </Rise>
             <Rise delay={0.14}>
               <p className="lede mt-7 max-w-[34ch]">{narrative.skills.body}</p>

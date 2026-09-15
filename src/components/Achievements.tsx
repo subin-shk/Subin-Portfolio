@@ -4,6 +4,7 @@ import { achievements, narrative } from "../data/portfolioData";
 import type { Achievement } from "../types";
 import { EASE, inView, useReducedMotion, useRise } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
+import { SectionTitle } from "./ui/SectionTitle";
 import GlassCard from "./ui/GlassCard";
 
 const ICONS: Record<string, typeof Award> = {
@@ -91,10 +92,7 @@ export default function Achievements() {
         <div className="grid gap-x-16 gap-y-6 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Rise>
-              <h2
-                className="beat"
-                dangerouslySetInnerHTML={{ __html: narrative.achievements.beat }}
-              />
+              <SectionTitle>Achievements</SectionTitle>
             </Rise>
           </div>
           <div className="flex items-end lg:col-span-5">

@@ -4,6 +4,7 @@ import { ArrowUpRight, Check, Github, Linkedin, Mail, Send } from "lucide-react"
 import { narrative, personalInfo } from "../data/portfolioData";
 import { EASE, useReducedMotion } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
+import { SectionTitle } from "./ui/SectionTitle";
 import { sendEmail } from "../utils/emailService";
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -145,10 +146,7 @@ export default function Contact() {
 
       <div className="shell flex flex-col items-center text-center">
         <Rise>
-          <h2
-            className="beat !max-w-[16ch] text-center"
-            dangerouslySetInnerHTML={{ __html: narrative.contact.beat }}
-          />
+          <SectionTitle className="justify-center">Contact</SectionTitle>
         </Rise>
         <Rise delay={0.14}>
           <p className="lede mt-6 max-w-[40ch]">{narrative.contact.body}</p>

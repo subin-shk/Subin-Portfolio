@@ -5,6 +5,7 @@ import { archiveProjects, featuredProjects, narrative } from "../data/portfolioD
 import type { Accent, ArchiveProject, FeaturedProject } from "../types";
 import { EASE, inView, useMediaQuery, useReducedMotion } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
+import { SectionTitle } from "./ui/SectionTitle";
 import GlassCard from "./ui/GlassCard";
 import ProjectVisual from "./ui/ProjectVisual";
 
@@ -350,10 +351,7 @@ export default function Projects() {
         <div className="grid gap-x-16 gap-y-6 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Rise>
-              <h2
-                className="beat"
-                dangerouslySetInnerHTML={{ __html: narrative.projects.beat }}
-              />
+              <SectionTitle>Projects</SectionTitle>
             </Rise>
           </div>
           <div className="flex items-end lg:col-span-5">

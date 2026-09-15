@@ -4,6 +4,7 @@ import { GraduationCap, Briefcase } from "lucide-react";
 import { educationHistory, experiences, narrative } from "../data/portfolioData";
 import { EASE, inView, useReducedMotion, useRise } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
+import { SectionTitle } from "./ui/SectionTitle";
 
 type Milestone = {
   id: string;
@@ -168,10 +169,7 @@ export default function Journey() {
         <div className="grid gap-x-16 gap-y-6 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Rise>
-              <h2
-                className="beat"
-                dangerouslySetInnerHTML={{ __html: narrative.journey.beat }}
-              />
+              <SectionTitle>Journey</SectionTitle>
             </Rise>
           </div>
           <div className="flex items-end lg:col-span-5">
