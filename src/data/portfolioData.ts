@@ -105,7 +105,7 @@ export const narrative = {
   },
   /** Turns the corner from testing systems to having built them. */
   projectsAside: {
-    beat: "Though it doesn't stop at <em>breaking things</em>.",
+    beat: "Though it doesn't stop at breaking things.",
     body: "Some of these I designed and shipped end to end. Knowing how software gets built is most of knowing where it gives way.",
   },
   journey: {

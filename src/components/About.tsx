@@ -13,6 +13,7 @@ import {
 import { narrative, personalInfo } from "../data/portfolioData";
 import { useReducedMotion } from "../lib/motion";
 import { Rise } from "./ui/Reveal";
+import { SectionTitle } from "./ui/SectionTitle";
 import { Swash, Tape } from "./ui/AboutDoodles";
 import portrait from "../images/subin_shk.webp";
 import skyline from "../images/kathmandu-nepal.png";
@@ -116,14 +117,7 @@ export default function About() {
 
       <div className="relative mx-auto w-full max-w-[96rem] px-[var(--gutter)]">
         <Beat>
-          <p className="eyebrow flex items-center gap-3 md:pl-[4.25rem]">
-            <span className="text-white/20">//</span>
-            <span
-              aria-hidden
-              className="h-1.5 w-1.5 rounded-full bg-violet shadow-[0_0_9px_rgba(155,123,255,0.9)]"
-            />
-            About me
-          </p>
+          <SectionTitle className="md:pl-[4.25rem]">About me</SectionTitle>
         </Beat>
 
         <div className="mt-8 grid items-center gap-x-[4vw] gap-y-[clamp(2.5rem,6vh,4rem)] lg:mt-[clamp(1rem,2.8vh,2.5rem)] lg:grid-cols-12">

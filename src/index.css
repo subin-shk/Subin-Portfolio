@@ -283,32 +283,16 @@
     text-wrap: balance;
   }
 
+  /* The emphasis carries on typographic contrast alone — serif italic against
+     the light sans. It used to also carry a cyan-to-violet gradient, which
+     made every movement open on a different colour to About's plain white
+     name; one heading colour across the page reads as one page. */
   .beat em {
     font-family: "Instrument Serif", Georgia, serif;
     font-style: italic;
     font-weight: 400;
     letter-spacing: -0.02em;
-    background: linear-gradient(
-      100deg,
-      rgb(var(--cyan)),
-      rgb(var(--blue)) 48%,
-      rgb(var(--violet))
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .tint {
-    background: linear-gradient(
-      100deg,
-      rgb(var(--cyan)),
-      rgb(var(--blue)) 50%,
-      rgb(var(--violet))
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--text);
   }
 }
 
