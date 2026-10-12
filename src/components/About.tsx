@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import type { ComponentProps, ComponentType } from "react";
+import type { ComponentType } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Cloud,
@@ -19,17 +19,6 @@ import portrait from "../images/subin_shk.webp";
 import skyline from "../images/kathmandu-nepal.png";
 import aside from "../images/qualityisfeature.png";
 import scrap from "../images/bettertestsbetterproducts.png";
-
-/**
- * The section's reveal: the page's rise, minus its blur-in.
- *
- * Everything here is photographic — a print, a torn scrap, ink on paper — and
- * softening a photograph as it enters reads as the image still loading rather
- * than as focus resolving, which is what the blur buys on type.
- */
-function Beat(props: ComponentProps<typeof Rise>) {
-  return <Rise blur={0} {...props} />;
-}
 
 const about = narrative.about;
 
@@ -116,9 +105,9 @@ export default function About() {
       />
 
       <div className="relative mx-auto w-full max-w-[96rem] px-[var(--gutter)]">
-        <Beat>
+        <Rise>
           <SectionTitle className="md:pl-[4.25rem]">About me</SectionTitle>
-        </Beat>
+        </Rise>
 
         <div className="mt-8 grid items-center gap-x-[4vw] gap-y-[clamp(2.5rem,6vh,4rem)] lg:mt-[clamp(1rem,2.8vh,2.5rem)] lg:grid-cols-12">
           {/* ——— The pinned-up pile ———
@@ -203,7 +192,7 @@ export default function About() {
                 margin the paragraphs never reach. Absolute, so none of it
                 costs the copy any width. It sits out below md, where the
                 column is too narrow to have a margin to sit in. */}
-            <Beat
+            <Rise
               delay={0.3}
               className="pointer-events-none absolute right-0 top-0 z-10 hidden w-[12rem] md:block xl:w-[13.5rem]"
             >
@@ -217,26 +206,26 @@ export default function About() {
                 height={205}
                 className="w-full select-none opacity-90"
               />
-            </Beat>
+            </Rise>
 
             <div>
               <div className="min-w-0">
-                <Beat>
+                <Rise>
                   <p className="font-mono text-[0.8rem] uppercase tracking-[0.28em] text-violet">
                     {about.greeting}
                   </p>
-                </Beat>
+                </Rise>
 
-                <Beat delay={0.08}>
+                <Rise delay={0.08}>
                   <div className="relative inline-block">
                     <h2 className="mt-2.5 font-display text-[clamp(2.2rem,min(5.4vw,8.6vh),4.4rem)] font-semibold leading-[0.9] tracking-[-0.05em] text-white">
                       {personalInfo.name}
                     </h2>
                     <Swash className="absolute -bottom-1 left-[7%] h-3 w-[72%] text-blue" />
                   </div>
-                </Beat>
+                </Rise>
 
-                <Beat delay={0.16}>
+                <Rise delay={0.16}>
                   <p className="mt-[clamp(0.85rem,2.2vh,1.35rem)] font-mono text-[clamp(0.95rem,min(1.66vw,2.6vh),1.3rem)] tracking-[-0.01em] text-white/80">
                     {personalInfo.title}
                     <span
@@ -247,23 +236,23 @@ export default function About() {
                       _
                     </span>
                   </p>
-                </Beat>
+                </Rise>
               </div>
             </div>
 
             <div className="mt-[clamp(1.1rem,3vh,2.1rem)] max-w-[44ch] space-y-[clamp(0.6rem,1.8vh,1.1rem)]">
               {about.body.map((para, i) => (
-                <Beat key={i} delay={0.12 + i * 0.1}>
+                <Rise key={i} delay={0.12 + i * 0.1}>
                   <p
                     className="lede !text-[clamp(0.92rem,min(1.08vw,1.95vh),1.06rem)] [&_strong]:font-medium [&_strong]:text-white/90"
                     dangerouslySetInnerHTML={{ __html: para }}
                   />
-                </Beat>
+                </Rise>
               ))}
             </div>
 
             {/* What the work actually is, one chip per layer */}
-            <Beat delay={0.22}>
+            <Rise delay={0.22}>
               <ul className="mt-[clamp(1rem,2.6vh,1.9rem)] flex flex-wrap gap-2">
                 {about.disciplines.map(({ label, icon }) => {
                   const Icon = ICONS[icon];
@@ -282,13 +271,13 @@ export default function About() {
                   );
                 })}
               </ul>
-            </Beat>
+            </Rise>
 
-            <Beat delay={0.3}>
+            <Rise delay={0.3}>
               <div className="rule mt-[clamp(1rem,2.6vh,2.1rem)]" />
-            </Beat>
+            </Rise>
 
-            <Beat delay={0.36}>
+            <Rise delay={0.36}>
               <dl className="mt-[clamp(1rem,2.6vh,1.75rem)] grid grid-cols-2 gap-y-7 sm:grid-cols-3">
                 {about.stats.map(({ value, label }, i) => (
                   <div
@@ -311,9 +300,9 @@ export default function About() {
                   </div>
                 ))}
               </dl>
-            </Beat>
+            </Rise>
 
-            <Beat delay={0.44}>
+            <Rise delay={0.44}>
               <div className="mt-[clamp(1.15rem,3vh,2.4rem)] flex flex-wrap items-center gap-4">
                 {[
                   {
@@ -339,17 +328,17 @@ export default function About() {
                   </a>
                 ))}
               </div>
-            </Beat>
+            </Rise>
           </div>
         </div>
 
         {/* The section signing off in its own margin */}
-        <Beat delay={0.1}>
+        <Rise delay={0.1}>
           <div className="mt-[clamp(1.25rem,3.2vh,2.75rem)] flex flex-wrap items-center gap-x-4 gap-y-3">
             <p className="eyebrow shrink-0">{about.footline.join(" / ")}</p>
             <div className="rule hidden w-[clamp(6rem,14vw,13rem)] sm:block" />
           </div>
-        </Beat>
+        </Rise>
       </div>
     </section>
   );

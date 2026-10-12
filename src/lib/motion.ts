@@ -41,55 +41,11 @@ export function useMediaQuery(query: string): boolean {
   return matches;
 }
 
-/**
- * Below `md`, nothing on this page blurs.
- *
- * Blur is the most expensive thing here: an animated one re-rasterises every
- * frame it changes, and a `backdrop-filter` re-reads everything painted behind
- * it. Phones pay both on a far weaker GPU for the effect that reads least on a
- * small screen. So the phone build drops all three kinds — backdrop-filter on
- * the glass (index.css), the static glows, and the animated reveals.
- */
-const PHONE = "(max-width: 767px)";
-
-export function usePhone(): boolean {
-  return useMediaQuery(PHONE);
-}
-
-/**
- * Whether animated `filter: blur()` should run at all. Reduced motion drops it
- * for the same reason it drops everything else.
- */
-export function useAnimatedBlur(): boolean {
+/** The page's one reveal recipe: fade up by `y`; reduced motion just fades. */
+export function useRise(y: number) {
   const reduced = useReducedMotion();
-  const phone = usePhone();
-  return !reduced && !phone;
-}
-
-/**
- * The page's one reveal recipe: fade up, optionally resolving out of a blur.
- * Callers pass their own travel and softness; this decides how much of it the
- * viewer's device and preferences actually get.
- *
- * `filter` is omitted rather than set to `blur(0px)` when blur is off — a zero
- * blur still builds a stacking context and a raster layer for no visible gain.
- */
-export function useRise(y: number, blur: number) {
-  const reduced = useReducedMotion();
-  // A caller asking for no blur gets no `filter` at all: `blur(0px)` still
-  // builds a stacking context and a raster layer for nothing.
-  const blurs = useAnimatedBlur() && blur > 0;
-
   if (reduced) return { initial: { opacity: 0 }, animate: { opacity: 1 } };
-
-  return {
-    initial: blurs
-      ? { opacity: 0, y, filter: `blur(${blur}px)` }
-      : { opacity: 0, y },
-    animate: blurs
-      ? { opacity: 1, y: 0, filter: "blur(0px)" }
-      : { opacity: 1, y: 0 },
-  };
+  return { initial: { opacity: 0, y }, animate: { opacity: 1, y: 0 } };
 }
 
 /**

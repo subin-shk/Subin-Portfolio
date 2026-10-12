@@ -7,26 +7,19 @@ type RiseProps = {
   className?: string;
   delay?: number;
   y?: number;
-  blur?: number;
   duration?: number;
 };
 
-/**
- * Blur-to-sharp rise, used for every scroll-in on the page.
- *
- * The blur is kept light on purpose: enough to read as "resolving into
- * focus", not enough to make the text illegible if the reveal lands late.
- */
+/** Fade-up rise, used for every scroll-in on the page. */
 export function Rise({
   children,
   className = "",
   delay = 0,
   y = 30,
-  blur = 7,
   duration = 0.85,
 }: RiseProps) {
   const reduced = useReducedMotion();
-  const rise = useRise(y, blur);
+  const rise = useRise(y);
 
   return (
     <motion.div

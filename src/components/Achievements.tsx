@@ -18,7 +18,7 @@ const TONES = ["95,212,232", "77,124,255", "155,123,255"];
 
 function AwardCard({ item, index }: { item: Achievement; index: number }) {
   const reduced = useReducedMotion();
-  const rise = useRise(40, 8);
+  const rise = useRise(40);
   const Icon = ICONS[item.icon] ?? Award;
   const rgb = TONES[index % TONES.length];
 
