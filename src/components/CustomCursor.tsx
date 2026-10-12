@@ -33,6 +33,7 @@ const TRAIL = [
 const INTERACTIVE_SELECTOR =
   'a[href], button, [role="button"], input[type="submit"], input[type="button"], label[for], select, summary';
 const PROJECT_SELECTOR = '[data-cursor="project"]';
+const GRAB_SELECTOR = '[data-cursor="grab"]';
 const TEXT_SELECTOR = 'input, textarea, [contenteditable="true"]';
 
 /** A slim, needle-like point with a small flared base and two subtle
@@ -47,6 +48,7 @@ function classifyTarget(el: EventTarget | null): {
   if (!(el instanceof Element)) return { hover: "default", text: false };
   if (el.closest(TEXT_SELECTOR)) return { hover: "default", text: true };
   if (el.closest(PROJECT_SELECTOR)) return { hover: "project", text: false };
+  if (el.closest(GRAB_SELECTOR)) return { hover: "button", text: false };
   const interactive = el.closest(INTERACTIVE_SELECTOR);
   if (interactive) {
     const isButton =
