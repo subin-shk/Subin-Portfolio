@@ -42,7 +42,7 @@ const milestones: Milestone[] = [
 
 function Node({ item, index }: { item: Milestone; index: number }) {
   const reduced = useReducedMotion();
-  const rise = useRise(34, 7);
+  const rise = useRise(34);
   const Icon = item.kind === "role" ? Briefcase : GraduationCap;
   const lit = Boolean(item.current);
 

@@ -50,9 +50,9 @@ export default function Testimonials() {
                 <motion.div
                   key={active.id}
                   custom={direction}
-                  initial={reduced ? { opacity: 0 } : { opacity: 0, x: 24 * direction, filter: "blur(6px)" }}
-                  animate={reduced ? { opacity: 1 } : { opacity: 1, x: 0, filter: "blur(0px)" }}
-                  exit={reduced ? { opacity: 0 } : { opacity: 0, x: -24 * direction, filter: "blur(6px)" }}
+                  initial={reduced ? { opacity: 0 } : { opacity: 0, x: 24 * direction }}
+                  animate={reduced ? { opacity: 1 } : { opacity: 1, x: 0 }}
+                  exit={reduced ? { opacity: 0 } : { opacity: 0, x: -24 * direction }}
                   transition={{ duration: reduced ? 0.25 : 0.55, ease: EASE }}
                 >
                   <div className="font-display max-w-[58ch] space-y-4 text-[clamp(1.15rem,1.9vw,1.5rem)] font-light leading-[1.58] tracking-supertight text-white/92 text-left">

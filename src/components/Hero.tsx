@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Download } from "lucide-react";
 import { personalInfo } from "../data/portfolioData";
-import { EASE, useAnimatedBlur, useReducedMotion, useRise } from "../lib/motion";
+import { EASE, useReducedMotion, useRise } from "../lib/motion";
 import { scrollTo } from "../lib/useSmoothScroll";
 import GlassButton from "./ui/GlassButton";
 import HeroStraps from "./HeroStraps";
@@ -17,7 +17,6 @@ const NAME = personalInfo.name.toUpperCase();
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const blurs = useAnimatedBlur();
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -27,7 +26,7 @@ export default function Hero() {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
   const y = useTransform(scrollYProgress, [0, 1], [0, 80]);
   const opacity = useTransform(scrollYProgress, [0, 0.78], [1, 0]);
-  const rise = useRise(14, 7);
+  const rise = useRise(14);
 
   const chars = NAME.split("");
   const step = 0.045;
@@ -42,7 +41,7 @@ export default function Hero() {
     >
       {/* Straps ride the hero's own fade so they leave with it rather than
           sliding out from under the next section. Opacity only — the
-          content wrapper's scale/blur would cost a re-raster on two
+          content wrapper's scale would cost a re-raster on two
           viewport-sized bands every scroll frame. */}
       <motion.div
         aria-hidden
@@ -99,18 +98,8 @@ export default function Hero() {
                 >
                   <motion.span
                     className="inline-block"
-                    initial={
-                      reduced
-                        ? { opacity: 0 }
-                        : blurs
-                          ? { y: "110%", opacity: 0, filter: "blur(16px)" }
-                          : { y: "110%", opacity: 0 }
-                    }
-                    animate={
-                      blurs
-                        ? { y: 0, opacity: 1, filter: "blur(0px)" }
-                        : { y: 0, opacity: 1 }
-                    }
+                    initial={reduced ? { opacity: 0 } : { y: "110%", opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
                     transition={{
                       duration: reduced ? 0.3 : 1.25,
                       ease: EASE,
