@@ -11,9 +11,8 @@ import IDCard from "./IDCard";
 const NAME = personalInfo.name.toUpperCase();
 
 /**
- * Opening screen. The portrait used to be a cutout composited into the
- * gradient mesh; it's now a physical ID badge hanging from a lanyard —
- * see IDCard.tsx for the swing/tilt physics.
+ * Opening screen, with a 3D ID badge hanging from a lanyard — see
+ * IDCard.tsx and src/lib/badge.
  */
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -67,15 +66,12 @@ export default function Hero() {
         className="shell relative z-[2] flex w-full flex-col items-center text-center gpu lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-14 lg:text-left"
       >
         <motion.div
-          /* Quick, plain fade — IDCard's own drop-in spring is the entrance
-             motion here. A slow blur/scale reveal (fine for a static photo)
-             would leave the badge still near-transparent by the time its
-             drop had already finished, so the drop would read as if it
-             wasn't there. */
+          /* Quick, plain fade — IDCard's own lowering-in is the entrance
+             motion. z-[4] keeps a dragged card in front of the name. */
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, ease: EASE, delay: 0.05 }}
-          className="relative mb-2 w-full sm:mb-4 lg:mb-0 lg:w-auto lg:shrink-0"
+          className="relative z-[4] mb-2 w-full sm:mb-4 lg:mb-0 lg:w-auto lg:shrink-0"
         >
           <IDCard />
         </motion.div>
