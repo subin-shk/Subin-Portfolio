@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { personalInfo } from "../data/portfolioData";
 import { useReducedMotion } from "../lib/motion";
+import { isIntroReady, trackLoad, useIntroReady } from "../lib/pageReady";
 import type { BadgeScene } from "../lib/badge/BadgeScene";
 import IDCardFlat from "./IDCardFlat";
 import badgePortrait from "../images/subin-shk-hero2.jpg";
@@ -26,11 +27,16 @@ function IDCard3D({ onFail }: { onFail: () => void }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const hitRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<BadgeScene | null>(null);
+  const introReady = useIntroReady();
 
   useEffect(() => {
     reducedRef.current = reduced;
     sceneRef.current?.setReducedMotion(reduced);
   }, [reduced]);
+
+  useEffect(() => {
+    if (introReady) sceneRef.current?.play();
+  }, [introReady]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -71,34 +77,38 @@ function IDCard3D({ onFail }: { onFail: () => void }) {
       });
     };
 
-    import("../lib/badge/BadgeScene")
-      .then(({ BadgeScene }) => {
-        if (cancelled) return;
-        scene = new BadgeScene({
-          host: stage,
-          hitArea,
-          photo: badgePortrait,
-          qr: linkedinQr,
-          reducedMotion: reducedRef.current,
-          onQrActivate: openLinkedIn,
-          onContextLost: onFail,
-        });
-        sceneRef.current = scene;
-        measure();
+    // The loading screen waits on the chunk and the badge's art.
+    trackLoad(
+      import("../lib/badge/BadgeScene")
+        .then(({ BadgeScene }) => {
+          if (cancelled) return;
+          scene = new BadgeScene({
+            host: stage,
+            hitArea,
+            photo: badgePortrait,
+            qr: linkedinQr,
+            reducedMotion: reducedRef.current,
+            onQrActivate: openLinkedIn,
+            onContextLost: onFail,
+          });
+          sceneRef.current = scene;
+          if (isIntroReady()) scene.play();
+          measure();
 
-        resize = new ResizeObserver(measure);
-        resize.observe(root);
-        const section = root.closest("section");
-        if (section) resize.observe(section);
-        window.addEventListener("resize", measure);
-        onScreen = new IntersectionObserver(([entry]) => scene?.setVisible(entry.isIntersecting));
-        onScreen.observe(stage);
+          resize = new ResizeObserver(measure);
+          resize.observe(root);
+          const section = root.closest("section");
+          if (section) resize.observe(section);
+          window.addEventListener("resize", measure);
+          onScreen = new IntersectionObserver(([entry]) => scene?.setVisible(entry.isIntersecting));
+          onScreen.observe(stage);
 
-        return scene.load();
-      })
-      .catch(() => {
-        if (!cancelled) onFail();
-      });
+          return scene.load();
+        })
+        .catch(() => {
+          if (!cancelled) onFail();
+        })
+    );
 
     return () => {
       cancelled = true;

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { navigationItems, personalInfo } from "../data/portfolioData";
 import { EASE, useMediaQuery, useReducedMotion } from "../lib/motion";
+import { useIntroReady } from "../lib/pageReady";
 import { scrollTo } from "../lib/useSmoothScroll";
 
 /** Seven labels don't fit a phone, so narrow screens navigate by icon. */
@@ -41,6 +42,7 @@ export default function Dock() {
   const [condensed, setCondensed] = useState(false);
   const [monogramOpen, setMonogramOpen] = useState(false);
   const reduced = useReducedMotion();
+  const ready = useIntroReady();
   /* Below `lg` the dock is an icon rail and only the active item is named
      — icon+full-label together for all seven items needs more room than
      the 640-1023px range actually has, which used to overflow the dock
@@ -99,7 +101,7 @@ export default function Dock() {
         onTouchStart={() => setMonogramOpen(true)}
         aria-label="Back to top"
         initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={ready ? { opacity: 1, y: 0 } : undefined}
         transition={{ duration: 1, ease: EASE, delay: 0.6 }}
         className="fixed left-[max(1.25rem,var(--gutter))] top-6 z-[90] hidden items-center md:flex"
       >
@@ -127,7 +129,7 @@ export default function Dock() {
       <motion.nav
         aria-label="Sections"
         initial={{ opacity: 0, y: 26 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={ready ? { opacity: 1, y: 0 } : undefined}
         transition={{ duration: 1.1, ease: EASE, delay: 0.85 }}
         /* Centred by flex, not by -translate-x-1/2: Framer writes its own
            `transform` for the entry animation and would clobber the class. */

@@ -7,6 +7,15 @@ import { useReducedMotion } from "./motion";
 gsap.registerPlugin(ScrollTrigger);
 
 let lenis: Lenis | null = null;
+let locked = false;
+
+/** Holds the page still while the loading screen is up. */
+export function setScrollLocked(on: boolean) {
+  locked = on;
+  document.documentElement.style.overflow = on ? "hidden" : "";
+  if (on) lenis?.stop();
+  else lenis?.start();
+}
 
 /** Anchor links and the dock both route through this. */
 export function scrollTo(target: string | HTMLElement, offset = 0) {
@@ -46,6 +55,7 @@ export function useSmoothScroll() {
       syncTouch: false,
     });
     lenis = instance;
+    if (locked) instance.stop();
 
     instance.on("scroll", ScrollTrigger.update);
 
