@@ -139,8 +139,7 @@ function IDCard3D({ onFail }: { onFail: () => void }) {
             hero stays clickable; touch-action: none stops drags scrolling. */}
         <div
           ref={hitRef}
-          data-cursor="grab"
-          className="pointer-events-auto absolute inset-0 select-none"
+          className="pointer-events-auto absolute inset-0 cursor-grab select-none active:cursor-grabbing"
           style={{ touchAction: "none", clipPath: "polygon(0 0, 0 0, 0 0)" }}
         />
       </div>

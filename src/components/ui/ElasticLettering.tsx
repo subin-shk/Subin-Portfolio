@@ -252,8 +252,7 @@ export default function ElasticLettering({
             ref={(el) => {
               lettersRef.current[at] = el;
             }}
-            data-cursor={disabled ? undefined : "grab"}
-            className="relative inline-block select-none"
+            className={`relative inline-block select-none${disabled ? "" : " cursor-grab active:cursor-grabbing"}`}
             style={disabled ? undefined : { touchAction: "none" }}
           >
             {renderChar(ch, i)}
