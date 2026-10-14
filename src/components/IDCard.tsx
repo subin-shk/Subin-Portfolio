@@ -4,10 +4,8 @@ import { useReducedMotion } from "../lib/motion";
 import { isIntroReady, trackLoad, useIntroReady } from "../lib/pageReady";
 import type { BadgeScene } from "../lib/badge/BadgeScene";
 import IDCardFlat from "./IDCardFlat";
-import badgePortrait from "../images/subin-shk-hero2.jpg";
-import linkedinQr from "../images/subin-shk-linkedin-qr.png";
+import badgePortrait from "../images/subin-shk-idcard.png";
 
-const LINKEDIN = "https://www.linkedin.com/in/subin-shk/";
 const ASPECT = 0.64;
 /** Same footprint as the flat badge's clip and shadow, so the hero doesn't shift. */
 const CLIP_PAD = 12;
@@ -86,9 +84,7 @@ function IDCard3D({ onFail }: { onFail: () => void }) {
             host: stage,
             hitArea,
             photo: badgePortrait,
-            qr: linkedinQr,
             reducedMotion: reducedRef.current,
-            onQrActivate: openLinkedIn,
             onContextLost: onFail,
           });
           sceneRef.current = scene;
@@ -128,7 +124,7 @@ function IDCard3D({ onFail }: { onFail: () => void }) {
     >
       <div
         role="img"
-        aria-label={`ID badge: ${personalInfo.name}, Software Quality Assurance, ID SS-0209`}
+        aria-label={`ID badge: ${personalInfo.name}, Software QA Engineer, ID SS-0209`}
         style={{ paddingTop: CLIP_PAD, paddingBottom: FOOT_PAD }}
       >
         <div style={{ aspectRatio: String(ASPECT) }} />
@@ -144,20 +140,8 @@ function IDCard3D({ onFail }: { onFail: () => void }) {
         />
       </div>
 
-      <a
-        href={LINKEDIN}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-0 focus-visible:left-1/2 focus-visible:z-[1] focus-visible:-translate-x-1/2 focus-visible:whitespace-nowrap focus-visible:rounded-full focus-visible:bg-ink/80 focus-visible:px-3 focus-visible:py-1.5 focus-visible:text-xs focus-visible:text-white"
-      >
-        Open LinkedIn profile
-      </a>
     </div>
   );
-}
-
-function openLinkedIn() {
-  window.open(LINKEDIN, "_blank", "noopener,noreferrer");
 }
 
 /** Offset inside `ancestor`, ignoring the hero's scroll-driven transforms. */

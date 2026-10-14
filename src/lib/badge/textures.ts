@@ -11,55 +11,53 @@ const S = CARD_TEX_W / CW;
 export const STRAP_TEX_W = 128;
 export const STRAP_TEX_H = 1024;
 
-const INK = "#1c1c1c";
-const MUTED = "#4a4844";
-const PANEL = "#e8e5de";
+// Pure black: the card's clearcoat sheen and tone mapping lift and wash out
+// anything lighter.
+const INK = "#000000";
 const STRAP_BLUE = "#3156c7";
 const EMBER = "#ff6b2c";
 
-/* Front-face row layout, shared with the QR hit rect below. */
-const PAD_X = 16;
-const PANEL_TOP = CH * 0.58;
-const ROW_TOP = PANEL_TOP + 20;
-const QR_BOX = 84;
-const QR_X = CW - PAD_X - QR_BOX;
+const PAD_X = 18;
 
-/** LinkedIn QR on the front face, in 0–1 texture space (y down). */
-export const QR_RECT = {
-  x0: QR_X / CW,
-  y0: ROW_TOP / CH,
-  x1: (QR_X + QR_BOX) / CW,
-  y1: (ROW_TOP + QR_BOX) / CH,
-};
+/** What the back's barcode encodes. */
+const SITE = "shakyasubin.com.np";
+
+/* Front: the photo runs down behind a white panel whose top edge steps from
+   PANEL_HIGH on the left to PANEL_LOW on the right in one S-curve. */
+const PANEL_HIGH = 262;
+const PANEL_LOW = 290;
+const CURVE_X0 = 156;
+const CURVE_X1 = 228;
+/** Portrait cut-out placement: card px per image px, and where the head sits. */
+const PORTRAIT = { scale: 0.62, headTop: 58, headY: 90, centreX: 266 };
 
 export interface ArtAssets {
   photo: HTMLImageElement;
-  qr: HTMLImageElement;
   /** False if fallback fonts were used because the webfonts were late. */
   fontsLoaded: boolean;
 }
 
+const CARD_FONT = '"Manrope"';
+
 const FONTS = [
-  '600 74px "Inter Tight"',
-  '500 40px "Inter Tight"',
-  'italic 600 44px "Inter"',
-  '500 36px "Inter"',
-  '400 36px "Inter"',
-  '500 32px "JetBrains Mono"',
+  '600 40px "Inter Tight"',
+  `500 22px ${CARD_FONT}`,
+  `600 10px ${CARD_FONT}`,
+  '400 48px "Instrument Serif"',
+  'italic 400 48px "Instrument Serif"',
 ];
 
-export async function loadArtAssets(photoSrc: string, qrSrc: string): Promise<ArtAssets> {
+export async function loadArtAssets(photoSrc: string): Promise<ArtAssets> {
   const fonts = Promise.all(FONTS.map((f) => document.fonts.load(f))).then(
     () => true,
     () => false
   );
   const timeout = new Promise<boolean>((r) => window.setTimeout(() => r(false), 1500));
-  const [photo, qr, fontsLoaded] = await Promise.all([
+  const [photo, fontsLoaded] = await Promise.all([
     loadImage(photoSrc),
-    loadImage(qrSrc),
     Promise.race([fonts, timeout]),
   ]);
-  return { photo, qr, fontsLoaded };
+  return { photo, fontsLoaded };
 }
 
 function loadImage(src: string) {
@@ -69,127 +67,85 @@ function loadImage(src: string) {
   return img.decode().then(() => img);
 }
 
-export function paintFront(canvas: HTMLCanvasElement, { photo, qr }: ArtAssets) {
+export function paintFront(canvas: HTMLCanvasElement, { photo }: ArtAssets) {
   const ctx = cardContext(canvas);
 
-  const base = ctx.createLinearGradient(0, 0, CW * 0.55, CH);
-  base.addColorStop(0, "#f4f2ec");
-  base.addColorStop(1, "#ddd9d0");
-  ctx.fillStyle = base;
+  // Soft studio backdrop behind the cut-out portrait.
+  const wall = ctx.createLinearGradient(0, 0, CW * 0.4, PANEL_LOW);
+  wall.addColorStop(0, "#9ea7ad");
+  wall.addColorStop(1, "#7d878d");
+  ctx.fillStyle = wall;
   ctx.fillRect(0, 0, CW, CH);
 
+  const { scale, headTop, headY, centreX } = PORTRAIT;
+  const pw = photo.naturalWidth * scale;
+  const ph = photo.naturalHeight * scale;
   ctx.save();
-  ctx.filter = "saturate(0.82) contrast(1.03) brightness(1.02)";
-  drawCover(ctx, photo, 0, 0, CW, CH * 0.62, 0.5, 0.2);
+  ctx.filter = "saturate(0.92) contrast(1.03)";
+  ctx.drawImage(photo, CW / 2 - centreX * scale, headTop - headY * scale, pw, ph);
   ctx.restore();
-  slotRim(ctx, "#efece5", "rgba(0,0,0,0.12)");
+  slotRim(ctx, "#aab2b7", "rgba(0,0,0,0.14)");
 
-  // Info panel with the wavy top edge (the old SVG's 100×27 path).
-  const waveH = (CH - PANEL_TOP) * 0.13;
-  const wx = (x: number) => (x / 100) * CW;
-  const wy = (y: number) => PANEL_TOP + 1 - waveH + (y / 27) * waveH;
-  ctx.fillStyle = PANEL;
+  // White panel, stepping down to the right in one smooth curve.
+  const mid = (CURVE_X0 + CURVE_X1) / 2;
   ctx.save();
-  ctx.shadowColor = "rgba(0,0,0,0.14)";
-  ctx.shadowBlur = 5 * S;
+  ctx.shadowColor = "rgba(0,0,0,0.12)";
+  ctx.shadowBlur = 4 * S;
   ctx.shadowOffsetY = -1 * S;
   ctx.beginPath();
   ctx.moveTo(0, CH);
-  ctx.lineTo(0, wy(14));
-  ctx.bezierCurveTo(wx(22), wy(2), wx(38), wy(24), wx(60), wy(12));
-  ctx.bezierCurveTo(wx(74), wy(4), wx(88), wy(10), wx(100), wy(7));
+  ctx.lineTo(0, PANEL_HIGH);
+  ctx.lineTo(CURVE_X0, PANEL_HIGH);
+  ctx.bezierCurveTo(mid, PANEL_HIGH, mid, PANEL_LOW, CURVE_X1, PANEL_LOW);
+  ctx.lineTo(CW, PANEL_LOW);
   ctx.lineTo(CW, CH);
   ctx.closePath();
+  ctx.fillStyle = "#ffffff";
   ctx.fill();
   ctx.restore();
 
-  ctx.save();
-  ctx.shadowColor = "rgba(0,0,0,0.15)";
-  ctx.shadowBlur = 2 * S;
-  ctx.shadowOffsetY = 1 * S;
-  roundRect(ctx, QR_X, ROW_TOP, QR_BOX, QR_BOX, 6);
-  ctx.fillStyle = "#ece9e2";
-  ctx.fill();
-  ctx.restore();
-  ctx.save();
-  roundRect(ctx, QR_X + 4, ROW_TOP + 4, QR_BOX - 8, QR_BOX - 8, 3);
-  ctx.clip();
-  ctx.drawImage(qr, QR_X + 4, ROW_TOP + 4, QR_BOX - 8, QR_BOX - 8);
-  ctx.restore();
-
-  const top = ROW_TOP + (QR_BOX - 63) / 2;
-  ctx.textBaseline = "middle";
+  ctx.textBaseline = "alphabetic";
   ctx.textAlign = "left";
-  text(ctx, "Subin Shakya", PAD_X, top + 11.5, '600 18.4px "Inter Tight"', INK, -0.04 * 18.4);
-  ctx.fillStyle = "rgba(74,72,68,0.3)";
-  ctx.fillRect(PAD_X, top + 29, 40, 1);
-  const titleFont = 'italic 600 10.88px "Inter"';
-  text(ctx, "Software", PAD_X, top + 42.8, titleFont, MUTED, 0.22);
-  text(ctx, "Quality Assurance", PAD_X, top + 56.4, titleFont, MUTED, 0.22);
+  const name = `500 22px ${CARD_FONT}`;
+  text(ctx, "Subin", PAD_X, PANEL_HIGH + 34, name, INK, -0.3);
+  text(ctx, "Shakya", PAD_X, PANEL_HIGH + 61, name, INK, -0.3);
 
+  ctx.fillStyle = "rgba(0,0,0,0.35)";
+  ctx.fillRect(PAD_X, CH - 38, CW - PAD_X * 2, 1);
+  text(ctx, "Software QA Engineer", PAD_X, CH - 20, `500 13px ${CARD_FONT}`, INK, 0);
   ctx.textAlign = "right";
-  ctx.textBaseline = "bottom";
-  text(ctx, "ID: SS-0209", CW - 16, CH - 8, '500 8.8px "Inter"', "rgba(74,72,68,0.7)", 0.18);
+  text(ctx, "ID: SS-0209", CW - PAD_X, CH - 20, `600 10px ${CARD_FONT}`, INK, 0.1);
 }
 
 export function paintBack(canvas: HTMLCanvasElement) {
   const ctx = cardContext(canvas);
 
   const base = ctx.createLinearGradient(0, 0, CW * 0.5, CH);
-  base.addColorStop(0, "#efece5");
-  base.addColorStop(1, "#e0dcd3");
+  base.addColorStop(0, "#0c0c0c");
+  base.addColorStop(1, "#050505");
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, CW, CH);
+  slotRim(ctx, "#121212", "rgba(255,255,255,0.14)");
 
-  const bandH = 58;
-  const band = ctx.createLinearGradient(0, 0, 0, bandH);
-  band.addColorStop(0, "#3a60d2");
-  band.addColorStop(1, "#2a4cb6");
-  ctx.fillStyle = band;
-  ctx.fillRect(0, 0, CW, bandH);
-  ctx.fillStyle = EMBER;
-  ctx.fillRect(0, bandH, CW, 2.5);
-  slotRim(ctx, "rgba(255,255,255,0.2)", "rgba(255,255,255,0.28)");
-
+  // Staggered serif wordmark over a tracked title line.
   ctx.textBaseline = "alphabetic";
   ctx.textAlign = "left";
-  const mono = (px: number, weight = 500) => `${weight} ${px}px "JetBrains Mono"`;
-  text(ctx, "ACCESS", 16, 38, mono(6.4), "rgba(255,255,255,0.6)", 1.2);
-  text(ctx, "ALL ENVIRONMENTS", 16, 48, mono(7.2), "rgba(255,255,255,0.92)", 0.9);
-  ctx.textAlign = "right";
-  text(ctx, "SS-0209", CW - 16, 48, mono(7.2), "rgba(255,255,255,0.92)", 0.9);
+  text(ctx, "Subin", 34, 172, '400 50px "Instrument Serif"', "#f4f4f1", -0.5);
+  text(ctx, "Shakya", 64, 218, 'italic 400 50px "Instrument Serif"', "#f4f4f1", -0.5);
+  ctx.fillStyle = "rgba(244,244,241,0.45)";
+  ctx.fillRect(34, 240, 36, 0.8);
+  text(ctx, "SOFTWARE QA ENGINEER", 34, 259, `600 8.5px ${CARD_FONT}`, "rgba(244,244,241,0.78)", 2.2);
 
+  // As wide as the card allows: wider bars scan more reliably.
+  const lw = 226;
+  const lx = (CW - lw) / 2;
+  const ly = 294;
+  ctx.fillStyle = "#ffffff";
+  roundRect(ctx, lx, ly, lw, 68, 3);
+  ctx.fill();
+  barcode(ctx, SITE, lx, ly + 7, lw, 40);
   ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.strokeStyle = "rgba(28,28,28,0.16)";
-  ctx.lineWidth = 1.1;
-  ctx.beginPath();
-  ctx.arc(CW / 2, 138, 40, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.strokeStyle = "rgba(255,107,44,0.55)";
-  ctx.beginPath();
-  ctx.arc(CW / 2, 138, 44.5, -Math.PI * 0.82, -Math.PI * 0.42);
-  ctx.stroke();
-  text(ctx, "SS", CW / 2, 139, '600 36px "Inter Tight"', INK, -1.4);
-
-  text(ctx, "Subin Shakya", CW / 2, 206, '600 17px "Inter Tight"', INK, -0.6);
-  text(ctx, "Software QA Engineer", CW / 2, 225, '500 10.4px "Inter"', MUTED, 0.1);
-  text(ctx, "Kathmandu, Nepal", CW / 2, 240, '400 8.8px "Inter"', "rgba(74,72,68,0.72)", 0.1);
-  ctx.fillStyle = "rgba(74,72,68,0.28)";
-  ctx.fillRect(CW / 2 - 20, 256, 40, 1);
-  text(ctx, "AUTOMATION · API · PERFORMANCE", CW / 2, 272, mono(6.6), MUTED, 1.1);
-
-  barcode(ctx, 52, 293, CW - 104, 34);
-  text(ctx, "shakyasubin.com.np", CW / 2, 343, mono(7.6), INK, 0.4);
-  text(
-    ctx,
-    "If found, please return to its owner.",
-    CW / 2,
-    370,
-    'italic 500 7px "Inter"',
-    "rgba(74,72,68,0.62)",
-    0.1
-  );
+  text(ctx, SITE, CW / 2, ly + 61, `600 10.5px ${CARD_FONT}`, INK, 0.2);
 }
 
 /** One seamless repeat of the strap print (U across, V along the strap). */
@@ -356,46 +312,46 @@ function bead(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.fill();
 }
 
-function barcode(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-  // Seeded from the badge ID so the pattern never changes.
-  let seed = 209;
-  const rand = () => {
-    seed = (seed * 16807) % 2147483647;
-    return seed / 2147483647;
-  };
-  const bars: number[] = [];
-  let total = 0;
-  while (total < w) {
-    const bar = 0.6 + Math.floor(rand() * 3) * 0.7;
-    const gap = 0.6 + Math.floor(rand() * 3) * 0.6;
-    bars.push(bar, gap);
-    total += bar + gap;
-  }
-  const k = w / total;
-  ctx.fillStyle = INK;
-  let cx = x;
-  for (let i = 0; i < bars.length; i += 2) {
-    ctx.fillRect(cx, y, bars[i] * k, h);
-    cx += (bars[i] + bars[i + 1]) * k;
-  }
+/** Code 128 bar/space widths for values 0–106; 103–105 start A/B/C, 106 stop. */
+const CODE128 = [
+  "212222 222122 222221 121223 121322 131222 122213 122312 132212 221213",
+  "221312 231212 112232 122132 122231 113222 123122 123221 223211 221132",
+  "221231 213212 223112 312131 311222 321122 321221 312212 322112 322211",
+  "212123 212321 232121 111323 131123 131321 112313 132113 132311 211313",
+  "231113 231311 112133 112331 132131 113123 113321 133121 313121 211331",
+  "231131 213113 213311 213131 311123 311321 331121 312113 312311 332111",
+  "314111 221411 431111 111224 111422 121124 121421 141122 141221 112214",
+  "112412 122114 122411 142112 142211 241211 221114 413111 241112 134111",
+  "111242 121142 121241 114212 124112 124211 411212 421112 421211 212141",
+  "214121 412121 111143 111341 131141 114113 114311 411113 411311 113141",
+  "114131 311141 411131 211412 211214 211232 2331112",
+].join(" ").split(" ");
+
+/** Margin either side of the bars, in modules, so scanners can find the edges. */
+const QUIET = 10;
+
+/** Bar and space widths for `data` in Code 128 set B, start to stop. */
+function code128(data: string) {
+  const values = [...data].map((c) => {
+    const v = c.charCodeAt(0) - 32;
+    if (v < 0 || v > 95) throw new Error(`Code 128 B can't encode "${c}"`);
+    return v;
+  });
+  const check = values.reduce((sum, v, i) => sum + v * (i + 1), 104) % 103;
+  return [104, ...values, check, 106].flatMap((v) => [...CODE128[v]].map(Number));
 }
 
-function drawCover(
-  ctx: CanvasRenderingContext2D,
-  img: HTMLImageElement,
-  dx: number,
-  dy: number,
-  dw: number,
-  dh: number,
-  posX: number,
-  posY: number
-) {
-  const iw = img.naturalWidth;
-  const ih = img.naturalHeight;
-  const scale = Math.max(dw / iw, dh / ih);
-  const sw = dw / scale;
-  const sh = dh / scale;
-  ctx.drawImage(img, (iw - sw) * posX, (ih - sh) * posY, sw, sh, dx, dy, dw, dh);
+/** Scannable Code 128 of `data`, quiet zones included, spanning `w`. */
+function barcode(ctx: CanvasRenderingContext2D, data: string, x: number, y: number, w: number, h: number) {
+  const widths = code128(data);
+  const modules = widths.reduce((a, b) => a + b, 0) + QUIET * 2;
+  const m = w / modules;
+  ctx.fillStyle = INK;
+  let cx = x + QUIET * m;
+  widths.forEach((width, i) => {
+    if (i % 2 === 0) ctx.fillRect(cx, y, width * m, h);
+    cx += width * m;
+  });
 }
 
 function roundRect(
