@@ -10,7 +10,6 @@ import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Seo from "./components/Seo";
-import CustomCursor from "./components/CustomCursor";
 import Loader from "./components/Loader";
 import { useSmoothScroll } from "./lib/useSmoothScroll";
 
@@ -25,7 +24,6 @@ export default function App() {
   return (
     <>
       <Seo />
-      <CustomCursor />
       <Atmosphere />
       <Loader />
 

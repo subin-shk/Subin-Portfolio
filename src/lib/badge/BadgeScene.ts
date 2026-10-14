@@ -52,7 +52,6 @@ import {
   paintFront,
   paintStitch,
   paintStrap,
-  QR_RECT,
   STRAP_TEX_H,
   STRAP_TEX_W,
   type ArtAssets,
@@ -75,9 +74,7 @@ interface BadgeSceneOptions {
    * land on the card are caught. */
   hitArea: HTMLElement;
   photo: string;
-  qr: string;
   reducedMotion: boolean;
-  onQrActivate: () => void;
   onContextLost: () => void;
 }
 
@@ -123,7 +120,6 @@ const NUDGE_MAX = 0.12;
 
 const CLICK_SLOP = 6;
 const CLICK_MS = 450;
-const DOUBLE_CLICK_MS = 280;
 
 const SLEEP_SPEED = 0.003;
 const SLEEP_FRAMES = 24;
@@ -203,8 +199,7 @@ export class BadgeScene {
 
   private dragId: number | null = null;
   private dragZ = 0;
-  private press: { x: number; y: number; t: number; side: number; qr: boolean } | null = null;
-  private qrTimer = 0;
+  private press: { x: number; y: number; t: number; side: number } | null = null;
   private hovering = false;
   private readonly hoverPrev = new Vector3();
 
@@ -259,11 +254,18 @@ export class BadgeScene {
         clearcoat: 0.65,
         clearcoatRoughness: 0.18,
       });
+    // The black back is matte: a glossy coat reflects the room over it and
+    // turns the black charcoal.
+    const back = new MeshPhysicalMaterial({
+      map: backTex,
+      roughness: 0.85,
+      envMapIntensity: 0.25,
+    });
     const edge = new MeshStandardMaterial({ color: "#d9d5cc", roughness: 0.4 });
     const metal = new MeshStandardMaterial({ color: "#dfe3e8", metalness: 1, roughness: 0.26 });
     const darkMetal = new MeshStandardMaterial({ color: "#8d96a1", metalness: 1, roughness: 0.34 });
 
-    this.body = new Mesh(cardGeometry(), [face(frontTex), edge, face(backTex)]);
+    this.body = new Mesh(cardGeometry(), [face(frontTex), edge, back]);
     const clasp = lobsterClasp(metal, darkMetal);
     this.hook = clasp.hook;
     this.card.add(this.body, clasp.group);
@@ -309,7 +311,7 @@ export class BadgeScene {
   }
 
   async load() {
-    const assets = await loadArtAssets(this.opts.photo, this.opts.qr);
+    const assets = await loadArtAssets(this.opts.photo);
     if (this.disposed) return;
     this.paint(assets);
     if (!assets.fontsLoaded) {
@@ -394,7 +396,6 @@ export class BadgeScene {
     if (this.disposed) return;
     this.disposed = true;
     cancelAnimationFrame(this.raf);
-    window.clearTimeout(this.qrTimer);
 
     const hit = this.opts.hitArea;
     hit.removeEventListener("pointerdown", this.onDown);
@@ -404,7 +405,6 @@ export class BadgeScene {
     hit.removeEventListener("lostpointercapture", this.onCancel);
     hit.removeEventListener("pointerleave", this.onLeave);
     hit.style.clipPath = "polygon(0 0, 0 0, 0 0)";
-    hit.removeAttribute("title");
 
     const materials = new Set<Material>();
     this.scene.traverse((o) => {
@@ -462,7 +462,7 @@ export class BadgeScene {
   private tick = (now: number) => {
     this.raf = 0;
     if (this.disposed) return;
-    const dt = MathUtils.clamp((now - this.last) / 1000, 0, 1 / 30);
+    const dt = MathUtils.clamp((now - this.last) / 1000, 0, 1 / 20);
     this.last = now;
 
     if (this.intro) {
@@ -536,13 +536,6 @@ export class BadgeScene {
     return this.raycaster.ray.intersectPlane(_plane, out) !== null;
   }
 
-  private onQr(hit: Intersection) {
-    if (hit.object !== this.body || hit.face?.materialIndex !== 0 || !hit.uv) return false;
-    const u = hit.uv.x;
-    const v = 1 - hit.uv.y;
-    return u >= QR_RECT.x0 && u <= QR_RECT.x1 && v >= QR_RECT.y0 && v <= QR_RECT.y1;
-  }
-
   private onDown = (e: PointerEvent) => {
     if (!this.started || e.button !== 0 || this.dragId !== null) return;
     const hit = this.pick(e);
@@ -557,7 +550,6 @@ export class BadgeScene {
       y: e.clientY,
       t: performance.now(),
       side: this.card.worldToLocal(_v.copy(hit.point)).x,
-      qr: this.onQr(hit),
     };
     this.wake();
   };
@@ -574,8 +566,6 @@ export class BadgeScene {
     if (e.pointerType !== "mouse" || !this.started) return;
 
     const hit = this.pick(e);
-    const title = hit && this.onQr(hit) ? "Double-click to open LinkedIn" : "";
-    if (this.opts.hitArea.title !== title) this.opts.hitArea.title = title;
     if (!hit || this.reduced || !this.pointerAt(e, 0, _v)) {
       this.hovering = false;
       return;
@@ -612,22 +602,9 @@ export class BadgeScene {
     this.wake();
   }
 
-  /** A click flips the card; on the QR, a quick second click opens LinkedIn. */
-  private click(press: { side: number; qr: boolean }) {
-    if (!press.qr) {
-      this.flip(press.side);
-      return;
-    }
-    if (this.qrTimer) {
-      window.clearTimeout(this.qrTimer);
-      this.qrTimer = 0;
-      this.opts.onQrActivate();
-      return;
-    }
-    this.qrTimer = window.setTimeout(() => {
-      this.qrTimer = 0;
-      this.flip(press.side);
-    }, DOUBLE_CLICK_MS);
+  /** A click flips the card. */
+  private click(press: { side: number }) {
+    this.flip(press.side);
   }
 
   private flip(side: number) {

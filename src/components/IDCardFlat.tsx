@@ -9,8 +9,7 @@ import {
 } from "framer-motion";
 import { personalInfo } from "../data/portfolioData";
 import { useReducedMotion } from "../lib/motion";
-import badgePortrait from "../images/subin-shk-hero2.jpg";
-import linkedinQr from "../images/subin-shk-linkedin-qr.png";
+import badgePortrait from "../images/subin-shk-idcard.png";
 
 /** Degrees/pixels of give per normalized (-1..1) pointer offset. */
 const MAX_TILT = 7; // matches GlassCard's default `tilt` prop
@@ -337,118 +336,62 @@ export default function IDCardFlat() {
             className="relative -mt-3 overflow-hidden rounded-[18px]"
             style={{
               aspectRatio: "0.64",
-              background: "linear-gradient(165deg, #f4f2ec 0%, #ddd9d0 100%)",
+              background: "linear-gradient(160deg, #9ea7ad 0%, #7d878d 75%)",
               boxShadow:
                 "0 30px 60px -20px rgba(0,0,0,0.55), 0 2px 0 rgba(255,255,255,0.35) inset",
               border: "1px solid rgba(255,255,255,0.5)",
             }}
           >
-            {/* Portrait */}
-            <div className="relative h-[62%] w-full overflow-hidden">
-              <img
-                src={badgePortrait}
-                alt={personalInfo.name}
-                loading="eager"
-                decoding="async"
-                draggable={false}
-                onDragStart={(e) => e.preventDefault()}
-                className="h-full w-full select-none object-cover"
-                /* `pointer-events: none` keeps the <img> out of hit-testing
-                   entirely, so a pointerdown here is never "on the image" at
-                   all — it's on the card behind it, which is what Framer's
-                   drag gesture is actually listening to. draggable={false}
-                   alone wasn't enough: the browser could still treat the
-                   gesture as a native image drag before that ever mattered. */
-                style={{
-                  objectPosition: "center 20%",
-                  pointerEvents: "none",
-                  filter: "saturate(0.82) contrast(1.03) brightness(1.02)",
-                }}
+            {/* Cut-out portrait on the studio backdrop, framed to match the
+                3D card's texture: head ~15% down, shoulders running on
+                behind the panel. */}
+            <img
+              src={badgePortrait}
+              alt={personalInfo.name}
+              loading="eager"
+              decoding="async"
+              draggable={false}
+              onDragStart={(e) => e.preventDefault()}
+              className="absolute select-none"
+              /* `pointer-events: none` keeps the <img> out of hit-testing,
+                 so a pointerdown lands on the card, which Framer's drag
+                 gesture is listening to. */
+              style={{
+                left: "-16%",
+                top: "0.6%",
+                width: "130.4%",
+                // Preflight caps images at 100% of their box; this one overhangs.
+                maxWidth: "none",
+                pointerEvents: "none",
+                filter: "saturate(0.92) contrast(1.03)",
+              }}
+            />
+
+            {/* White panel stepping down to the right in one S-curve. */}
+            <svg
+              aria-hidden
+              viewBox="0 0 250 390.6"
+              preserveAspectRatio="none"
+              className="absolute inset-0 h-full w-full"
+            >
+              <path
+                d="M0,390.6 L0,262 L156,262 C192,262 192,290 228,290 L250,290 L250,390.6 Z"
+                fill="#ffffff"
               />
-            </div>
+            </svg>
 
-            {/* White info panel with a wavy top edge cut into the photo,
-                instead of a straight seam — the panel's own shape carries
-                that curve rather than a separate overlay. */}
-            <div className="absolute inset-x-0 bottom-0 h-[42%] bg-[#e8e5de]">
-              <svg
-                aria-hidden
-                viewBox="0 0 100 27"
-                preserveAspectRatio="none"
-                /* Overlaps 1px into the panel below (bottom-[calc(100%-1px)]
-                   instead of bottom-full) so there's no hairline gap between
-                   the curve and the flat panel it's sitting on. */
-                className="absolute inset-x-0 bottom-[calc(100%-1px)] h-[13%] w-full"
-              >
-                <path
-                  d="M0,27 L0,14 C22,2 38,24 60,12 C74,4 88,10 100,7 L100,27 Z"
-                  fill="#e8e5de"
-                />
-              </svg>
-
-              <span className="absolute bottom-2 right-4 text-[0.55rem] font-medium tracking-[0.02em] text-[#4a4844]/70">
-                ID: SS-0209
+            <div
+              className="absolute inset-x-0 bottom-0 top-[67%] flex flex-col px-[7.2%] pt-[4%]"
+              style={{ fontFamily: '"Manrope", system-ui, sans-serif' }}
+            >
+              <span className="text-[1.3rem] font-medium leading-[1.2] tracking-[-0.01em] text-[#000000]">
+                Subin
+                <br />
+                Shakya
               </span>
-
-              {/* Content-height row (not h-full) so `items-center` aligns
-                  the QR against the *text block's* middle. With h-full the
-                  row was the whole panel's height, so centering the QR
-                  within it parked it far below the top-aligned text. */}
-              {/* Top padding stays small until the card is actually wide
-                  enough to earn it: the width clamp bottoms out at 200px
-                  from ~1024-1470px, so a fixed lg:pt-6 there left a big
-                  dead gap above the name. */}
-              <div className="relative flex items-center justify-between gap-3 px-4 pt-1 lg:pt-2.5 2xl:pt-5">
-                <div className="flex flex-col items-start gap-1.5 text-left">
-                  <span className="font-display text-[1.15rem] font-semibold leading-tight tracking-supertight text-[#1c1c1c]">
-                    {personalInfo.name}
-                  </span>
-                  <span className="h-px w-10 bg-[#4a4844]/30" />
-                  <span className="flex flex-col items-start text-[0.68rem] font-semibold italic leading-tight tracking-[0.02em] text-[#4a4844]">
-                    <span>Software</span>
-                    <span>Quality Assurance</span>
-                  </span>
-                </div>
-
-                {/* LinkedIn QR — a small light card behind it so the code
-                    keeps enough contrast against the panel's own tone.
-                    Double-click (not single, which the card's own drag
-                    gesture already owns) opens the profile directly, for
-                    anyone reading this on a screen rather than scanning it
-                    with a phone. Sized down a touch on mobile/tablet to
-                    fit the tighter panel, but not so far it stops actually
-                    being scannable. */}
-                <span
-                  role="button"
-                  tabIndex={0}
-                  title="Double-click to open LinkedIn"
-                  onDoubleClick={() =>
-                    window.open(
-                      "https://www.linkedin.com/in/subin-shk/",
-                      "_blank",
-                      "noopener,noreferrer"
-                    )
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      window.open(
-                        "https://www.linkedin.com/in/subin-shk/",
-                        "_blank",
-                        "noopener,noreferrer"
-                      );
-                    }
-                  }}
-                  className="shrink-0 cursor-pointer rounded-md bg-[#ece9e2] p-1 shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
-                >
-                  <img
-                    src={linkedinQr}
-                    alt="QR code linking to Subin Shakya's LinkedIn profile — double-click to open"
-                    draggable={false}
-                    className="h-16 w-16 rounded-[3px] select-none lg:h-[4.75rem] lg:w-[4.75rem]"
-                    style={{ pointerEvents: "none" }}
-                  />
-                </span>
+              <div className="mt-auto flex items-baseline justify-between border-t border-black/35 pb-[6%] pt-[4%]">
+                <span className="text-[0.8rem] font-medium text-[#000000]">Software QA Engineer</span>
+                <span className="text-[0.62rem] font-semibold text-[#000000]">ID: SS-0209</span>
               </div>
             </div>
 
