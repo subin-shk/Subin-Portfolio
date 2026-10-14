@@ -5,6 +5,7 @@ import { personalInfo } from "../data/portfolioData";
 import { EASE, useReducedMotion, useRise } from "../lib/motion";
 import { useIntroReady } from "../lib/pageReady";
 import { scrollTo } from "../lib/useSmoothScroll";
+import ElasticLettering from "./ui/ElasticLettering";
 import GlassButton from "./ui/GlassButton";
 import HeroStraps from "./HeroStraps";
 import IDCard from "./IDCard";
@@ -90,31 +91,30 @@ export default function Hero() {
           }}
         >
           <span className="sr-only">{personalInfo.name}</span>
-          <span aria-hidden="true" className="flex flex-nowrap justify-center lg:justify-start">
-            {chars.map((ch, i) =>
-              ch === " " ? (
-                <span key={i} className="w-[0.26em]" />
-              ) : (
-                <span
-                  key={i}
-                  className="inline-block overflow-hidden pb-[0.06em]"
+          <ElasticLettering
+            text={NAME}
+            disabled={reduced}
+            className="flex flex-nowrap justify-center lg:justify-start"
+            spaceClassName="w-[0.26em]"
+            renderChar={(ch, i) => (
+              /* The clip is only for the rise-in; it travels with the
+                 letter, so it never cuts off a stretch. */
+              <span className="inline-block overflow-hidden pb-[0.06em]">
+                <motion.span
+                  className="inline-block"
+                  initial={reduced ? { opacity: 0 } : { y: "110%", opacity: 0 }}
+                  animate={ready ? { y: 0, opacity: 1 } : undefined}
+                  transition={{
+                    duration: reduced ? 0.3 : 1.25,
+                    ease: EASE,
+                    delay: reduced ? 0 : 0.55 + i * step,
+                  }}
                 >
-                  <motion.span
-                    className="inline-block"
-                    initial={reduced ? { opacity: 0 } : { y: "110%", opacity: 0 }}
-                    animate={ready ? { y: 0, opacity: 1 } : undefined}
-                    transition={{
-                      duration: reduced ? 0.3 : 1.25,
-                      ease: EASE,
-                      delay: reduced ? 0 : 0.55 + i * step,
-                    }}
-                  >
-                    {ch}
-                  </motion.span>
-                </span>
-              )
+                  {ch}
+                </motion.span>
+              </span>
             )}
-          </span>
+          />
         </h1>
 
         <motion.div
