@@ -18,7 +18,9 @@ export const ROPE_SEGMENTS = 28;
 // Fixed solver step, independent of display refresh rate; rendering
 // interpolates between the last two steps.
 const H = 1 / 720;
-const MAX_STEPS = 24;
+// Enough to cover a 50ms frame, so a slow frame never plays out in slow
+// motion. Each step is a few microseconds.
+const MAX_STEPS = 36;
 export const GRAVITY = 55;
 const CARD_MASS = 1;
 const ROPE_MASS = 0.16;
@@ -43,8 +45,10 @@ const TWIST_MAX = Math.PI * 2;
 const SWING_YAW = 0.18;
 const SWING_YAW_MAX = 1.2;
 
-const DRAG_COMPLIANCE = 1.5e-4;
-const DRAG_FOLLOW = 24;
+// The grab point eases toward the pointer over ~14ms, just enough to
+// smooth raw input without the card trailing behind the hand.
+const DRAG_COMPLIANCE = 6e-5;
+const DRAG_FOLLOW = 70;
 const DRAG_SOFT_EDGE = 0.6;
 
 // Retractable reel: while held, the strap pays out or reels in (within these

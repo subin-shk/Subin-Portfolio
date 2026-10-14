@@ -462,7 +462,7 @@ export class BadgeScene {
   private tick = (now: number) => {
     this.raf = 0;
     if (this.disposed) return;
-    const dt = MathUtils.clamp((now - this.last) / 1000, 0, 1 / 30);
+    const dt = MathUtils.clamp((now - this.last) / 1000, 0, 1 / 20);
     this.last = now;
 
     if (this.intro) {
