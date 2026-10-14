@@ -62,7 +62,6 @@ export default function Hero() {
             : {
                 scale,
                 y,
-                opacity,
                 transformOrigin: "center 35%",
               }
         }
@@ -79,7 +78,12 @@ export default function Hero() {
           <IDCard />
         </motion.div>
 
-        <div className="flex w-full flex-col items-center text-center lg:items-start lg:text-left">
+        {/* The scroll fade lives here, not on the shell, so the ID card
+            stays solid instead of going see-through over the straps. */}
+        <motion.div
+          style={reduced ? undefined : { opacity }}
+          className="flex w-full flex-col items-center text-center lg:items-start lg:text-left"
+        >
         <h1
           className="relative z-[3] whitespace-nowrap font-display font-medium uppercase leading-[0.9] text-white"
           /* Capped so the name always sits on one line: the shell stops
@@ -185,7 +189,7 @@ export default function Hero() {
             Get In Touch
           </GlassButton>
         </motion.div>
-        </div>
+        </motion.div>
       </motion.div>
 
       <motion.button
