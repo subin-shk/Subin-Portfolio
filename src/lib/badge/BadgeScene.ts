@@ -190,6 +190,8 @@ export class BadgeScene {
   private restAnchorY = 0;
   private reduced: boolean;
   private ready = false;
+  /** Held until `play()`, so the drop-in isn't spent behind the loading screen. */
+  private cleared = false;
   private started = false;
   private visible = true;
   private disposed = false;
@@ -366,6 +368,12 @@ export class BadgeScene {
     this.wake(true);
   }
 
+  play() {
+    this.cleared = true;
+    this.start();
+    this.wake(true);
+  }
+
   setVisible(visible: boolean) {
     this.visible = visible;
     if (visible) this.wake(true);
@@ -425,7 +433,7 @@ export class BadgeScene {
   }
 
   private start() {
-    if (this.started || !this.ready || !this.layout) return;
+    if (this.started || !this.ready || !this.cleared || !this.layout) return;
     this.started = true;
     const anchor = _v.set(0, this.restAnchorY, 0);
     if (this.reduced) {

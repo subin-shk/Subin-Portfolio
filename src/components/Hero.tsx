@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Download } from "lucide-react";
 import { personalInfo } from "../data/portfolioData";
 import { EASE, useReducedMotion, useRise } from "../lib/motion";
+import { useIntroReady } from "../lib/pageReady";
 import { scrollTo } from "../lib/useSmoothScroll";
 import GlassButton from "./ui/GlassButton";
 import HeroStraps from "./HeroStraps";
@@ -27,6 +28,8 @@ export default function Hero() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 80]);
   const opacity = useTransform(scrollYProgress, [0, 0.78], [1, 0]);
   const rise = useRise(14);
+  // Held at `initial` until the loading screen lifts.
+  const ready = useIntroReady();
 
   const chars = NAME.split("");
   const step = 0.045;
@@ -68,7 +71,7 @@ export default function Hero() {
           /* Quick, plain fade — IDCard's own lowering-in is the entrance
              motion. z-[4] keeps a dragged card in front of the name. */
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={ready ? { opacity: 1 } : undefined}
           transition={{ duration: 0.5, ease: EASE, delay: 0.05 }}
           className="relative z-[4] mb-2 w-full sm:mb-4 lg:mb-0 lg:w-auto lg:shrink-0"
         >
@@ -99,7 +102,7 @@ export default function Hero() {
                   <motion.span
                     className="inline-block"
                     initial={reduced ? { opacity: 0 } : { y: "110%", opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
+                    animate={ready ? { y: 0, opacity: 1 } : undefined}
                     transition={{
                       duration: reduced ? 0.3 : 1.25,
                       ease: EASE,
@@ -116,14 +119,14 @@ export default function Hero() {
 
         <motion.div
           initial={{ scaleX: 0, opacity: 0 }}
-          animate={{ scaleX: 1, opacity: 1 }}
+          animate={ready ? { scaleX: 1, opacity: 1 } : undefined}
           transition={{ duration: 1.4, ease: EASE, delay: nameDone }}
           className="rule my-5 w-full max-w-[28rem] sm:my-6"
         />
 
         <motion.p
           initial={rise.initial}
-          animate={rise.animate}
+          animate={ready ? rise.animate : undefined}
           transition={{ duration: 1, ease: EASE, delay: nameDone + 0.08 }}
           className="font-display text-[clamp(1.05rem,2.4vw,1.7rem)] font-light tracking-supertight text-white/78"
         >
@@ -132,7 +135,7 @@ export default function Hero() {
 
         <motion.p
           initial={rise.initial}
-          animate={rise.animate}
+          animate={ready ? rise.animate : undefined}
           transition={{ duration: 1, ease: EASE, delay: nameDone + 0.2 }}
           className="lede mt-4 max-w-[33rem] text-balance !text-[clamp(0.95rem,1.4vw,1.2rem)]"
         >
@@ -141,7 +144,7 @@ export default function Hero() {
 
         <motion.div
           initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={ready ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 1, ease: EASE, delay: nameDone + 0.34 }}
           className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
         >
@@ -190,7 +193,7 @@ export default function Hero() {
         onClick={() => scrollTo("#about")}
         aria-label="Scroll to continue"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={ready ? { opacity: 1 } : undefined}
         transition={{ duration: 1.2, delay: nameDone + 0.8 }}
         style={reduced ? undefined : { opacity }}
         /* Bottom-left, not centre — the dock owns the centre. */

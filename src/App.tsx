@@ -11,6 +11,7 @@ import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Seo from "./components/Seo";
 import CustomCursor from "./components/CustomCursor";
+import Loader from "./components/Loader";
 import { useSmoothScroll } from "./lib/useSmoothScroll";
 
 /**
@@ -26,6 +27,7 @@ export default function App() {
       <Seo />
       <CustomCursor />
       <Atmosphere />
+      <Loader />
 
       <a
         href="#about"

@@ -89,6 +89,17 @@
   .lenis.lenis-stopped {
     overflow: hidden;
   }
+
+  /* Content waits out the loading screen; the backdrop stays live behind
+     it, so the loader sits on the page's own atmosphere. */
+  #root > main,
+  #root > footer {
+    transition: opacity 0.8s var(--ease-glass);
+  }
+  html[data-loading] #root > main,
+  html[data-loading] #root > footer {
+    opacity: 0;
+  }
 }
 
 @layer components {
